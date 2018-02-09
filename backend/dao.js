@@ -3,7 +3,6 @@
  */
 
 const db_connexion = require('./db_connexion');
-const mongo = require('mongodb');
 const assert = require('assert');
 
 //database coordinates
@@ -28,9 +27,8 @@ function getAllSessions(next) {
 function getSession(id, next) {
     db_connexion.connect(url, dbName, function(db) {
         const collection = db.collection('sessions');
-        const o_id = new mongo.ObjectID(id);
 
-        collection.find( { "_id": o_id } ).toArray(function(err, docs) {
+        collection.find( { "_id": id } ).toArray(function(err, docs) {
             assert.equal(err, null);
             console.log(`${docs.length} document(s) returned from ${collection.collectionName}`);
             console.log(docs);
