@@ -14,12 +14,12 @@ namespace Pear {
         private static readonly int UpdatesPerSecond = 4;
         private int frameCounter;
         private float timeCounter;
-        private float globalTimeCounter;
+        private float lastFrameTime;
 
         void Start() {
             frameCounter = 0;
             timeCounter = 0.0f;
-            globalTimeCounter = 0.0f;
+            lastFrameTime = 0.0f;
             session = new Session();
         }
         
@@ -38,11 +38,11 @@ namespace Pear {
             int frameRate;
             float updateFrequency = 1.0f / UpdatesPerSecond;
             frameCounter++;
-            timeCounter += Time.deltaTime;
-            globalTimeCounter += timeCounter;
+            timeCounter += Time.time - lastFrameTime;
+            lastFrameTime = Time.time;
 
             //test if the limit of updates per second is respected
-            if(timeCounter > updateFrequency) {
+            while(timeCounter > updateFrequency) {
                 frameRate = (int) (frameCounter / timeCounter);
 
                 frameCounter = 0;
@@ -51,7 +51,7 @@ namespace Pear {
 
                 Debug.Log("FPS: " + frameRate);
 
-                session.createMetric(new Metric("fps", frameRate, (uint) (globalTimeCounter * 1000)));
+                session.createMetric(new Metric("fps", frameRate, (uint) (Time.time * 1000)));
             }
         }
 
