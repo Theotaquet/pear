@@ -7,11 +7,8 @@ namespace Pear {
     
     public class PearAnalyser : MonoBehaviour {
 
-        private static readonly string PostMetricsURL = "localhost:3000/sessions";
         private Session session;
 
-        private static readonly bool FrameRateActivated = true;
-        private static readonly int UpdatesPerSecond = 4;
         private int frameCounter;
         private float timeCounter;
         private float lastFrameTime;
@@ -24,7 +21,7 @@ namespace Pear {
         }
         
         void Update() {
-            if(FrameRateActivated)
+            if(Configuration.FpsEnabled)
                 CalculateFrameRate();
         }
 
@@ -36,18 +33,17 @@ namespace Pear {
 
         private void CalculateFrameRate() {
             int frameRate;
-            float updateFrequency = 1.0f / UpdatesPerSecond;
             frameCounter++;
             timeCounter += Time.time - lastFrameTime;
             lastFrameTime = Time.time;
 
             //test if the limit of updates per second is respected
-            while(timeCounter > updateFrequency) {
+            while(timeCounter > Configuration.UpdateFrequency) {
                 frameRate = (int) (frameCounter / timeCounter);
 
                 frameCounter = 0;
                 //the overflow is kept in memory if timeCounter has exceeded updatesPerSecond
-                timeCounter -= updateFrequency;
+                timeCounter -= Configuration.UpdateFrequency;
 
                 Debug.Log("FPS: " + frameRate);
 
@@ -56,7 +52,7 @@ namespace Pear {
         }
 
         private void PostMetrics(string JSONString) {
-            UnityWebRequest request = new UnityWebRequest(PostMetricsURL, "POST");
+            UnityWebRequest request = new UnityWebRequest(Configuration.ServerURL, "POST");
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
