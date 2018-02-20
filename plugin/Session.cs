@@ -24,16 +24,23 @@ namespace Pear {
         }
 
         public override string ToString() {
-            string str = String.Format("Session:\n\n" +
-                                       "{0} - version {1}\n" +
-                                       "Niveau: {2}\n" +
-                                       "{3} - {4} ms\n\n" +
-                                       "Metrics:\n",
-                                       game, build, scene,
-                                       startDate, duration);
+            string str = String.Format(
+                "{0} - version {1}\n" +
+                "Niveau: {2}\n" +
+                "{3} - {4} ms\n\n" +
+                "Metrics\n" +
+                "-------\n\n",
+                game, build, scene, startDate, duration
+            );
+
+            str += "FPS:\n";
             foreach(Metric metric in metrics) {
-                str += metric.ToString() + "\n";
+                if(metric.type == "fps")
+                    str += metric.ToString() + "\n";
             }
+
+            str += "\n--------------------\n";
+            
             return str;
         }
 

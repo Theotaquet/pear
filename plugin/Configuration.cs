@@ -8,23 +8,21 @@ namespace Pear {
 
     public class Configuration : MonoBehaviour {
 
-        public static string ServerURL;
+        public static readonly string ServerURL;
+        public static readonly string SessionLogsPath;
 
-        public static bool FpsEnabled;
-        public static float UpdateFrequency;
+        public static readonly bool FpsEnabled;
+        public static readonly float UpdateFrequency;
 
-        void Awake() {
-            LoadConfig();
-        }
-
-        public static void LoadConfig() {
+        static Configuration() {
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile("Assets/pear/config.ini");
 
             ServerURL = data["ServerConfiguration"]["serverURL"];
+            SessionLogsPath = data["ServerConfiguration"]["sessionLogsPath"];
 
             FpsEnabled = bool.Parse(data["FpsConfiguration"]["fpsEnabled"]);
-            UpdateFrequency = float.Parse(data["FpsConfiguration"]["updateFrequency"]) / 1000;
+            UpdateFrequency = float.Parse(data["FpsConfiguration"]["updateFrequencyInMs"]) / 1000;
         }
     }
 }

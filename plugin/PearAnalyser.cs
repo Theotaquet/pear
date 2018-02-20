@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
@@ -10,15 +11,16 @@ namespace Pear {
 
         private Session session;
 
-        private int frameCounter;
-        private float timeCounter;
+        private int updateFrameCounter;
+        private float updateTimeCounter;
         private float lastFrameTime;
 
         void Start() {
-            frameCounter = 0;
-            timeCounter = 0.0f;
+            updateFrameCounter = 0;
+            updateTimeCounter = 0.0f;
             lastFrameTime = 0.0f;
-            session = new Session(Application.productName, Application.version, SceneManager.GetActiveScene().name);
+            session = new Session(Application.productName, Application.version,
+                SceneManager.GetActiveScene().name);
         }
         
         void Update() {
@@ -27,26 +29,25 @@ namespace Pear {
         }
 
         void OnDisable() {
-            Debug.Log(session);
+            session.duration = (uint) (lastFrameTime * 1000);
+            WriteSession(session);
             string sessionJSONString = JsonUtility.ToJson(session);
             PostMetrics(sessionJSONString);
         }
 
         private void CalculateFrameRate() {
             int frameRate;
-            frameCounter++;
-            timeCounter += Time.time - lastFrameTime;
+            updateFrameCounter++;
+            updateTimeCounter += Time.time - lastFrameTime;
             lastFrameTime = Time.time;
 
             //test if the limit of updates per second is respected
-            while(timeCounter > Configuration.UpdateFrequency) {
-                frameRate = (int) (frameCounter / timeCounter);
+            while(updateTimeCounter > Configuration.UpdateFrequency) {
+                frameRate = (int) (updateFrameCounter / updateTimeCounter);
 
-                frameCounter = 0;
-                //the overflow is kept in memory if timeCounter has exceeded updatesPerSecond
-                timeCounter -= Configuration.UpdateFrequency;
-
-                Debug.Log("FPS: " + frameRate);
+                updateFrameCounter = 0;
+                //the overflow is kept in memory if updateTimeCounter has exceeded updatesPerSecond
+                updateTimeCounter -= Configuration.UpdateFrequency;
 
                 session.createMetric(new Metric("fps", frameRate, lastFrameTime));
             }
@@ -73,6 +74,12 @@ namespace Pear {
                 }
                 else Debug.Log("Request failed (status:" + request.responseCode + ").");
             }
+        }
+
+        private static void WriteSession(Session session) {
+            StreamWriter writer = new StreamWriter(Configuration.SessionLogsPath, true);
+            writer.WriteLine(session);
+            writer.Close();
         }
     }
 }
