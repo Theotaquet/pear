@@ -8,16 +8,16 @@ namespace Pear {
 
         public string type;
         public int val;
-        public uint recordTime;
+        public float recordTime;
 
-        public Metric(string type, int val, uint recordTime) {
+        public Metric(string type, int val, float recordTime) {
             this.type = type;
             this.val = val;
             this.recordTime = recordTime;
         }
 
         public override string ToString() {
-            return recordTime + " - " + type + ": " + val;
+            return String.Format("{0, 8:F2}s: {1} - {2, 3}", recordTime, type, val);
         }
     }
 }

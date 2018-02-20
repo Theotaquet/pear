@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 namespace Pear {
@@ -17,7 +18,7 @@ namespace Pear {
             frameCounter = 0;
             timeCounter = 0.0f;
             lastFrameTime = 0.0f;
-            session = new Session();
+            session = new Session(Application.productName, Application.version, SceneManager.GetActiveScene().name);
         }
         
         void Update() {
@@ -47,7 +48,7 @@ namespace Pear {
 
                 Debug.Log("FPS: " + frameRate);
 
-                session.createMetric(new Metric("fps", frameRate, (uint) (Time.time * 1000)));
+                session.createMetric(new Metric("fps", frameRate, lastFrameTime));
             }
         }
 

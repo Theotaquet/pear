@@ -7,26 +7,30 @@ namespace Pear {
     [Serializable]
     public class Session {
 
-        public string build;
         public string game;
+        public string build;
         public string scene;
         public DateTime startDate;
         public uint duration;
         public List<Metric> metrics;
 
-        public Session() {
-            build = "buildVersion";
-            game = "gameName";
-            scene = "sceneName";
+        public Session(string game, string build, string scene) {
+            this.game = game;
+            this.build = build;
+            this.scene = scene;
             startDate = System.DateTime.Now;
             duration = 0;
             metrics = new List<Metric>();
         }
 
         public override string ToString() {
-            string str = build + " - " + game + " - " + scene + "\n" +
-                         startDate + " - " + duration + "\n" +
-                         "Metrics:\n";
+            string str = String.Format("Session:\n\n" +
+                                       "{0} - version {1}\n" +
+                                       "Niveau: {2}\n" +
+                                       "{3} - {4} ms\n\n" +
+                                       "Metrics:\n",
+                                       game, build, scene,
+                                       startDate, duration);
             foreach(Metric metric in metrics) {
                 str += metric.ToString() + "\n";
             }
