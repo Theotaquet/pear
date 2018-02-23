@@ -1,1 +1,6 @@
+.gitignore
 **/node_modules
+plugin/sessionLogs.txt
+*.meta
+pear.code-workspace
+.vscode
