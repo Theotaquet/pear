@@ -18,7 +18,9 @@
 
 2. Launch your game executable in a terminal.
     * OPTIONAL: The `-pear` parameter activates the plugin.
-    * OPTIONAL: The `-scene` parameter, followed by the scene name, loads the specified scene if PeAR is enabled. The name can be written with or without the `.unity`, and the full path is only required if you have multiple scenes with that name, otherwise the first matching scene in the list will be loaded. If not specified, the default scene will be loaded and analysed.
+    * OPTIONAL: The `-scene` parameter, followed by the scene name, loads the specified scene if PeAR is enabled.
+    The full path is only required if you have multiple scenes with that name, otherwise the first matching scene in the list will be loaded.
+    If not specified, the default scene will be loaded and analysed.
 
 3. Exit the game to end the recording session.
     * The data are sent to the server and stored in the database.

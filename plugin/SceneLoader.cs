@@ -8,10 +8,9 @@ namespace Pear {
     public class SceneLoader : MonoBehaviour {
 
         void Start() {
-            string sceneName = PearLauncher.GetArg("scene");
-            if(sceneName == null) {
+            string sceneName = PearLauncher.GetArg("-scene");
+            if(sceneName == null)
                 AddPearAnalyser();
-            }
             else
                 StartCoroutine(LoadScene(sceneName));
         }
