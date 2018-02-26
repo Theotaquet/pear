@@ -11,8 +11,8 @@ function getAllSessions(next) {
 
         collection.find().toArray(function(err, docs) {
             assert.equal(err, null);
-            console.log(`${docs.length} document(s) returned from ${collection.collectionName}`);
-            console.log(docs);
+            console.log(`${docs.length} document(s) returned from ${collection.collectionName}\n`);
+            console.log(`${docs}\n`);
             next(err, docs);
         });
     });
@@ -25,8 +25,8 @@ function getSession(id, next) {
         collection.find( { "_id": ObjectID(id) } ).toArray(function(err, docs) {
             assert.equal(err, null);
             assert.equal(docs.length, 1);
-            console.log(`1 document returned from ${collection.collectionName}`);
-            console.log(docs);
+            console.log(`1 document returned from ${collection.collectionName}\n`);
+            console.log(`${docs}\n`);
             next(err, docs);
         });
     });
@@ -39,8 +39,8 @@ function createSession(body, next) {
         collection.insert(body, function(err, result) {
             assert.equal(err, null);
             assert.equal(result.result.n, 1);
-            console.log(`1 document inserted into ${collection.collectionName}`);
-            console.log(result.ops);
+            console.log(`1 document inserted into ${collection.collectionName}\n`);
+            console.log(`${result.ops}\n`);
             next(err, result);
         });
     });
