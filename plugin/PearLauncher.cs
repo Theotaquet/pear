@@ -9,16 +9,15 @@ namespace Pear {
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {
-            if(HasArg("-pear")) {
+            if(HasArg("pear")) {
                 GameObject sceneLoader = new GameObject("SceneLoader");
                 sceneLoader.AddComponent<SceneLoader>();
             }
         }
-
         public static string GetArg(string name) {
             string[] args = System.Environment.GetCommandLineArgs();
             for(int i = 0 ; i < args.Length ; i++) {
-                if(args[i] == name && args.Length > i + 1)
+                if(args[i].EndsWith(name) && args.Length > i + 1)
                     return args[i + 1];
             }
             return null;
@@ -26,8 +25,9 @@ namespace Pear {
 
         public static bool HasArg(string name) {
             string[] args = System.Environment.GetCommandLineArgs();
+            name.Replace(".unity", string.Empty);
             for(int i = 0 ; i < args.Length ; i++) {
-                if(args[i] == name)
+                if(args[i].EndsWith(name))
                     return true;
             }
             return false;

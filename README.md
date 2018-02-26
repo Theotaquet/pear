@@ -17,8 +17,8 @@
 1. Launch your NodeJS server and your database server.
 
 2. Launch your game executable in a terminal.
-    * The `-pear` parameter activates the plugin.
-    * The `-scene` parameter, followed by the scene name, load the specified scene. The name has to be written without the `.unity`, but the full path is only required if you have multiple scenes with that name.
+    * OPTIONAL: The `-pear` parameter activates the plugin.
+    * OPTIONAL: The `-scene` parameter, followed by the scene name, loads the specified scene if PeAR is enabled. The name can be written with or without the `.unity`, and the full path is only required if you have multiple scenes with that name, otherwise the first matching scene in the list will be loaded. If not specified, the default scene will be loaded and analysed.
 
 3. Exit the game to end the recording session.
     * The data are sent to the server and stored in the database.
