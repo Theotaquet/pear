@@ -6,11 +6,12 @@
 ### Configure the Unity plugin
 
 * First, you have to add the `pear` folder to the `Assets` folder of your Unity project.
-* In this folder, you can configure your plugin thanks to the `config.ini` file. It allows you to choose which performances you want to record, and how often to do so.
+* In this folder, you can configure your plugin thanks to the `config.json` file. It allows you to choose which performances you want to record, and how often to do so.
 
 ### Configure the NodeJS server
 
 * To be able to launch the server, you need to run `npm install` in the `backend` folder. It will download the require modules.
+* You can configure the server in the `config.json` file. A server reboot will be required in order to apply the changes.
 
 ## How to use it
 

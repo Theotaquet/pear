@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 namespace Pear {
-    
+
     public class PearAnalyser : MonoBehaviour {
 
         private Session session;
@@ -22,7 +20,7 @@ namespace Pear {
             session = new Session(Application.productName, Application.version,
                 SceneManager.GetActiveScene().name);
         }
-        
+
         void Update() {
             if(Configuration.FpsEnabled)
                 CalculateFrameRate();

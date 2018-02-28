@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Pear {
 
@@ -10,6 +7,8 @@ namespace Pear {
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {
+            Configuration.ReadConfigFile();
+
             if(HasArg("-pear")) {
                 GameObject sceneLoader = new GameObject("SceneLoader");
                 sceneLoader.AddComponent<SceneLoader>();

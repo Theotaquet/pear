@@ -1,28 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using UnityEngine;
-using IniParser;
-using IniParser.Model;
 
 namespace Pear {
 
-    public class Configuration : MonoBehaviour {
+    public class Configuration {
 
-        public static readonly string ServerURL;
-        public static readonly string SessionLogsPath;
+        private static readonly string ConfigFilePath = "Assets/pear/config.json";
 
-        public static readonly bool FpsEnabled;
-        public static readonly float UpdateFrequency;
+        public static string ServerURL;
+        public static string SessionLogsPath;
 
-        static Configuration() {
-            FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile("Assets/pear/config.ini");
+        public static bool FpsEnabled;
+        public static float UpdateFrequency;
 
-            ServerURL = data["ServerConfiguration"]["serverURL"];
-            SessionLogsPath = data["ServerConfiguration"]["sessionLogsPath"];
-
-            FpsEnabled = bool.Parse(data["FpsConfiguration"]["fpsEnabled"]);
-            UpdateFrequency = float.Parse(data["FpsConfiguration"]["updateFrequencyInMs"]) / 1000;
+        public static void ReadConfigFile() {
+            string JSONConfig = File.ReadAllText(ConfigFilePath);
+            ConfigurationModel config =
+                JsonUtility.FromJson<ConfigurationModel>(JSONConfig);
+            ServerURL = config.serverConfiguration.serverURL;
+            SessionLogsPath = config.serverConfiguration.sessionLogsPath;
+            FpsEnabled = config.fpsConfiguration.fpsEnabled;
+            UpdateFrequency = config.fpsConfiguration.updateFrequencyInMs / 1000;
         }
+    }
+
+    [Serializable]
+    public class ConfigurationModel {
+
+        public ServerConfigurationModel serverConfiguration;
+        public FpsConfigurationModel fpsConfiguration;
+
+    }
+
+    [Serializable]
+    public class ServerConfigurationModel {
+
+        public string serverURL;
+        public string sessionLogsPath;
+    }
+
+    [Serializable]
+    public class FpsConfigurationModel {
+
+        public bool fpsEnabled;
+        public float updateFrequencyInMs;
     }
 }

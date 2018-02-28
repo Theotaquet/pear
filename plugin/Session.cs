@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Pear {
 
@@ -40,7 +39,7 @@ namespace Pear {
             }
 
             str += "\n--------------------\n";
-            
+
             return str;
         }
 
