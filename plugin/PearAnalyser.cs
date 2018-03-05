@@ -2,10 +2,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using System.Collections;
 
 namespace Pear {
 
     public class PearAnalyser : MonoBehaviour {
+
+        private static readonly string noCode =
+                "Unable to connect to the server. " +
+                "Check the URL or the server status.";
+        private static readonly string code201 =
+                "Code 201: Post request complete!";
+        private static readonly string code401 =
+                "Error 401: Unauthorized. Resubmitted request!";
+        private static readonly string otherCode =
+                "Request failed";
 
         private Session session;
 
@@ -17,8 +28,11 @@ namespace Pear {
             updateFrameCounter = 0;
             updateTimeCounter = 0.0f;
             lastFrameTime = 0.0f;
-            session = new Session(Application.productName, Application.version,
-                SceneManager.GetActiveScene().name);
+            session = new Session(
+                    Application.productName,
+                    Application.version,
+                    SceneManager.GetActiveScene().name
+            );
         }
 
         void Update() {
@@ -27,10 +41,11 @@ namespace Pear {
         }
 
         void OnDisable() {
-            session.duration = (uint) (lastFrameTime * 1000);
+            session.Duration = (uint) (lastFrameTime * 1000);
             string sessionJSONString = JsonUtility.ToJson(session);
-            string response = PostMetrics(sessionJSONString);
-            WriteSession(response + "\n" + session);
+            PostMetrics(sessionJSONString);
+            PearToolbox.AddToLog(session.ToString());
+            PearToolbox.WriteLogInFile();
         }
 
         private void CalculateFrameRate() {
@@ -52,36 +67,68 @@ namespace Pear {
             }
         }
 
-        private string PostMetrics(string JSONString) {
-            UnityWebRequest request =
-                new UnityWebRequest(Configuration.ServerURL, "POST");
+        private void PostMetrics(string JSONString) {
+            UnityWebRequest request = new UnityWebRequest(Configuration.ServerURL, "POST");
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");
 
-            request.SendWebRequest();
+            AsyncOperation async = request.SendWebRequest();
 
-            string response;
+            bool requestDone = false;
+            while(!requestDone) {
+                if(async.isDone) {
+                    string response;
+                    if(request.isNetworkError)
+                        response = request.error + "";
 
-            if(request.isNetworkError)
-                response = request.error + "\n";
-            else if(request.responseCode == 201)
-                response = "Code 201: Post request complete!\n";
-            else if(request.responseCode == 401) {
-                response = "Error 401: Unauthorized: Resubmitted request!\n" +
-                           PostMetrics(JSONString);
+                    switch(request.responseCode) {
+                        case 0:
+                            response = noCode;
+                            break;
+                        case 201:
+                            response = code201;
+                            break;
+                        case 401:
+                            response = code401;
+                            PostMetrics(JSONString);
+                            break;
+                        default:
+                            response = otherCode + " (status:" + request.responseCode + ").";
+                            break;
+                    }
+
+                    PearToolbox.AddToLog(response);
+                    requestDone = true;
+                }
             }
-            else response = "Request failed (status:" +
-                            request.responseCode + ").\n";
-
-            return response;
         }
 
-        private static void WriteSession(string session) {
-            StreamWriter writer =
-                new StreamWriter(Configuration.SessionLogsPath, true);
-            writer.WriteLine(session);
-            writer.Close();
+        public IEnumerator SendRequest(UnityWebRequest request) {
+            AsyncOperation async = request.SendWebRequest();
+            yield return async;
+
+            string response;
+            if(request.isNetworkError)
+                response = request.error + "";
+
+            switch(request.responseCode) {
+                case 0:
+                    response = noCode;
+                    break;
+                case 201:
+                    response = code201;
+                    break;
+                case 401:
+                    response = code401;
+                    StartCoroutine(SendRequest(request));
+                    break;
+                default:
+                    response = otherCode + " (status:" + request.responseCode + ").";
+                    break;
+            }
+
+            PearToolbox.AddToLog(response);
         }
     }
 }
