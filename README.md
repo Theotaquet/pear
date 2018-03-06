@@ -3,10 +3,6 @@
 
 ## What is PeAR?
 
-WIP...
-PeAR runs silently in background and will never crash your application.
-If an error occurs, the plugin will simply be deactivated and the application will continue to run normally.
-
 ### Features
 
 * Logs: PeAR can store simplified information about the session recordings and the errors encountered.
