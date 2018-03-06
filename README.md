@@ -4,7 +4,7 @@
 ## What is PeAR?
 
 WIP...
-PeAR runs silently in background and won't never crash your application.
+PeAR runs silently in background and will never crash your application.
 If an error occurs, the plugin will simply be deactivated and the application will continue to run normally.
 
 ### Features
@@ -34,7 +34,7 @@ If an error occurs, the plugin will simply be deactivated and the application wi
     * OPTIONAL: The `-scene` parameter, followed by the scene name, loads the specified scene if PeAR is enabled.
         The full path is only required if you have multiple scenes with that name, otherwise the first matching scene in the list will be loaded.
         If not specified, the default scene will be loaded and analysed.
-    * OPTIONAL: The `-log` parameter enable the session logging in a .txt file.
+    * OPTIONAL: The `-log` parameter enables the session logging in a .txt file.
 
 3. Exit the game to end the recording session.
     * The data are sent to the server and stored in the database.
