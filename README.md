@@ -3,12 +3,14 @@
 
 ## What is PeAR?
 
+WIP...
+PeAR runs silently in background and won't never crash your application.
+If an error occurs, the plugin will simply be deactivated and the application will continue to run normally.
+
 ### Features
 
-* In background: PeAR runs silently in background and won't never crash your application.
-    If an error occurs, the plugin will simply be deactivated and the application will continue to run normally.
-* Logs: PeAR stores simplified information about the session recordings and the errors encountered.
-    It is saved in a `sessionLogs.txt` file at the project root.
+* Logs: PeAR can store simplified information about the session recordings and the errors encountered.
+    It will be saved in a `sessionLogs.txt` file at the project root. See the second step of the "How to use it" section.
 
 ## Required steps
 
@@ -32,7 +34,7 @@
     * OPTIONAL: The `-scene` parameter, followed by the scene name, loads the specified scene if PeAR is enabled.
         The full path is only required if you have multiple scenes with that name, otherwise the first matching scene in the list will be loaded.
         If not specified, the default scene will be loaded and analysed.
-    * OPTIONAL: The `-noLog` parameter disable the session logging in the .txt file.
+    * OPTIONAL: The `-log` parameter enable the session logging in a .txt file.
 
 3. Exit the game to end the recording session.
     * The data are sent to the server and stored in the database.

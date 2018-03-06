@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Pear {
 
@@ -38,10 +39,11 @@ namespace Pear {
         void Update() {
             if(Configuration.FpsEnabled)
                 CalculateFrameRate();
+            lastFrameTime = Time.time;
         }
 
         void OnDisable() {
-            session.Duration = (uint) (lastFrameTime * 1000);
+            session.duration = (uint) (lastFrameTime * 1000);
             string sessionJSONString = JsonUtility.ToJson(session);
             PostMetrics(sessionJSONString);
             PearToolbox.AddToLog(session.ToString());
@@ -52,7 +54,6 @@ namespace Pear {
             int frameRate;
             updateFrameCounter++;
             updateTimeCounter += Time.time - lastFrameTime;
-            lastFrameTime = Time.time;
 
             //test if the limit of updates per second is respected
             while(updateTimeCounter > Configuration.UpdateFrequency) {
@@ -82,53 +83,21 @@ namespace Pear {
                     if(request.isNetworkError)
                         response = request.error + "";
 
-                    switch(request.responseCode) {
-                        case 0:
-                            response = noCode;
-                            break;
-                        case 201:
-                            response = code201;
-                            break;
-                        case 401:
-                            response = code401;
-                            PostMetrics(JSONString);
-                            break;
-                        default:
-                            response = otherCode + " (status:" + request.responseCode + ").";
-                            break;
-                    }
+                    var responses = new Dictionary<long, string> ();
+                    responses.Add(0, noCode);
+                    responses.Add(201, code201);
+                    responses.Add(401, code401);
+
+                    string value;
+                    if(responses.TryGetValue(request.responseCode, out value))
+                        response = value;
+                    else
+                        response = otherCode + " (status:" + request.responseCode + ").";
 
                     PearToolbox.AddToLog(response);
                     requestDone = true;
                 }
             }
-        }
-
-        public IEnumerator SendRequest(UnityWebRequest request) {
-            AsyncOperation async = request.SendWebRequest();
-            yield return async;
-
-            string response;
-            if(request.isNetworkError)
-                response = request.error + "";
-
-            switch(request.responseCode) {
-                case 0:
-                    response = noCode;
-                    break;
-                case 201:
-                    response = code201;
-                    break;
-                case 401:
-                    response = code401;
-                    StartCoroutine(SendRequest(request));
-                    break;
-                default:
-                    response = otherCode + " (status:" + request.responseCode + ").";
-                    break;
-            }
-
-            PearToolbox.AddToLog(response);
         }
     }
 }

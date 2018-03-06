@@ -13,7 +13,7 @@ namespace Pear {
                 "in the default Unity log files folder.";
         private static readonly string StopMessage =
                 "PeAR hasn't been initialised.";
-        private static bool LoggedSession = true;
+        private static bool LoggedSession = false;
         private static string Log = "";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -26,8 +26,8 @@ namespace Pear {
             try {
                 try {
                     if(HasArg("-pear")) {
-                        if(HasArg("-noLog"))
-                            LoggedSession = false;
+                        if(HasArg("-log"))
+                            LoggedSession = true;
                         AddToLog(StartMessage);
                         Configuration.ReadConfigFile();
                         GameObject sceneLoader = new GameObject("SceneLoader");
