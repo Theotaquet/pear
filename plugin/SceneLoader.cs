@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,21 +7,29 @@ namespace Pear {
     public class SceneLoader : MonoBehaviour {
 
         void Start() {
-            string sceneName = PearLauncher.GetArg("-scene");
-            if(sceneName == null)
-                AddPearAnalyser();
-            else
-                StartCoroutine(LoadScene(sceneName));
+            string sceneName = PearToolbox.GetArg("-scene");
+            StartCoroutine(LoadScene(sceneName));
         }
 
         private IEnumerator LoadScene(string sceneName) {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            while(!asyncLoad.isDone) {
-                yield return null;
+            if(sceneName == null || sceneName == SceneManager.GetActiveScene().name) {
+                AddPearAnalyser();
+                try {
+                    throw new NoSceneException();
+                }
+                catch(NoSceneException e) {
+                    Debug.LogException(e);
+                    PearToolbox.AddToLog(e.Message);
+                }
             }
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            AddPearAnalyser();
-            SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+            else {
+                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                yield return asyncLoad;
+
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+                AddPearAnalyser();
+                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+            }
         }
 
         private void AddPearAnalyser() {

@@ -1,13 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Pear {
-    
+
     public class PearAnalyser : MonoBehaviour {
+
+        private static readonly string noCode =
+                "Unable to connect to the server. " +
+                "Check the URL or the server status.";
+        private static readonly string code201 =
+                "Code 201: Post request complete!";
+        private static readonly string code401 =
+                "Error 401: Unauthorized. Resubmitted request!";
+        private static readonly string otherCode =
+                "Request failed";
 
         private Session session;
 
@@ -19,27 +29,31 @@ namespace Pear {
             updateFrameCounter = 0;
             updateTimeCounter = 0.0f;
             lastFrameTime = 0.0f;
-            session = new Session(Application.productName, Application.version,
-                SceneManager.GetActiveScene().name);
+            session = new Session(
+                    Application.productName,
+                    Application.version,
+                    SceneManager.GetActiveScene().name
+            );
         }
-        
+
         void Update() {
             if(Configuration.FpsEnabled)
                 CalculateFrameRate();
+            lastFrameTime = Time.time;
         }
 
         void OnDisable() {
             session.duration = (uint) (lastFrameTime * 1000);
             string sessionJSONString = JsonUtility.ToJson(session);
-            string response = PostMetrics(sessionJSONString);
-            WriteSession(response + "\n" + session);
+            PostMetrics(sessionJSONString);
+            PearToolbox.AddToLog(session.ToString());
+            PearToolbox.WriteLogInFile();
         }
 
         private void CalculateFrameRate() {
             int frameRate;
             updateFrameCounter++;
             updateTimeCounter += Time.time - lastFrameTime;
-            lastFrameTime = Time.time;
 
             //test if the limit of updates per second is respected
             while(updateTimeCounter > Configuration.UpdateFrequency) {
@@ -54,36 +68,36 @@ namespace Pear {
             }
         }
 
-        private string PostMetrics(string JSONString) {
-            UnityWebRequest request =
-                new UnityWebRequest(Configuration.ServerURL, "POST");
+        private void PostMetrics(string JSONString) {
+            UnityWebRequest request = new UnityWebRequest(Configuration.ServerURL, "POST");
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");
 
-            request.SendWebRequest();
+            AsyncOperation async = request.SendWebRequest();
 
-            string response;
+            bool requestDone = false;
+            while(!requestDone) {
+                if(async.isDone) {
+                    string response;
+                    if(request.isNetworkError)
+                        response = request.error + "";
 
-            if(request.isNetworkError)
-                response = request.error + "\n";
-            else if(request.responseCode == 201)
-                response = "Code 201: Post request complete!\n";
-            else if(request.responseCode == 401) {
-                response = "Error 401: Unauthorized: Resubmitted request!\n" +
-                           PostMetrics(JSONString);
+                    var responses = new Dictionary<long, string> ();
+                    responses.Add(0, noCode);
+                    responses.Add(201, code201);
+                    responses.Add(401, code401);
+
+                    string value;
+                    if(responses.TryGetValue(request.responseCode, out value))
+                        response = value;
+                    else
+                        response = otherCode + " (status:" + request.responseCode + ").";
+
+                    PearToolbox.AddToLog(response);
+                    requestDone = true;
+                }
             }
-            else response = "Request failed (status:" +
-                            request.responseCode + ").\n";
-
-            return response;
-        }
-
-        private static void WriteSession(string session) {
-            StreamWriter writer =
-                new StreamWriter(Configuration.SessionLogsPath, true);
-            writer.WriteLine(session);
-            writer.Close();
         }
     }
 }

@@ -1,0 +1,9 @@
+{
+    "serverConfiguration": {
+        "serverURL": "localhost:3000/sessions"
+    },
+    "fpsConfiguration": {
+        "fpsEnabled": true,
+        "updateFrequencyInMs": 250
+    }
+}

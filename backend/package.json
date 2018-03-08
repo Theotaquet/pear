@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "RESTful api for pear backend",
+  "description": "RESTful API for PeAR",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
   "keywords": [
     "RESTful",
     "API",
-    "PEAR"
+    "PeAR"
   ],
   "author": "Théo Constant",
   "license": "ISC",
