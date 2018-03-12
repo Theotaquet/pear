@@ -1,6 +1,4 @@
 const http = require('http');
-const fs = require('fs');
-const pug = require('pug');
 
 const reportFilePath = 'index.html';
 const serverURL = 'http://localhost:3000/';
@@ -80,7 +78,7 @@ function isFpsLimitSuccessful(session) {
     if(fpsEnabled) {
         var fpsLimitSuccessful = false;
         average /= session.metrics.length;
-        if(average < fpsAverageTreshold)
+        if(average > fpsAverageTreshold)
             fpsLimitSuccessful = true;
         return fpsLimitSuccessful;
     }
