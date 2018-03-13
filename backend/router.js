@@ -17,7 +17,7 @@ router
     res.set('Content-Type', 'application/json');
     res.statusCode = 200;
 
-    dao.getAllSessions(function(err, docs) {
+    dao.getAllSessions(req, function(err, docs) {
         res.json(docs);
     });
 })
@@ -26,8 +26,8 @@ router
     res.set('Content-Type', 'application/json');
     res.statusCode = 200;
 
-    dao.getSession(req.params.session_id, function(err, docs) {
-        res.json(docs);
+    dao.getSession(req, function(err, doc) {
+        res.json(doc);
     });
 })
 

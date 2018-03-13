@@ -1,0 +1,19 @@
+{
+  "name": "reporter",
+  "version": "1.0.0",
+  "description": "Analyser and reporter for PeAR",
+  "main": "app.js",
+  "keywords": [
+    "client",
+    "PeAR"
+  ],
+  "dependencies": {
+    "nodemon": "^1.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Théo Constant",
+  "license": "ISC"
+}
