@@ -1,0 +1,77 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title PeAR report
+    body
+        h1 PeAR REPORT - #{' '}
+            span #{status}
+        h2 #{session.game} #{session.build} - #{session.startDate}
+        ul
+            li scene: #{session.scene}
+            li duration: #{session.duration}
+        hr
+
+        h3 Metrics
+        h4 Frames
+        div(id='chartContainer' style='height: 300px; width: 100%')
+        ul
+            each processing in processings
+                li #{processing.name}: #{processing.status}
+        hr
+
+        h3 JSON result
+        pre
+            code #{JSON.stringify(session,null, 4)}
+
+        script(src='https://canvasjs.com/assets/script/canvasjs.min.js')
+        script(type='text/javascript').
+            window.onload = function() {
+                var dataPoints = [];
+                var session = !{JSON.stringify(session)};
+                var fpsAverageThreshold = #{fpsAverageThreshold};
+                session.metrics.forEach(function(metric) {
+                    if(metric.val > fpsAverageThreshold) {
+                        var lineColor = "#ffdc32";
+                        var color = "#ccff00";
+                    }
+                    else {
+                        var lineColor = "#ffdc32";
+                        var color = "#ff3f00";
+                    }
+                    point = {
+                        x: metric.recordTime,
+                        y: metric.val,
+                        lineColor: lineColor,
+                        color: color
+                    };
+                    dataPoints.push(point);
+                });
+                var content = {
+                    theme: "dark2",
+                    title: {
+                        text: "FPS Chart"
+                    },
+                    data: [
+                        {
+                            type: "line",
+                            dataPoints: dataPoints
+                        }
+                    ],
+                    axisY: {
+                        title: "FPS",
+                        minimum: 60,
+                        stripLines: [
+                            {
+                                value: #{fpsAverageThreshold},
+                                label: "Threshold"
+                            }
+                        ],
+                    },
+                    axisX: {
+                        title: "Seconds"
+                    }
+                };
+                var chart = new CanvasJS.Chart("chartContainer", content);
+                chart.render();
+            }

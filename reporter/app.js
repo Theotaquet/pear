@@ -1,14 +1,18 @@
 const http = require('http');
+const fs = require('fs');
+const pug = require('pug');
+const EventEmitter = require('events').EventEmitter;
 
 const reportFilePath = 'index.html';
 const serverURL = 'http://localhost:3000/';
-const fpsAverageThreshold = 60;
+const fpsAverageThreshold = 150;
 
 getLastSession();
 
 
 
 function getLastSession() {
+    var eventEmitter = new EventEmitter();
     var sessionURL;
     var game = getArg('-game');
     if(game == null)
@@ -17,14 +21,22 @@ function getLastSession() {
         sessionURL = serverURL + `sessions/last?game=${game}`;
     http.get(sessionURL, function(res) {
         res.setEncoding('utf8');
-        var session = '';
+        var session;
         res.on('data', function(data) {
-            session += data;
+            if(data != "null")
+                session = data;
         });
         res.on('end', function() {
+            if(session == undefined)
+                eventEmitter.emit('error', new Error(
+                        'The request returned null. Check the game name argument.'));
             session = JSON.parse(session);
             analyseSession(session);
         });
+    });
+
+    eventEmitter.on('error', function(e) {
+        console.error(e.message);
     });
 }
 
@@ -52,17 +64,20 @@ function analyseSession(session) {
     });
 
     if(sessionSuccessful)
-        console.log(`The last recorded session for ${session.game} was successful.`);
+        console.log(`The session was successful.`);
     else
-        console.log(`The last recorded session for ${session.game} doesn't meet the specified requirements.`);
+        console.log(`The session doesn't meet the specified requirements.`);
 
     var result = {
         session: session,
         status: sessionSuccessful,
-        processings: processings
+        processings: processings,
+        fpsAverageThreshold: fpsAverageThreshold
     };
 
     console.log(JSON.stringify(result, null, 4));
+
+    fs.writeFileSync(reportFilePath, buildHTML(result));
 }
 
 function isFpsLimitSuccessful(session) {
@@ -87,6 +102,11 @@ function isFpsLimitSuccessful(session) {
 
 function otherProcessing(session) {
     return true;
+}
+
+function buildHTML(result) {
+    const compiledFunction = pug.compileFile('template.pug');
+    return compiledFunction(result);
 }
 
 function getArg(arg) {
