@@ -2,7 +2,7 @@ const http = require('http');
 
 const reportFilePath = 'index.html';
 const serverURL = 'http://localhost:3000/';
-const fpsAverageTreshold = 60;
+const fpsAverageThreshold = 60;
 
 getLastSession();
 
@@ -78,7 +78,7 @@ function isFpsLimitSuccessful(session) {
     if(fpsEnabled) {
         var fpsLimitSuccessful = false;
         average /= session.metrics.length;
-        if(average > fpsAverageTreshold)
+        if(average > fpsAverageThreshold)
             fpsLimitSuccessful = true;
         return fpsLimitSuccessful;
     }
