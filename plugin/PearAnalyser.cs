@@ -14,8 +14,6 @@ namespace Pear {
                 "Check the URL or the server status.";
         private static readonly string code201 =
                 "Code 201: Post request complete!";
-        private static readonly string code401 =
-                "Error 401: Unauthorized. Resubmitted request!";
         private static readonly string otherCode =
                 "Request failed";
 
@@ -86,7 +84,6 @@ namespace Pear {
                     var responses = new Dictionary<long, string> ();
                     responses.Add(0, noCode);
                     responses.Add(201, code201);
-                    responses.Add(401, code401);
 
                     string value;
                     if(responses.TryGetValue(request.responseCode, out value))
