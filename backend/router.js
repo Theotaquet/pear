@@ -1,42 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const bodyParser = require('body-parser');
+const connect = require('./db_connection').connect;
 const dao = require('./dao');
 
 router
-.use(bodyParser.json())
 
-.get('/', function(req, res) {
-    res.set('Content-Type', 'text/plain');
-    res.statusCode = 200;
+.get('/:session_id?', function(req, res, next)  {
+    res.set('Content-Type', 'application/json');
 
-    res.end('Hello World!');
+    if(req.params.session_id)
+        dao.getSession(req, function(err, doc) {
+            res.status(200).json(doc);
+        });
+    else
+        dao.getAllSessions(req, function(err, docs) {
+            res.status(200).json(docs);
+        });
 })
 
-.get('/sessions', function(req, res) {
+.post('/', function(req, res, next) {
     res.set('Content-Type', 'application/json');
-    res.statusCode = 200;
-
-    dao.getAllSessions(req, function(err, docs) {
-        res.json(docs);
-    });
-})
-
-.get('/sessions/:session_id', function(req, res) {
-    res.set('Content-Type', 'application/json');
-    res.statusCode = 200;
-
-    dao.getSession(req, function(err, doc) {
-        res.json(doc);
-    });
-})
-
-.post('/sessions', function(req, res) {
-    res.set('Content-Type', 'application/json');
-    res.statusCode = 201;
 
     dao.createSession(req.body, function(err, result) {
-        res.json(result.ops);
+        res.status(201).json(result.ops);
     });
 });
 
