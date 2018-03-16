@@ -1,51 +1,70 @@
-const db_connection = require('./db_connection');
-const assert = require('assert');
-const ObjectID = require('mongodb').ObjectID;
+const dbConnection = require('./db-connection');
+const Session = require('../models/session');
+const NotFound = require('../errors').NotFound;
+const BadGateway = require('../errors').BadGateway;
 
 function getAllSessions(req, next) {
-    db_connection.connect(function(db) {
-        const collection = db.collection('sessions');
-
-        collection.find(req.query).toArray(function(err, docs) {
-            assert.equal(err, null);
-            console.log(`${docs.length} document(s) returned from ${collection.collectionName}\n`);
-            console.log(`${docs}\n`);
-            next(err, docs);
-        });
+    dbConnection.connect(function(err, db) {
+        if(err) {
+            return next(new BadGateway('The connection to MongoDB server has failed'));
+        }
+        else {
+            Session.find(req.query, function(err, sessions) {
+                db.close();
+                if(!err) {
+                    console.log(`${sessions.length} document(s) returned` +
+                            ` from ${Session.collection.name} in ${Session.db.name}\n`);
+                    console.log(`${sessions}\n`);
+                }
+                return next(err, sessions);
+            });
+        }
     });
 }
 
 function getSession(req, next) {
-
-    db_connection.connect(function(db) {
-        const collection = db.collection('sessions');
-        var id = req.params.session_id;
-        var processResult = function(err, doc) {
-            assert.equal(err, null);
-            console.log(`1 document returned from ${collection.collectionName}\n`);
-            console.log(`${doc}\n`);
-            next(err, doc);
+    dbConnection.connect(function(err, db) {
+        if(err) {
+            return next(new BadGateway('The connection to MongoDB server has failed'));
         }
+        else {
+            var id = req.params.sessionID;
+            if(id == 'last')
+                Session.findOne(req.query).sort('-_id').exec(processResult);
+            else
+                Session.findById(id, processResult);
 
-        if(id == 'last')
-            collection.find(req.query).sort( { _id: -1 } ).limit(1).next(processResult);
-        else
-            collection.findOne( { '_id': ObjectID(id) } , null, processResult);
-
-    });
+            function processResult(err, session) {
+                db.close();
+                if(!session)
+                    err = new NotFound(`The session with id ${id} could not be found`, session);
+                if(!err) {
+                    console.log(`1 document returned from ${session.collection.name}` +
+                            ` in ${session.db.name}\n`);
+                    console.log(`${session}\n`);
+                }
+                return next(err, session);
+            }
+        }
+    })
 }
 
-function createSession(body, next) {
-    db_connection.connect(function(db) {
-        const collection = db.collection('sessions');
-
-        collection.insert(body, function(err, result) {
-            assert.equal(err, null);
-            assert.equal(result.result.n, 1);
-            console.log(`1 document inserted into ${collection.collectionName}\n`);
-            console.log(`${result.ops}\n`);
-            next(err, result);
-        });
+function createSession(session, next) {
+    dbConnection.connect(function(err, db) {
+        if(err) {
+            return next(new BadGateway('The connection to MongoDB server has failed'));
+        }
+        else {
+            session.save(function(err, session) {
+                db.close();
+                if(!err) {
+                    console.log(`1 document inserted into ${session.collection.name}` +
+                            ` in ${session.db.name}\n`);
+                    console.log(`${session}\n`);
+                }
+                return next(err, session);
+            });
+        }
     });
 }
 
