@@ -1,21 +1,34 @@
+const mongoose = require('mongoose');
+const _ = require('underscore');
 const sessionDAO = require('../dao/session-dao');
 const Session = require('../models/session');
-const mongoose = require('mongoose');
 
 function get(req, res, next)  {
-    if(req.params.sessionID)
-        sessionDAO.getSession(req, function(err, session) {
-            if(err)
-                return next(err);
-            res.status(200).json(session);
-        });
+    if(!req.params.sessionID) {
+        sessionDAO.getAllSessions(req, processResult);
+    }
+    else {
+        sessionDAO.getSession(req, processResult);
+    }
 
-    else
-        sessionDAO.getAllSessions(req, function(err, sessions) {
-            if(err)
-                return next(err);
-            res.status(200).json(sessions);
-        });
+    function processResult(err, result) {
+        if(err) {
+            return next(err);
+        }
+        if(result && !_.isArray(result)) {
+            result.applyProcessings();
+            if(result._doc.status) {
+                console.log('The session was successful.\n\n');
+            }
+            else {
+                console.log('The session doesn\'t meet the specified requirements.\n\n');
+            }
+            res.status(200).json(result._doc);
+        }
+        else {
+            res.status(200).json(result);
+        }
+    }
 }
 
 function post(req, res, next)  {
@@ -24,8 +37,9 @@ function post(req, res, next)  {
         game: req.body.game,
         build: req.body.build,
         scene: req.body.scene,
-        startDate: req.body.startDate,
+        startDate: new Date(req.body.startDate),
         duration: req.body.duration,
+        fpsEnabled: req.body.fpsEnabled,
         metrics: req.body.metrics
     } );
 

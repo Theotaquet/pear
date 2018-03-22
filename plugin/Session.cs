@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Pear {
 
@@ -11,14 +12,16 @@ namespace Pear {
         public string scene;
         public string startDate;
         public uint duration;
+        public bool fpsEnabled;
         public List<Metric> metrics;
 
         public Session(string game, string build, string scene) {
             this.game = game;
             this.build = build;
             this.scene = scene;
-            startDate = System.DateTime.Now.ToString();
+            startDate = System.DateTime.Now.ToString("yyyy-MM-ddTHH:MM:ssZ");
             duration = 0;
+            fpsEnabled = Configuration.FpsEnabled;
             metrics = new List<Metric>();
         }
 
@@ -29,10 +32,10 @@ namespace Pear {
                     "{3} - {4} ms\n\n" +
                     "Metrics\n" +
                     "-------\n\n",
-                    game, build, scene, startDate, duration
+                    game, build, scene, DateTime.Parse(startDate), duration
             );
 
-            if(Configuration.FpsEnabled) {
+            if(fpsEnabled) {
                 str += "FPS:\n";
                 foreach(Metric metric in metrics) {
                     if(metric.type == "fps")
