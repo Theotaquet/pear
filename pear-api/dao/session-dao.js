@@ -11,10 +11,13 @@ function getAllSessions(req, next) {
         else {
             Session.find(req.query, function(err, sessions) {
                 db.close();
-                if(!err) {
+                if(sessions.length == 0) {
+                    console.log('No document returned from the database.');
+                }
+                else if(!err) {
                     console.log(`${sessions.length} document(s) returned` +
-                            ` from ${Session.collection.name} in ${Session.db.name}\n`);
-                    console.log(`${sessions}\n`);
+                            ` from ${Session.collection.name} in ${Session.db.name}:`);
+                    console.log(`${sessions}`);
                 }
                 return next(err, sessions);
             });
@@ -36,12 +39,13 @@ function getSession(req, next) {
 
             function processResult(err, session) {
                 db.close();
-                if(!session)
-                    err = new NotFound(`The session with id ${id} could not be found`, session);
-                if(!err) {
+                if(!session) {
+                    console.log('No document returned from the database.');
+                }
+                else if(!err) {
                     console.log(`1 document returned from ${session.collection.name}` +
-                            ` in ${session.db.name}\n`);
-                    console.log(`${session}\n`);
+                            ` in ${session.db.name}:`);
+                    console.log(`${session}`);
                 }
                 return next(err, session);
             }
@@ -59,8 +63,8 @@ function createSession(session, next) {
                 db.close();
                 if(!err) {
                     console.log(`1 document inserted into ${session.collection.name}` +
-                            ` in ${session.db.name}\n`);
-                    console.log(`${session}\n`);
+                            ` in ${session.db.name}:`);
+                    console.log(`${session}`);
                 }
                 return next(err, session);
             });
