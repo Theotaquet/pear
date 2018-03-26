@@ -17,7 +17,7 @@ function getAllSessions(req, next) {
                 else if(!err) {
                     console.log(`${sessions.length} document(s) returned` +
                             ` from ${Session.collection.name} in ${Session.db.name}:`);
-                    console.log(`${sessions}`);
+                    console.log(`${sessions}\n`);
                 }
                 return next(err, sessions);
             });
@@ -45,7 +45,7 @@ function getSession(req, next) {
                 else if(!err) {
                     console.log(`1 document returned from ${session.collection.name}` +
                             ` in ${session.db.name}:`);
-                    console.log(`${session}`);
+                    console.log(`${session}\n`);
                 }
                 return next(err, session);
             }
@@ -64,7 +64,7 @@ function createSession(session, next) {
                 if(!err) {
                     console.log(`1 document inserted into ${session.collection.name}` +
                             ` in ${session.db.name}:`);
-                    console.log(`${session}`);
+                    console.log(`${session}\n`);
                 }
                 return next(err, session);
             });
