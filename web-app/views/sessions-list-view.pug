@@ -3,7 +3,7 @@ html(lang='en')
     head
         meta(charset='UTF-8')
         link(rel='stylesheet' href='/style.css')
-        link(rel='icon' type='image/x-icon' href='/favicon.ico')
+        link(rel='icon' type='image/x-icon' href='/images/favicon.ico')
         title PeAR - sessions
 
     body
@@ -11,21 +11,22 @@ html(lang='en')
 
         #report.centered
             h1 Sessions
-            table
-                tr
-                    th ID
-                    th Game - Build - Level
-                    th Date
-                    th Status
-                each session in sessions
+            .responsiveTable
+                table
                     tr
-                        td: a(href='/sessions/' + session._id) #{session._id}
-                        td #{session.game} - #{session.build} - #{session.scene}
-                        td #{session.startDate}
-                        td(style='text-align: center')
-                            if session.status
-                                span#validated.status validated
-                            else
-                                span#failed.status failed
+                        th ID
+                        th Game - Build - Level
+                        th Date
+                        th Status
+                    each session in sessions
+                        tr
+                            td: a(href='/sessions/' + session._id) #{session._id}
+                            td #{session.game} - #{session.build} - #{session.scene}
+                            td #{session.startDate}
+                            td(style='padding:0 10px 0 10px')
+                                if session.status
+                                    span#validated.status validated
+                                else
+                                    span#failed.status failed
 
         include footer

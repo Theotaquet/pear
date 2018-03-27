@@ -1,8 +1,23 @@
 /* Document */
 
+@font-face {
+    font-family: 'robotoregular';
+    src: url('fonts/Roboto-Regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'robotothin';
+    src: url('fonts/Roboto-Thin-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-    background: url('wild-oliva.png') fixed, rgb(70, 70, 70);
+    color: rgb(63, 63, 63);
+    font-family: 'robotoregular', 'Trebuchet MS', Arial, sans-serif;
+    background: url('images/wild-oliva.png') fixed, rgb(70, 70, 70);
     margin: 0;
 }
 
@@ -40,18 +55,19 @@ header #logo {
 
 header h1 {
     color: rgb(196, 219, 61);
+    font-family: 'robotothin', 'Trebuchet MS', Arial, sans-serif;
     font-size: 2.5em;
     font-weight: normal;
     margin: 0 0 0 10px;
 }
 
 header h1 strong {
-    color: black;
+    color: rgb(63, 63, 63);
     font-weight: bold;
 }
 
-header button {
-    color: rgb(100, 117, 1);
+header a {
+    color: rgb(98, 116, 1);
     font-size: 0.8em;
     font-weight: bold;
     padding: 10px 10px 10px 10px;
@@ -60,11 +76,18 @@ header button {
     border-radius: 5px;
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
     margin-top: 10px;
+    display: flex;
+    align-items: center;
     transition-duration: 0.4s;
 }
 
-header button:hover {
+header a:link, header a:hover {
     background: white;
+    text-decoration: none;
+}
+
+header a span {
+    margin-left: 3px;
 }
 
 
@@ -74,7 +97,7 @@ header button:hover {
 
 #report {
     padding: 90px 20px 20px 20px;
-    background: url('dust-scratches.png') rgb(240, 240, 240);
+    background: url('images/dust-scratches.png') rgb(240, 240, 240);
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
     position: relative;
     z-index: 0;
@@ -82,7 +105,7 @@ header button:hover {
 
 #report section {
     padding: 10px 20px 10px 20px;
-    background: url('mooning.png');
+    background: url('images/mooning.png');
     border-radius: 5px;
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
     margin: 20px 0 20px 0;
@@ -118,7 +141,7 @@ header button:hover {
 #report #session-infos {
     color: lightgrey;
     width: 60%;
-    background: url('wild-oliva.png');
+    background: url('images/wild-oliva.png');
 }
 
 #session-infos ul {
@@ -139,7 +162,13 @@ header button:hover {
 
 
 
+
+
 /* Sessions list */
+
+.responsiveTable {
+    overflow-x: auto;
+}
 
 table {
     border-collapse: collapse;
@@ -148,7 +177,7 @@ table {
 }
 
 th, td {
-    padding: 5px 5px 5px 5px;
+    padding: 10px 5px 10px 5px;
     border: 1px solid lightgrey;
 }
 
@@ -163,9 +192,25 @@ tr:hover {
 }
 
 table .status {
-
-    margin-left: 0;
+    text-align: center;
+    display: block;
+    margin: auto;
 }
+
+td a {
+    color: rgb(149, 175, 0);
+    text-decoration: none;
+}
+
+td a:visited {
+    color: rgb(149, 175, 0);
+}
+
+td a:hover {
+    color: rgb(98, 116, 1);
+}
+
+
 
 
 
