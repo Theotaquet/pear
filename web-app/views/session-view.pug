@@ -5,7 +5,7 @@ html(lang='en')
         title PeAR report
     body
         h1 PeAR REPORT - #{' '}
-            span #{status}
+            span #{session.status}
         h2 #{session.game} #{session.build} - #{session.startDate}
         ul
             li scene: #{session.scene}
@@ -15,9 +15,15 @@ html(lang='en')
         h3 Metrics
         h4 Frames
         div(id='chartContainer' style='height: 300px; width: 100%')
+        |
         ul
-            each processing in processings
-                li #{processing.name}: #{processing.status}
+            each processing in session.processings
+                -
+                    var processingDetails = processing.name +
+                        (processing.status == undefined ? '' : ': ' + processing.status) +
+                        (processing.value == undefined ? '' : ' = ' + processing.value);
+                li= processingDetails
+
         hr
 
         h3 JSON result
@@ -29,9 +35,8 @@ html(lang='en')
             window.onload = function() {
                 var dataPoints = [];
                 var session = !{JSON.stringify(session)};
-                var fpsAverageThreshold = #{fpsAverageThreshold};
                 session.metrics.forEach(function(metric) {
-                    if(metric.val > fpsAverageThreshold) {
+                    if(metric.val > session.thresholds.fpsAverageThreshold) {
                         var lineColor = "#ffdc32";
                         var color = "#ccff00";
                     }
@@ -63,7 +68,7 @@ html(lang='en')
                         minimum: 60,
                         stripLines: [
                             {
-                                value: #{fpsAverageThreshold},
+                                value: session.thresholds.fpsAverageThreshold,
                                 label: "Threshold"
                             }
                         ],
