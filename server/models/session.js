@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-
-const fpsAverageThreshold = 110;
+const configFile = require('../config.json');
 
 const metricSchema = mongoose.Schema({
     type: String,
@@ -27,9 +26,7 @@ sessionSchema.method({
 function applyProcessings() {
     this._doc.status = true;
     this._doc.processings = {};
-    this._doc.thresholds = {
-        fpsAverage: fpsAverageThreshold
-    };
+    this._doc.thresholds = configFile.thresholds;
 
     if(this.fpsEnabled) {
         this.hasSuccessfulFpsAverage();

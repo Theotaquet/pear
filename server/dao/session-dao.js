@@ -1,13 +1,14 @@
 const http = require('http');
+const NotFound = require('../errors').NotFound;
 
-const pearAPI = 'http://localhost:3000';
+const apiUrl = 'http://localhost:3000/api/sessions';
 
 function getAllSessions(req, next) {
-    sendGetRequest(`${pearAPI}/sessions`, req.query, next);
+    sendGetRequest(apiUrl, req.query, next);
 }
 
 function getSession(req, next) {
-    sendGetRequest(`${pearAPI}/sessions/${req.params.sessionID}`, req.query, next);
+    sendGetRequest(`${apiUrl}/${req.params.sessionID}`, req.query, next);
 }
 
 function sendGetRequest(sessionURL, query, next) {
@@ -23,7 +24,8 @@ function sendGetRequest(sessionURL, query, next) {
         res.on('end', function() {
             var parsedData = JSON.parse(rawData);
             if(!parsedData) {
-                return next(new Error('The request returned null. Check the game name argument.'));
+                console.log('**WEB-APP log**');
+                return next(new NotFound());
             }
             if(res.statusCode != 200) {
                 return next(parsedData)

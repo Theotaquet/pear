@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const _ = require('underscore');
-const sessionDAO = require('../dao/session-dao');
+const apiSessionDAO = require('../dao/api-session-dao');
 const Session = require('../models/session');
 
-function get(req, res, next)  {
+function get(req, res, next) {
     if(!req.params.sessionID) {
-        sessionDAO.getAllSessions(req, function (err, sessions) {
+        apiSessionDAO.getAllSessions(req, function (err, sessions) {
             if(err) {
                 return next(err);
             }
@@ -18,16 +17,16 @@ function get(req, res, next)  {
         });
     }
     else {
-        sessionDAO.getSession(req, function(err, session) {
+        apiSessionDAO.getSession(req, function(err, session) {
             if(err) {
                 return next(err);
             }
             session.applyProcessings();
             if(session._doc.status) {
-                console.log('The session was successful.\n\n');
+                console.log('**API log**\nThe session was successful.\n\n');
             }
             else {
-                console.log('The session doesn\'t meet the specified requirements.\n\n');
+                console.log('**API log**\nThe session doesn\'t meet the specified requirements.\n\n');
             }
             res.status(200).json(session._doc);
         });
@@ -46,7 +45,7 @@ function post(req, res, next)  {
         metrics: req.body.metrics
     } );
 
-    sessionDAO.createSession(session, function(err, session) {
+    apiSessionDAO.createSession(session, function(err, session) {
         if(err)
             return next(err);
         res.status(201).json(session);
