@@ -11,7 +11,7 @@ function connect(next) {
         return next(err, db);
     });
     db.once('open', function() {
-        console.log('Connected successfully to MongoDB server');
+        console.log('Connected successfully to MongoDB server.');
         return next(null, db);
     });
 }

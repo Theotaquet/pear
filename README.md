@@ -1,5 +1,5 @@
 # PeAR
-**Pe**rformance **A**nalyzer **R**eporter
+**Pe**rformance **A**nalyser and **R**eporter
 
 ## What is PeAR?
 

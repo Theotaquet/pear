@@ -10,12 +10,6 @@ app
 
 .use(bodyParser.json())
 
-.get('/', function(req, res, next) {
-    res.set('Content-Type', 'text/plain');
-
-    res.status(200).end('Hello World!');
-})
-
 .use('/sessions', sessionRouter)
 
 .use('*', function(req, res, next) {
@@ -24,6 +18,7 @@ app
 
 .use(function(err, req, res, next) {
     console.error(err);
+    console.error(err.stack);
     res.status(err.status || 500).json(err);
 })
 

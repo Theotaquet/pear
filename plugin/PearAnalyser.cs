@@ -37,7 +37,7 @@ namespace Pear {
         }
 
         void Update() {
-            if(Configuration.FpsEnabled)
+            if(session.fpsEnabled)
                 CalculateFrameRate();
             lastFrameTime = Time.time;
         }
