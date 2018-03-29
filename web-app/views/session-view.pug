@@ -2,81 +2,72 @@ doctype html
 html(lang='en')
     head
         meta(charset='UTF-8')
-        title PeAR report
+        link(rel='stylesheet' href='/style.css')
+        link(rel='icon' type='image/x-icon' href='/images/favicon.ico')
+        title PeAR - report
+
     body
-        h1 PeAR REPORT - #{' '}
-            span #{session.status}
-        h2 #{session.game} #{session.build} - #{session.startDate}
-        ul
-            li scene: #{session.scene}
-            li duration: #{session.duration}
-        hr
+        include header
 
-        h3 Metrics
-        h4 Frames
-        div(id='chartContainer' style='height: 300px; width: 100%')
-        |
-        ul
-            each processing in session.processings
-                -
-                    var processingDetails = processing.name +
-                        (processing.status == undefined ? '' : ': ' + processing.status) +
-                        (processing.value == undefined ? '' : ' = ' + processing.value);
-                li= processingDetails
+        #report.centered
+            section#session-infos
+                h2 Session Report
+                    if session.status
+                        span#validated.status validated
+                    else
+                        span#failed.status failed
+                ul
+                    li game:
+                        |
+                        |
+                        span.infos #{session.game}
+                    li build:
+                        |
+                        |
+                        span.infos #{session.build}
+                    li start date:
+                        |
+                        |
+                        span.infos #{session.startDate}
+                    li scene:
+                        |
+                        |
+                        span.infos #{session.scene}
+                    li duration:
+                        |
+                        |
+                        span.infos #{session.duration} ms
 
-        hr
+            section#metrics
+                h2 Metrics
+                h3 Frames
+                    if session.status
+                        #validated.status validated
+                    else
+                        #failed.status failed
+                #fpsChartContainer.chartContainer
+                .processings
+                    ul
+                        each processing in session.processings
+                            -
+                                var processingDetails = processing.name +
+                                    (processing.value == undefined ? '' : ': ' + processing.value);
 
-        h3 JSON result
-        pre
-            code #{JSON.stringify(session,null, 4)}
+                            li #{processingDetails}
+                            if processing.status != undefined
+                                if processing.status
+                                    #validated.status validated
+                                else
+                                    #failed.status failed
+
+
+
+            section#json
+                h2 JSON result
+                pre
+                    code #{JSON.stringify(session,null, 4)}
+
+        include footer
 
         script(src='https://canvasjs.com/assets/script/canvasjs.min.js')
-        script(type='text/javascript').
-            window.onload = function() {
-                var dataPoints = [];
-                var session = !{JSON.stringify(session)};
-                session.metrics.forEach(function(metric) {
-                    if(metric.val > session.thresholds.fpsAverageThreshold) {
-                        var lineColor = "#ffdc32";
-                        var color = "#ccff00";
-                    }
-                    else {
-                        var lineColor = "#ffdc32";
-                        var color = "#ff3f00";
-                    }
-                    point = {
-                        x: metric.recordTime,
-                        y: metric.val,
-                        lineColor: lineColor,
-                        color: color
-                    };
-                    dataPoints.push(point);
-                });
-                var content = {
-                    theme: "dark2",
-                    title: {
-                        text: "FPS Chart"
-                    },
-                    data: [
-                        {
-                            type: "line",
-                            dataPoints: dataPoints
-                        }
-                    ],
-                    axisY: {
-                        title: "FPS",
-                        minimum: 60,
-                        stripLines: [
-                            {
-                                value: session.thresholds.fpsAverageThreshold,
-                                label: "Threshold"
-                            }
-                        ],
-                    },
-                    axisX: {
-                        title: "Seconds"
-                    }
-                };
-                var chart = new CanvasJS.Chart("chartContainer", content);
-                chart.render();
-            }
+        include load-chart.pug

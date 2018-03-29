@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const fpsAverageThreshold = 150;
+const fpsAverageThreshold = 110;
 
 const metricSchema = mongoose.Schema({
     type: String,

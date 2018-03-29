@@ -5,29 +5,32 @@ const Session = require('../models/session');
 
 function get(req, res, next)  {
     if(!req.params.sessionID) {
-        sessionDAO.getAllSessions(req, processResult);
+        sessionDAO.getAllSessions(req, function (err, sessions) {
+            if(err) {
+                return next(err);
+            }
+            var processedSessions = [];
+            sessions.forEach(function(session) {
+                session.applyProcessings();
+                processedSessions.push(session._doc);
+            });
+            res.status(200).json(processedSessions);
+        });
     }
     else {
-        sessionDAO.getSession(req, processResult);
-    }
-
-    function processResult(err, result) {
-        if(err) {
-            return next(err);
-        }
-        if(result && !_.isArray(result)) {
-            result.applyProcessings();
-            if(result._doc.status) {
+        sessionDAO.getSession(req, function(err, session) {
+            if(err) {
+                return next(err);
+            }
+            session.applyProcessings();
+            if(session._doc.status) {
                 console.log('The session was successful.\n\n');
             }
             else {
                 console.log('The session doesn\'t meet the specified requirements.\n\n');
             }
-            res.status(200).json(result._doc);
-        }
-        else {
-            res.status(200).json(result);
-        }
+            res.status(200).json(session._doc);
+        });
     }
 }
 

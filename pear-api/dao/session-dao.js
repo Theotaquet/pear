@@ -9,7 +9,9 @@ function getAllSessions(req, next) {
             return next(new BadGateway('The connection to MongoDB server has failed'));
         }
         else {
-            Session.find(req.query, function(err, sessions) {
+            Session.find(req.query).sort('-startDate').exec(processResult);
+
+            function processResult(err, sessions) {
                 db.close();
                 if(sessions.length == 0) {
                     console.log('No document returned from the database.');
@@ -17,10 +19,10 @@ function getAllSessions(req, next) {
                 else if(!err) {
                     console.log(`${sessions.length} document(s) returned` +
                             ` from ${Session.collection.name} in ${Session.db.name}:`);
-                    console.log(`${sessions}`);
+                    console.log(`${sessions}\n`);
                 }
                 return next(err, sessions);
-            });
+            }
         }
     });
 }
@@ -33,7 +35,7 @@ function getSession(req, next) {
         else {
             var id = req.params.sessionID;
             if(id == 'last')
-                Session.findOne(req.query).sort('-_id').exec(processResult);
+                Session.findOne(req.query).sort('-startDate').exec(processResult);
             else
                 Session.findById(id, processResult);
 
@@ -45,7 +47,7 @@ function getSession(req, next) {
                 else if(!err) {
                     console.log(`1 document returned from ${session.collection.name}` +
                             ` in ${session.db.name}:`);
-                    console.log(`${session}`);
+                    console.log(`${session}\n`);
                 }
                 return next(err, session);
             }
@@ -64,7 +66,7 @@ function createSession(session, next) {
                 if(!err) {
                     console.log(`1 document inserted into ${session.collection.name}` +
                             ` in ${session.db.name}:`);
-                    console.log(`${session}`);
+                    console.log(`${session}\n`);
                 }
                 return next(err, session);
             });

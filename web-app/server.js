@@ -3,12 +3,17 @@ const app = express();
 const bodyParser = require('body-parser');
 const sessionRouter = require('./routers/session-router');
 const NotFound = require('./errors').NotFound;
+const pug = require('pug');
+
+const template = 'views/header.pug';
 
 const port = process.env.PORT || 8000;
 
 app
 
 .use(bodyParser.json())
+
+.use(express.static('resources'))
 
 .set('view engine', 'pug')
 
