@@ -1,9 +1,12 @@
 {
     "serverConfiguration": {
-        "serverURL": "localhost:3000/sessions"
+        "serverURL": "localhost:3000/api/sessions"
     },
-    "fpsConfiguration": {
-        "fpsEnabled": true,
-        "updateFrequencyInMs": 250
-    }
+    "metricsManagersConfiguration": [
+        {
+            "name": "Frame rate",
+            "enabled": true,
+            "updateFrequency": 250
+        }
+    ]
 }

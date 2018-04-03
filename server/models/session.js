@@ -2,10 +2,16 @@ const mongoose = require('mongoose');
 const configFile = require('../config.json');
 
 const metricSchema = mongoose.Schema({
-    type: String,
     val: Number,
     recordTime: Number
 });
+
+const metricsManagerSchema = mongoose.Schema({
+    name: String,
+    enabled: Boolean,
+    updateFrequency: Number,
+    metrics: [metricSchema]
+})
 
 const sessionSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -14,41 +20,51 @@ const sessionSchema = mongoose.Schema({
     scene: String,
     startDate: Date,
     duration: Number,
-    fpsEnabled: Boolean,
-    metrics: [metricSchema]
+    metricsManagers: [metricsManagerSchema]
 });
 
 sessionSchema.method({
     applyProcessings: applyProcessings,
-    hasSuccessfulFpsAverage: hasSuccessfulFpsAverage,
+    validateFrameRateAverage: validateFrameRateAverage,
 });
 
 function applyProcessings() {
-    this._doc.status = true;
-    this._doc.processings = {};
-    this._doc.thresholds = configFile.thresholds;
+    var session = this._doc;
+    session.validated = true;
+    for(var i = 0 ; i < session.metricsManagers.length ; i++) {
+        var metricsManager = session.metricsManagers[i]._doc;
+        if(metricsManager.enabled) {
+            metricsManager.validated = true;
+            metricsManager.processings = {};
+            var config = configFile.metricsManagersConfiguration.find(
+                    x => x.name == metricsManager.name);
+            metricsManager.thresholds = config.thresholds;
 
-    if(this.fpsEnabled) {
-        this.hasSuccessfulFpsAverage();
+            if(metricsManager.name == 'Frame rate') {
+                this.validateFrameRateAverage(metricsManager);
+            }
+
+            if(!metricsManager.validated) {
+                session.validated = false;
+            }
+        }
     }
 }
 
-function hasSuccessfulFpsAverage() {
+function validateFrameRateAverage(metricsManager) {
     var average = 0.;
-    this.metrics.forEach(function(metric) {
-        if(metric.type == 'fps') {
-            average += metric.val;
-        }
+    metricsManager.metrics.forEach(function(metric) {
+        average += metric.val;
     });
-    average /= this.metrics.length;
-    var successfulFpsAverage = average >= this._doc.thresholds.fpsAverage;
-    this._doc.processings.successfulFpsAverage = {
-        name: "Successful FPS average",
-        status: successfulFpsAverage,
+    average /= metricsManager.metrics.length;
+    var validated = average >= metricsManager.thresholds.average;
+    metricsManager.processings.average = {
+        name: 'Frame rate average',
+        validated: validated,
         value: average
     };
-    if(!successfulFpsAverage) {
-        this._doc.status = false;
+    if(!validated) {
+        metricsManager.validated = false;
     }
 }
 

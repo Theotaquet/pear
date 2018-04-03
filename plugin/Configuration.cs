@@ -1,35 +1,55 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
 
 namespace Pear {
 
-    public static class Configuration {
+    public static class ConfigurationManager {
 
         private static readonly string ConfigFilePath = "Assets/pear/config.json";
         public static readonly string SessionLogsPath = "sessionLogs.txt";
-        public static string ServerURL {get; set;}
 
-        public static bool FpsEnabled {get; set;}
-        public static float UpdateFrequency {get; set;}
+        public static ServerConfiguration server;
+        public static MetricsManagerConfiguration[] metricsManagers;
 
         public static void ReadConfigFile() {
-            string JSONConfig = File.ReadAllText(ConfigFilePath);
-            ConfigurationModel config = JsonUtility.FromJson<ConfigurationModel>(JSONConfig);
+            string rawConfig = File.ReadAllText(ConfigFilePath);
+            Configuration config = JsonUtility.FromJson<Configuration>(rawConfig);
 
+            config.CheckEmptyParameters();
+
+            server = config.serverConfiguration;
+            metricsManagers = config.metricsManagersConfiguration;
+        }
+    }
+
+
+
+
+
+    [Serializable]
+    public class Configuration {
+
+        public ServerConfiguration serverConfiguration;
+        public MetricsManagerConfiguration[] metricsManagersConfiguration;
+
+        public void CheckEmptyParameters() {
             bool noParamValue = false;
             ArrayList emptyParameters = new ArrayList();
-            foreach(FieldInfo field in config.GetType().GetFields()) {
-                foreach(FieldInfo subField in field.FieldType.GetFields()) {
-                    if(subField.GetValue(field.GetValue(config)) == null) {
-                        noParamValue = true;
-                        emptyParameters.Add(
-                            subField.Name.Substring(0, 1).ToLower() + subField.Name.Substring(1));
-                    }
+
+            if(HasEmptyParameters(serverConfiguration)) {
+                noParamValue = true;
+            }
+
+            foreach(MetricsManagerConfiguration config in metricsManagerConfiguration) {
+                if(HasEmptyParameters(config)) {
+                    noParamValue = true;
                 }
             }
+
             if(noParamValue) {
                 string str = "";
                 int i;
@@ -39,34 +59,31 @@ namespace Pear {
                 str += emptyParameters[i];
                 throw new NoConfigParamValueException(str);
             }
+        }
 
-            ServerURL = config.serverConfiguration.serverURL;
-            FpsEnabled = Boolean.Parse(config.fpsConfiguration.fpsEnabled);
-            UpdateFrequency = float.Parse(config.fpsConfiguration.updateFrequencyInMs);
-            if(UpdateFrequency > 0)
-                UpdateFrequency /= 1000;
-            else
-                throw new NegativeNullUpdateFrequencyException();
+        private bool HasEmptyParameters(Object obj) {
+            foreach(FieldInfo field in obj.GetType().GetFields()) {
+                if(field.GetValue(obj) == null) {
+                    emptyParameters.Add(
+                        field.Name.Substring(0, 1).ToLower() + field.Name.Substring(1));
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
     [Serializable]
-    public class ConfigurationModel {
-
-        public ServerConfigurationModel serverConfiguration;
-        public FpsConfigurationModel fpsConfiguration;
-    }
-
-    [Serializable]
-    public class ServerConfigurationModel {
+    public class ServerConfiguration {
 
         public string serverURL;
     }
 
     [Serializable]
-    public class FpsConfigurationModel {
+    public class MetricsManagerConfiguration {
 
-        public string fpsEnabled;
-        public string updateFrequencyInMs;
+        public string name;
+        public string enabled;
+        public string updateFrequency;
     }
 }

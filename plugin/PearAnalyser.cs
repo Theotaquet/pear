@@ -21,6 +21,8 @@ namespace Pear {
 
         private Session session;
 
+        private MetricsManager frameRatesManager;
+
         private int updateFrameCounter;
         private float updateTimeCounter;
         private float lastFrameTime;
@@ -34,11 +36,12 @@ namespace Pear {
                     Application.version,
                     SceneManager.GetActiveScene().name
             );
+            frameRatesManager = session.ReadMetricsManager("Frame rate");
         }
 
         void Update() {
-            if(session.fpsEnabled)
-                CalculateFrameRate();
+            if(frameRatesManager.enabled)
+                CollectFrameRate();
             lastFrameTime = Time.time;
         }
 
@@ -47,29 +50,29 @@ namespace Pear {
             string sessionJSONString = JsonUtility.ToJson(session);
             PostMetrics(sessionJSONString);
             PearToolbox.AddToLog(session.ToString());
-            PearToolbox.WriteLogInFile();
+             PearToolbox.WriteLogInFile();
         }
 
-        private void CalculateFrameRate() {
+        private void CollectFrameRate() {
             int frameRate;
             updateFrameCounter++;
             updateTimeCounter += Time.time - lastFrameTime;
 
             //test if the limit of updates per second is respected
-            while(updateTimeCounter > Configuration.UpdateFrequency) {
+            while(updateTimeCounter > frameRatesManager.updateFrequency) {
                 frameRate = (int) (updateFrameCounter / updateTimeCounter);
 
                 updateFrameCounter = 0;
                 //the overflow is kept in memory
                 //if updateTimeCounter has exceeded updatesPerSecond
-                updateTimeCounter -= Configuration.UpdateFrequency;
+                updateTimeCounter -= frameRatesManager.updateFrequency;
 
-                session.createMetric(new Metric("fps", frameRate, lastFrameTime));
+                frameRatesManager.CreateMetric(new Metric(frameRate, lastFrameTime));
             }
         }
 
         private void PostMetrics(string JSONString) {
-            UnityWebRequest request = new UnityWebRequest(Configuration.ServerURL, "POST");
+            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.server.serverURL, "POST");
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");

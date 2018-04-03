@@ -60,6 +60,7 @@ header .v-centered {
 
 td .status {
     font-size: 0.6em;
+    margin: auto;
 }
 
 #validated {
@@ -161,7 +162,7 @@ header a span {
 
 /* Metrics */
 
-.chartContainer {
+.chart-container {
     height: 300px;
     width: 100%;
     box-shadow: 3px 3px 15px var(--shadow-1);
@@ -173,7 +174,7 @@ header a span {
 
 /* Sessions list */
 
-.responsiveTable {
+.responsive-table {
     overflow-x: auto;
 }
 
@@ -196,12 +197,6 @@ th {
 
 tr:hover {
     background: var(--light-3);
-}
-
-table .status {
-    text-align: center;
-    display: block;
-    margin: auto;
 }
 
 td a {

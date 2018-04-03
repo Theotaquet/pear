@@ -1,22 +1,24 @@
 const http = require('http');
 const NotFound = require('../errors').NotFound;
 
-const apiUrl = 'http://localhost:3000/api/sessions';
 
 function getAllSessions(req, next) {
-    sendGetRequest(apiUrl, req.query, next);
+    sendGetRequest('sessions', req, next);
 }
 
 function getSession(req, next) {
-    sendGetRequest(`${apiUrl}/${req.params.sessionID}`, req.query, next);
+    sendGetRequest(`sessions/${req.params.sessionID}`, req, next);
 }
 
-function sendGetRequest(sessionURL, query, next) {
+function sendGetRequest(url, req, next) {
+    const fullUrl = `${req.protocol}://${req.get('host')}/api/${url}`;
+
     var queryString = '?';
-    for(var param in query) {
-        queryString += `${param}=${query[param]}&`;
+    for(var param in req.query) {
+        queryString += `${param}=${req.query[param]}&`;
     }
-    http.get(sessionURL + queryString, function(res) {
+
+    http.get(fullUrl + queryString, function(res) {
         var rawData = '';
         res.on('data', function(data) {
             rawData += data;

@@ -22,7 +22,7 @@ function get(req, res, next) {
                 return next(err);
             }
             session.applyProcessings();
-            if(session._doc.status) {
+            if(session._doc.validated) {
                 console.log('**API log**\nThe session was successful.\n\n');
             }
             else {
@@ -41,8 +41,7 @@ function post(req, res, next)  {
         scene: req.body.scene,
         startDate: new Date(req.body.startDate),
         duration: req.body.duration,
-        fpsEnabled: req.body.fpsEnabled,
-        metrics: req.body.metrics
+        metricsManagers: req.body.metricsManagers
     } );
 
     apiSessionDAO.createSession(session, function(err, session) {

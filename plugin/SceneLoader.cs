@@ -12,27 +12,28 @@ namespace Pear {
         }
 
         private IEnumerator LoadScene(string sceneName) {
-            try {
-                if(sceneName == null || sceneName == SceneManager.GetActiveScene().name) {
-                    AddPearAnalyser();
+            if(sceneName == null || sceneName == SceneManager.GetActiveScene().name) {
+                AddPearAnalyser();
+                try {
                     throw new NoSceneException();
                 }
-            }
-            catch(NoSceneException e) {
+                catch(NoSceneException e) {
                     Debug.LogException(e);
                     PearToolbox.AddToLog(e.Message);
+                }
             }
+            else {
+                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                yield return asyncLoad;
 
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            yield return asyncLoad;
-
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            AddPearAnalyser();
-            SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+                AddPearAnalyser();
+                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+            }
         }
 
         private void AddPearAnalyser() {
-            GameObject pear = new GameObject("PeAR");
+            GameObject pear = new GameObject("Pe.A.R.");
             pear.AddComponent<PearAnalyser>();
         }
     }
