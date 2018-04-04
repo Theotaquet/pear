@@ -40,12 +40,12 @@ namespace Pear {
             bool noParamValue = false;
             ArrayList emptyParameters = new ArrayList();
 
-            if(HasEmptyParameters(serverConfiguration)) {
+            if(HasEmptyParameters(serverConfiguration, emptyParameters)) {
                 noParamValue = true;
             }
 
-            foreach(MetricsManagerConfiguration config in metricsManagerConfiguration) {
-                if(HasEmptyParameters(config)) {
+            foreach(MetricsManagerConfiguration config in metricsManagersConfiguration) {
+                if(HasEmptyParameters(config, emptyParameters)) {
                     noParamValue = true;
                 }
             }
@@ -61,7 +61,7 @@ namespace Pear {
             }
         }
 
-        private bool HasEmptyParameters(Object obj) {
+        private bool HasEmptyParameters(object obj, ArrayList emptyParameters) {
             foreach(FieldInfo field in obj.GetType().GetFields()) {
                 if(field.GetValue(obj) == null) {
                     emptyParameters.Add(
