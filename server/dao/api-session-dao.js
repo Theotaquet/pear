@@ -1,12 +1,10 @@
 const dbConnection = require('./db-connection');
 const Session = require('../models/session');
-const NotFound = require('../errors').NotFound;
-const BadGateway = require('../errors').BadGateway;
 
 function getAllSessions(req, next) {
     dbConnection.connect(function(err, db) {
         if(err) {
-            return next(new BadGateway('The connection to MongoDB server has failed'));
+            return next(err);
         }
         else {
             Session.find(req.query).sort('-startDate').exec(processResult);
@@ -30,7 +28,7 @@ function getAllSessions(req, next) {
 function getSession(req, next) {
     dbConnection.connect(function(err, db) {
         if(err) {
-            return next(new BadGateway('The connection to MongoDB server has failed'));
+            return next(err);
         }
         else {
             var id = req.params.sessionID;
@@ -58,7 +56,7 @@ function getSession(req, next) {
 function createSession(session, next) {
     dbConnection.connect(function(err, db) {
         if(err) {
-            return next(new BadGateway('The connection to MongoDB server has failed'));
+            return next(err);
         }
         else {
             session.save(function(err, session) {

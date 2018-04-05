@@ -1,0 +1,230 @@
+/* Document */
+
+@font-face {
+    font-family: 'robotoregular';
+    src: url('fonts/Roboto-Regular-webfont.woff') format('woff');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'robotothin';
+    src: url('fonts/Roboto-Thin-webfont.woff') format('woff');
+    font-style: normal;
+    font-weight: normal;
+}
+
+body {
+    --dark-1: rgb(60, 60, 60);
+    --light-1: white;
+    --light-2: lightgrey;
+    --light-3: rgb(230, 230, 230);
+    --green-1: rgb(245, 255, 205);
+    --green-2: rgb(195, 220, 60);
+    --green-3: rgb(150, 175, 0);
+    --green-4: rgb(100, 115, 0);
+    --red-1: rgb(215, 0, 0);
+    --shadow-1: rgba(0, 0, 0, 0.5);
+    --bgDark-1: url('images/wild-oliva.png') fixed, var(--dark-1);
+    --bgLight-1: url('images/dust-scratches.png') rgb(240, 240, 240);
+    --bgLight-2: url('images/mooning.png') rgb(180, 180, 180);
+
+    color: var(--dark-1);
+    font-family: 'robotoregular', 'Trebuchet MS', Arial, sans-serif;
+    background: var(--bgDark-1);
+    margin: 0;
+}
+
+.centered {
+    width: 950px;
+    margin: auto;
+}
+
+.v-centered {
+    display: flex;
+    align-items: center;
+}
+
+header .v-centered {
+    justify-content: space-between;
+}
+
+.status {
+    color: var(--light-1);
+    font-weight: normal;
+    padding: 5px 7px 5px 7px;
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+    margin-left: 20px;
+}
+
+td .status {
+    font-size: 0.6em;
+}
+
+#validated {
+    background: var(--green-2);
+}
+
+#failed {
+    background: var(--red-1);
+}
+
+ul {
+    list-style-type: square;
+}
+
+i {
+    color: var(--green-2);
+    font-style: normal;
+    font-weight: normal;
+}
+
+
+
+
+/* Header */
+
+header {
+    width: 100%;
+    padding: 0 0 10px 0;
+    background: var(--green-1);
+    box-shadow: 0 2px 15px var(--shadow-1);
+    position: fixed;
+    z-index: 1;
+}
+
+header #logo {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+}
+
+header h1 {
+    font-family: 'robotothin', 'Trebuchet MS', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2.5em;
+    margin: 0 0 0 10px;
+}
+
+header a {
+    color: var(--green-4);
+    font-weight: bold;
+    font-size: 0.8em;
+    padding: 10px 10px 10px 10px;
+    background: var(--green-2);
+    border: 2px solid var(--green-3);
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+    margin-top: 10px;
+    transition-duration: 0.4s;
+}
+
+header a:link, header a:hover {
+    background: var(--light-1);
+    text-decoration: none;
+}
+
+header a span {
+    margin-left: 3px;
+}
+
+
+
+
+
+/* Report */
+
+#report {
+    padding: 90px 20px 20px 20px;
+    background: var(--bgLight-1);
+    box-shadow: 0 0 30px var(--shadow-1);
+    position: relative;
+    z-index: 0;
+}
+
+#report section {
+    padding: 10px 20px 10px 20px;
+    background: var(--bgLight-2);
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+    margin: 20px 0 20px 0;
+}
+
+/* Session infos */
+
+#report #session-infos {
+    color: var(--light-2);
+    width: 60%;
+    background: var(--bgDark-1);
+}
+
+/* Metrics */
+
+.chartContainer {
+    height: 300px;
+    width: 100%;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+}
+
+
+
+
+
+/* Sessions list */
+
+.responsiveTable {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    display: flex;
+    justify-content: space-around;
+}
+
+th, td {
+    padding: 10px 5px 10px 5px;
+    border: 1px solid var(--light-2);
+}
+
+th {
+    color:var(--light-1);
+    background: var(--green-2);
+    border: 1px solid var(--bgLight-1);
+}
+
+tr:hover {
+    background: var(--light-3);
+}
+
+table .status {
+    text-align: center;
+    display: block;
+    margin: auto;
+}
+
+td a {
+    color: var(--green-3);
+    text-decoration: none;
+}
+
+td a:visited {
+    color: var(--green-3);
+}
+
+td a:hover {
+    color: var(--green-4);
+}
+
+
+
+
+
+/* Footer */
+
+footer p {
+    color:  var(--green-1);
+    display: flex;
+    justify-content: flex-end;
+}

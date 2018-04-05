@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const sessionController = require('../controllers/session-controller');
+const apiSessionController = require('../controllers/api-session-controller');
 
 router
 
-.get('/:sessionID?', setHeader, sessionController.get)
+.get('/:sessionID?', setHeader, apiSessionController.get)
 
-.post('/', setHeader, sessionController.post);
+.post('/', setHeader, apiSessionController.post);
 
 function setHeader(req, res, next) {
     res.set('Content-Type', 'application/json');

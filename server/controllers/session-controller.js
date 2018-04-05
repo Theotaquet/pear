@@ -1,9 +1,6 @@
 const pug = require('pug');
 const sessionDAO = require('../dao/session-dao');
 
-const sessionsListView = 'sessions-list-view';
-const sessionView = 'session-view';
-
 function get(req, res, next) {
     if(!req.params.sessionID) {
         sessionDAO.getAllSessions(req, function(err, sessions) {
@@ -13,7 +10,7 @@ function get(req, res, next) {
             sessions.forEach(function(session) {
                 session.startDate = new Date(session.startDate).toLocaleString();
             });
-            res.status(200).render(sessionsListView, {sessions: sessions});
+            res.status(200).render('sessions-list-view', {sessions: sessions});
         })
     }
     else {
@@ -22,7 +19,7 @@ function get(req, res, next) {
                 return next(err);
             }
             session.startDate = new Date(session.startDate).toLocaleString();
-            res.status(200).render(sessionView, {session: session});
+            res.status(200).render('session-view', {session: session});
         });
     }
 }

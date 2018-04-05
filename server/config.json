@@ -1,0 +1,7 @@
+{
+    "mongoDBServerURL": "mongodb://localhost:27017",
+    "dbName": "pearDB",
+    "thresholds": {
+        "fpsAverage": 110
+    }
+}

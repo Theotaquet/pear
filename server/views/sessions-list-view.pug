@@ -23,10 +23,11 @@ html(lang='en')
                             td: a(href='/sessions/' + session._id) #{session._id}
                             td #{session.game} - #{session.build} - #{session.scene}
                             td #{session.startDate}
-                            td(style='padding:0 10px 0 10px')
-                                if session.status
-                                    span#validated.status validated
-                                else
-                                    span#failed.status failed
+                            .v-centered
+                                td(style='padding:0 10px 0 10px')
+                                    if session.status
+                                        #validated.status VALIDATED
+                                    else
+                                        #failed.status FAILED
 
         include footer
