@@ -9,17 +9,32 @@ namespace Pear {
         public string game;
         public string build;
         public string scene;
+        public string platform;
+        public string unityVersion;
+        public string device;
+        public string processorType;
+        public int systemMemory;
+        public string GPU;
+        public int GPUMemory;
         public string startDate;
         public uint duration;
         public List<MetricsManager> metricsManagers;
 
-        public Session(string game, string build, string scene) {
+        public Session(string game, string build, string scene, string platform,
+                string unityVersion, string device, string processorType,
+                int systemMemory, string GPU, int GPUMemory) {
             this.game = game;
             this.build = build;
             this.scene = scene;
+            this.platform = platform;
+            this.unityVersion = unityVersion;
+            this.device = device;
+            this.processorType = processorType;
+            this.systemMemory = systemMemory;
+            this.GPU = GPU;
+            this.GPUMemory = GPUMemory;
             this.startDate = System.DateTime.Now.ToString("yyyy-MM-ddTHH:MM:ss");
             this.duration = 0;
-
             this.metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManager in ConfigurationManager.metricsManagers) {
@@ -30,11 +45,15 @@ namespace Pear {
         public override string ToString() {
             string str = String.Format(
                     "{0} - version {1}\n" +
-                    "Niveau: {2}\n" +
-                    "{3} - {4} ms\n\n" +
+                    "Level: {2}\n" +
+                    "Running on {3} - with Unity version {4}\n" +
+                    "Device: {5} {6} {7} MB\n" +
+                    "GPU: {8} {9} MB\n" +
+                    "{10} - {11} ms\n\n" +
                     "Metrics\n" +
                     "-------\n\n",
-                    game, build, scene, DateTime.Parse(startDate), duration
+                    game, build, scene, platform, unityVersion, device, processorType,
+                    systemMemory, GPU, GPUMemory, DateTime.Parse(startDate), duration
             );
 
             foreach(MetricsManager metricManager in metricsManagers) {

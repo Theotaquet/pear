@@ -20,6 +20,14 @@ html(lang='en')
                     li game: #[i #{session.game}]
                     li build: #[i #{session.build}]
                     li scene: #[i #{session.scene}]
+                    li platform: #[i #{session.platform}]
+                    li Unity version: #[i #{session.unityVersion}]
+                    li device: #[i #{session.device}]
+                        ul
+                            li processor: #[i #{session.processorType}]
+                            li system memory size: #[i #{session.systemMemory}]
+                            li GPU: #[i #{session.GPU}]
+                            li GPU memory size: #[i #{session.GPUMemory}]
                     li start date: #[i #{session.startDate}]
                     li duration: #[i #{session.duration} ms]
 

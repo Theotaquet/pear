@@ -39,6 +39,13 @@ function post(req, res, next)  {
         game: req.body.game,
         build: req.body.build,
         scene: req.body.scene,
+        platform: req.body.platform,
+        unityVersion: req.body.unityVersion,
+        device: req.body.device,
+        processorType: req.body.processorType,
+        systemMemory: req.body.systemMemory,
+        GPU: req.body.GPU,
+        GPUMemory: req.body.GPUMemory,
         startDate: new Date(req.body.startDate),
         duration: req.body.duration,
         metricsManagers: req.body.metricsManagers
