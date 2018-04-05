@@ -11,58 +11,48 @@ html(lang='en')
 
         #report.centered
             section#session-infos
-                .v-centered
-                    h2 Session Report
+                h2.v-centered Session Report
                     if session.validated
                         #validated.status VALIDATED
                     else
                         #failed.status FAILED
                 ul
-                    li game:
-                        |
-                        |
-                        i #{session.game}
-                    li build:
-                        |
-                        |
-                        i #{session.build}
-                    li scene:
-                        |
-                        |
-                        i #{session.scene}
-                    li start date:
-                        |
-                        |
-                        i #{session.startDate}
-                    li duration:
-                        |
-                        |
-                        i #{session.duration} ms
+                    li game: #[i #{session.game}]
+                    li build: #[i #{session.build}]
+                    li scene: #[i #{session.scene}]
+                    li start date: #[i #{session.startDate}]
+                    li duration: #[i #{session.duration} ms]
 
             section#metrics
                 h2 Metrics
                 each metricsManager in session.metricsManagers
-                    .v-centered
-                        h3 #{metricsManager.name}
-                        if metricsManager.validated
-                            #validated.status VALIDATED
-                        else
-                            #failed.status FAILED
-                    #frame-rate-chart-container.chart-container
-                    .processings
-                        ul
-                            each processing in metricsManager.processings
-                                -
-                                    var processingDetails = processing.name +
-                                        (processing.value == undefined ? '' : ': ' + processing.value);
+                    .metric-manager
+                        h3.v-centered #{metricsManager.name}
+                            if metricsManager.validated
+                                #validated.status VALIDATED
+                            else
+                                #failed.status FAILED
+                        -
+                            var id = metricsManager.name.toLowerCase()
+                                .replace(' ', '-').concat('-chart-container');
+                        div(id=id).chart-container
+                        .processings
+                            ul
+                                each processing in metricsManager.processings
+                                    -
+                                        var processingDetails =
+                                                processing.name +
+                                                (processing.threshold == undefined ?
+                                                        '' : ' (' + processing.threshold + ')') +
+                                                (processing.value == undefined ?
+                                                        '' : ': ' + processing.value);
 
-                                .v-centered
-                                    li #{processingDetails}
-                                    if processing.validated != undefined
-                                        if processing.validated
-                                            #validated.status VALIDATED
-                                        else
-                                            #failed.status FAILED
+                                    li.v-centered #{processingDetails}
+                                        if processing.validated != undefined
+                                            if processing.validated
+                                                #validated.status VALIDATED
+                                            else
+                                                #failed.status FAILED
 
             section#json
                 h2 JSON result

@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace Pear {
 
@@ -20,28 +21,38 @@ namespace Pear {
                 "Request failed";
 
         private Session session;
-
-        private MetricsManager frameRatesManager;
-
-        private int updateFrameCounter;
-        private float updateTimeCounter;
         private float lastFrameTime;
 
+        private MetricsManager frameRatesManager;
+        private int framesCounter;
+        private float frameRateTimer;
+
+        private MetricsManager garbageCollectionManager;
+        private float GCTimer;
+
         void Start() {
-            updateFrameCounter = 0;
-            updateTimeCounter = 0.0f;
-            lastFrameTime = 0.0f;
             session = new Session(
                     Application.productName,
                     Application.version,
                     SceneManager.GetActiveScene().name
             );
+            lastFrameTime = 0.0f;
+
             frameRatesManager = session.ReadMetricsManager("Frame rate");
+            framesCounter = 0;
+            frameRateTimer = 0.0f;
+
+            garbageCollectionManager = session.ReadMetricsManager("Garbage collection");
+            GCTimer = 0.0f;
         }
 
         void Update() {
             if(frameRatesManager.enabled)
                 CollectFrameRate();
+
+            if(garbageCollectionManager.enabled)
+                CollectGarbageCollection();
+
             lastFrameTime = Time.time;
         }
 
@@ -50,24 +61,37 @@ namespace Pear {
             string sessionJSONString = JsonUtility.ToJson(session);
             PostMetrics(sessionJSONString);
             PearToolbox.AddToLog(session.ToString());
-             PearToolbox.WriteLogInFile();
+            PearToolbox.WriteLogInFile();
         }
 
         private void CollectFrameRate() {
             int frameRate;
-            updateFrameCounter++;
-            updateTimeCounter += Time.time - lastFrameTime;
+            framesCounter++;
+            frameRateTimer += Time.time - lastFrameTime;
 
             //test if the limit of updates per second is respected
-            while(updateTimeCounter > frameRatesManager.updateFrequency) {
-                frameRate = (int) (updateFrameCounter / updateTimeCounter);
+            while(frameRateTimer > frameRatesManager.updateFrequency) {
+                frameRate = (int) (framesCounter / frameRateTimer);
 
-                updateFrameCounter = 0;
+                framesCounter = 0;
                 //the overflow is kept in memory
-                //if updateTimeCounter has exceeded updatesPerSecond
-                updateTimeCounter -= frameRatesManager.updateFrequency;
+                //if frameRateTimer has exceeded updateFrequency
+                frameRateTimer -= frameRatesManager.updateFrequency;
 
                 frameRatesManager.CreateMetric(new Metric(frameRate, lastFrameTime));
+            }
+        }
+
+        private void CollectGarbageCollection() {
+            int count;
+            GCTimer += Time.time - lastFrameTime;
+
+            while(GCTimer > garbageCollectionManager.updateFrequency) {
+                count = GC.CollectionCount(0);
+
+                GCTimer -= garbageCollectionManager.updateFrequency;
+
+                garbageCollectionManager.CreateMetric(new Metric(count, lastFrameTime));
             }
         }
 

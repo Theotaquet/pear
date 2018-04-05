@@ -7,6 +7,11 @@
             "name": "Frame rate",
             "enabled": true,
             "updateFrequency": 250
+        },
+        {
+            "name": "Garbage collection",
+            "enabled": true,
+            "updateFrequency": 1000
         }
     ]
 }

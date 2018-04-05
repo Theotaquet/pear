@@ -162,6 +162,10 @@ header a span {
 
 /* Metrics */
 
+.metric-manager {
+    padding-bottom: 30px;
+}
+
 .chart-container {
     height: 300px;
     width: 100%;
