@@ -18,6 +18,7 @@ html(lang='en')
                         th Game - Build - Level
                         th Platform
                         th Date
+                        th Duration
                         th Status
                     each session in sessions
                         tr
@@ -25,10 +26,12 @@ html(lang='en')
                             td #{session.game} - #{session.build} - #{session.scene}
                             td #{session.platform}
                             td #{session.startDate}
-                            td.v-centered
-                                if session.validated
-                                    #validated.status VALIDATED
-                                else
-                                    #failed.status FAILED
+                            td #{session.duration} ms
+                            td
+                                .v-centered
+                                    if session.validated
+                                        #validated.status VALIDATED
+                                    else
+                                        #failed.status FAILED
 
         include footer
