@@ -17,7 +17,7 @@ namespace Pear {
         public string GPU;
         public int GPUMemory;
         public string startDate;
-        public uint duration;
+        public float duration;
         public List<MetricsManager> metricsManagers;
 
         public Session(string game, string build, string scene, string platform,
@@ -34,7 +34,7 @@ namespace Pear {
             this.GPU = GPU;
             this.GPUMemory = GPUMemory;
             this.startDate = System.DateTime.Now.ToString("yyyy-MM-ddTHH:MM:ss");
-            this.duration = 0;
+            SetDuration(ConfigurationManager.session.duration);
             this.metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManager in ConfigurationManager.metricsManagers) {
@@ -81,6 +81,13 @@ namespace Pear {
             if(metricsManagers.Contains(metricManager))
                 return metricsManagers.Remove(metricManager);
             return false;
+        }
+
+        public void SetDuration(float duration) {
+            if(duration > 0)
+                    this.duration = duration / 1000;
+            else
+                throw new NegativeNullDurationException();
         }
     }
 }

@@ -61,6 +61,11 @@ namespace Pear {
                 CollectGarbageCollection();
 
             lastFrameTime = Time.time;
+
+            if(lastFrameTime >= session.duration) {
+                lastFrameTime = session.duration;
+                Application.Quit();
+            }
         }
 
         void OnDisable() {
@@ -103,7 +108,7 @@ namespace Pear {
         }
 
         private void PostMetrics(string JSONString) {
-            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.server.serverURL, "POST");
+            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.session.APIServerURL, "POST");
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");

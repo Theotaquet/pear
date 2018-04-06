@@ -12,7 +12,7 @@ namespace Pear {
         private static readonly string ConfigFilePath = "Assets/pear/config.json";
         public static readonly string SessionLogsPath = "sessionLogs.txt";
 
-        public static ServerConfiguration server;
+        public static SessionConfiguration session;
         public static MetricsManagerConfiguration[] metricsManagers;
 
         public static void ReadConfigFile() {
@@ -21,7 +21,7 @@ namespace Pear {
 
             config.CheckEmptyParameters();
 
-            server = config.serverConfiguration;
+            session = config.sessionConfiguration;
             metricsManagers = config.metricsManagersConfiguration;
         }
     }
@@ -33,14 +33,14 @@ namespace Pear {
     [Serializable]
     public class Configuration {
 
-        public ServerConfiguration serverConfiguration;
+        public SessionConfiguration sessionConfiguration;
         public MetricsManagerConfiguration[] metricsManagersConfiguration;
 
         public void CheckEmptyParameters() {
             bool noParamValue = false;
             ArrayList emptyParameters = new ArrayList();
 
-            if(HasEmptyParameters(serverConfiguration, emptyParameters)) {
+            if(HasEmptyParameters(sessionConfiguration, emptyParameters)) {
                 noParamValue = true;
             }
 
@@ -74,9 +74,10 @@ namespace Pear {
     }
 
     [Serializable]
-    public class ServerConfiguration {
+    public class SessionConfiguration {
 
-        public string serverURL;
+        public string APIServerURL;
+        public int duration;
     }
 
     [Serializable]

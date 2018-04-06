@@ -7,13 +7,13 @@
         {
             "name": "Frame rate",
             "thresholds": {
-                "average": 40
+                "average": 60
             }
         },
         {
             "name": "Garbage collection",
             "thresholds": {
-                "count": 180
+                "count": 20
             }
         }
     ]
