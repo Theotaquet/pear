@@ -65,10 +65,11 @@ function applyProcessings() {
 
 function validateFrameRateAverage(metricsManager, averageThreshold) {
     var average = 0.;
-    metricsManager.metrics.forEach(function(metric) {
-        average += metric.value;
-    });
-    average /= metricsManager.metrics.length;
+    var firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
+    for(var i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
+        average += metricsManager.metrics[i].value;
+    }
+    average /= metricsManager.metrics.length - firstRelevantMetric;
     var validated = average >= averageThreshold;
 
     metricsManager.processings.average = {
@@ -85,11 +86,13 @@ function validateFrameRateAverage(metricsManager, averageThreshold) {
 
 function validateGarbageCollectionCount(metricsManager, countThreshold) {
     var validated = true;
-    metricsManager.metrics.forEach(function(metric) {
-        if(validated && metric.value > countThreshold) {
+    var firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
+    for(var i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
+        if(metricsManager.metrics[i].value > countThreshold) {
             validated = false;
+            i = metricsManager.metrics.length;
         }
-    });
+    }
 
     metricsManager.processings.count = {
         name: 'Garbage collection count',
