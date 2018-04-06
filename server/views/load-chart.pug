@@ -2,9 +2,9 @@ script.
 
     window.onload = function() {
         var frameRateManager =
-                !{JSON.stringify(session.metricsManagers.find(x => x.name == 'Frame rate'))};
+                !{JSON.stringify(session.metricsManagers.find(x => x.id == 'frameRate'))};
         var garbageCollectionManager =
-                !{JSON.stringify(session.metricsManagers.find(x => x.name == 'Garbage collection'))};
+                !{JSON.stringify(session.metricsManagers.find(x => x.id == 'garbageCollection'))};
         createFrameRateAverageChart(frameRateManager);
         createGarbageCollectionCountChart(garbageCollectionManager);
     }

@@ -73,8 +73,8 @@ namespace Pear {
             return false;
         }
 
-        public MetricsManager ReadMetricsManager(string name) {
-            return metricsManagers.Find(x => x.name == name);
+        public MetricsManager ReadMetricsManager(string id) {
+            return metricsManagers.Find(x => x.id == id);
         }
 
         public bool DeleteMetricManager(MetricsManager metricManager) {

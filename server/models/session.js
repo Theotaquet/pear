@@ -7,6 +7,7 @@ const metricSchema = mongoose.Schema({
 });
 
 const metricsManagerSchema = mongoose.Schema({
+    id: String,
     name: String,
     enabled: Boolean,
     updateFrequency: Number,
@@ -45,13 +46,13 @@ function applyProcessings() {
             metricsManager.validated = true;
             metricsManager.processings = {};
             var config = configFile.metricsManagersConfiguration.find(
-                    x => x.name == metricsManager.name);
+                    x => x.id == metricsManager.id);
 
-            switch(metricsManager.name) {
-                case 'Frame rate':
+            switch(metricsManager.id) {
+                case 'frameRate':
                     this.validateFrameRateAverage(metricsManager, config.thresholds.average);
                     break;
-                case 'Garbage collection':
+                case 'garbageCollection':
                     this.validateGarbageCollectionCount(metricsManager, config.thresholds.count);
                     break;
             }

@@ -4,24 +4,27 @@ using System.Collections.Generic;
 namespace Pear {
 
     [Serializable]
-    public class MetricsManager {
+    public class MetricsManager: ICollector {
 
+        public string id;
         public string name;
         public bool enabled;
         public float updateFrequency;
         public List<Metric> metrics;
 
-        public MetricsManager(string name, bool enabled, float updateFrequency) {
+        public MetricsManager(string id, string name, bool enabled, float updateFrequency) {
+            this.id = id;
             this.name = name;
             this.enabled = enabled;
             SetUpdateFrequency(updateFrequency);
             this.metrics = new List<Metric>();
         }
 
-        public MetricsManager(MetricsManagerConfiguration metricsManager) {
-            this.name = metricsManager.name;
-            this.enabled = Boolean.Parse(metricsManager.enabled);
-            SetUpdateFrequency(float.Parse(metricsManager.updateFrequency));
+        public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
+            this.id = metricsManagerConfig.id;
+            this.name = metricsManagerConfig.name;
+            this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
+            SetUpdateFrequency(float.Parse(metricsManagerConfig.updateFrequency));
             this.metrics = new List<Metric>();
         }
 
@@ -31,6 +34,10 @@ namespace Pear {
                 str += metric.ToString() + "\n";
             }
             return str;
+        }
+
+        public void CollectMetrics() {
+
         }
 
         public bool CreateMetric(Metric metric) {
