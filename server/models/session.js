@@ -7,7 +7,6 @@ const metricSchema = mongoose.Schema({
 });
 
 const metricsManagerSchema = mongoose.Schema({
-    id: String,
     name: String,
     enabled: Boolean,
     updateFrequency: Number,
@@ -46,9 +45,9 @@ function applyProcessings() {
             metricsManager.validated = true;
             metricsManager.processings = {};
             var config = configFile.metricsManagersConfiguration.find(
-                    x => x.id == metricsManager.id);
+                    x => x.name == metricsManager.name);
 
-            switch(metricsManager.id) {
+            switch(metricsManager.name) {
                 case 'frameRate':
                     this.validateFrameRateAverage(metricsManager, config.thresholds.average);
                     break;

@@ -45,11 +45,11 @@ namespace Pear {
             );
             lastFrameTime = 0.0f;
 
-            frameRatesManager = session.ReadMetricsManager("Frame rate");
+            frameRatesManager = session.ReadMetricsManager("frameRate");
             framesCounter = 0;
             frameRateTimer = 0.0f;
 
-            garbageCollectionManager = session.ReadMetricsManager("Garbage collection");
+            garbageCollectionManager = session.ReadMetricsManager("garbageCollection");
             GCTimer = 0.0f;
         }
 

@@ -5,14 +5,12 @@
     },
     "metricsManagersConfiguration": [
         {
-            "id": "frameRate",
-            "name": "Frame rate",
+            "name": "frameRate",
             "enabled": true,
             "updateFrequency": 250
         },
         {
-            "id": "garbageCollection",
-            "name": "Garbage collection",
+            "name": "garbageCollection",
             "enabled": true,
             "updateFrequency": 1000
         }

@@ -5,15 +5,13 @@
     },
     "metricsManagersConfiguration": [
         {
-            "id": "frameRate",
-            "name": "Frame rate",
+            "name": "frameRate",
             "thresholds": {
                 "average": 60
             }
         },
         {
-            "id": "garbageCollection",
-            "name": "Garbage collection",
+            "name": "garbageCollection",
             "thresholds": {
                 "count": 20
             }

@@ -35,15 +35,19 @@ html(lang='en')
                 h2 Metrics
                 each metricsManager in session.metricsManagers
                     .metric-manager
-                        h3.v-centered #{metricsManager.name}
+                        -
+                            var formatedName = metricsManager.name.substring(0, 1).toUpperCase() +
+                                    metricsManager.name.substring(1)
+                                    .replace(/([A-Z])/g, ' $1').toLowerCase();
+                        h3.v-centered #{formatedName}
                             if metricsManager.validated
                                 #validated.status VALIDATED
                             else
                                 #failed.status FAILED
                         -
-                            var id = metricsManager.name.toLowerCase()
-                                .replace(' ', '-').concat('-chart-container');
-                        div(id=id).chart-container
+                            formatedName = metricsManager.name.replace(/([A-Z])/g, '-$1')
+                                    .toLowerCase().concat('-chart-container');
+                        div(id=formatedName).chart-container
                         .processings
                             ul
                                 each processing in metricsManager.processings
