@@ -16,12 +16,14 @@ html(lang='en')
                     tr
                         th ID
                         th Game - Build - Level
+                        th Platform
                         th Date
                         th Status
                     each session in sessions
                         tr
                             td: a(href='/sessions/' + session._id) #{session._id}
                             td #{session.game} - #{session.build} - #{session.scene}
+                            td #{session.platform}
                             td #{session.startDate}
                             td.v-centered
                                 if session.validated

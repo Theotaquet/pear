@@ -18,6 +18,13 @@ const sessionSchema = mongoose.Schema({
     game: String,
     build: String,
     scene: String,
+    platform: String,
+    unityVersion: String,
+    device: String,
+    processorType: String,
+    systemMemory: Number,
+    GPU: String,
+    GPUMemory: Number,
     startDate: Date,
     duration: Number,
     metricsManagers: [metricsManagerSchema]

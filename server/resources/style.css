@@ -75,6 +75,10 @@ ul {
     list-style-type: square;
 }
 
+ul ul {
+    list-style-type: circle;
+}
+
 i {
     color: var(--green-2);
     font-style: normal;

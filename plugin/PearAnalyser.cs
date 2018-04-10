@@ -34,7 +34,14 @@ namespace Pear {
             session = new Session(
                     Application.productName,
                     Application.version,
-                    SceneManager.GetActiveScene().name
+                    SceneManager.GetActiveScene().name,
+                    Application.platform.ToString(),
+                    Application.unityVersion,
+                    SystemInfo.deviceName,
+                    SystemInfo.processorType,
+                    SystemInfo.systemMemorySize,
+                    SystemInfo.graphicsDeviceName,
+                    SystemInfo.graphicsMemorySize
             );
             lastFrameTime = 0.0f;
 
