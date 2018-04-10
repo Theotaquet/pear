@@ -11,7 +11,7 @@ html(lang='en')
 
         #report.centered
             h1 Sessions
-            .responsiveTable
+            .responsive-table
                 table
                     tr
                         th ID
@@ -23,11 +23,10 @@ html(lang='en')
                             td: a(href='/sessions/' + session._id) #{session._id}
                             td #{session.game} - #{session.build} - #{session.scene}
                             td #{session.startDate}
-                            .v-centered
-                                td(style='padding:0 10px 0 10px')
-                                    if session.status
-                                        #validated.status VALIDATED
-                                    else
-                                        #failed.status FAILED
+                            td.v-centered
+                                if session.validated
+                                    #validated.status VALIDATED
+                                else
+                                    #failed.status FAILED
 
         include footer

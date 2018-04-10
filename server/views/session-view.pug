@@ -13,7 +13,7 @@ html(lang='en')
             section#session-infos
                 .v-centered
                     h2 Session Report
-                    if session.status
+                    if session.validated
                         #validated.status VALIDATED
                     else
                         #failed.status FAILED
@@ -41,32 +41,33 @@ html(lang='en')
 
             section#metrics
                 h2 Metrics
-                .v-centered
-                    h3 Frames
-                    if session.status
-                        #validated.status VALIDATED
-                    else
-                        #failed.status FAILED
-                #fpsChartContainer.chartContainer
-                .processings
-                    ul
-                        each processing in session.processings
-                            -
-                                var processingDetails = processing.name +
-                                    (processing.value == undefined ? '' : ': ' + processing.value);
+                each metricsManager in session.metricsManagers
+                    .v-centered
+                        h3 #{metricsManager.name}
+                        if metricsManager.validated
+                            #validated.status VALIDATED
+                        else
+                            #failed.status FAILED
+                    #frame-rate-chart-container.chart-container
+                    .processings
+                        ul
+                            each processing in metricsManager.processings
+                                -
+                                    var processingDetails = processing.name +
+                                        (processing.value == undefined ? '' : ': ' + processing.value);
 
-                            .v-centered
-                                li #{processingDetails}
-                                if processing.status != undefined
-                                    if processing.status
-                                        #validated.status VALIDATED
-                                    else
-                                        #failed.status FAILED
+                                .v-centered
+                                    li #{processingDetails}
+                                    if processing.validated != undefined
+                                        if processing.validated
+                                            #validated.status VALIDATED
+                                        else
+                                            #failed.status FAILED
 
             section#json
                 h2 JSON result
                 pre
-                    code #{JSON.stringify(session,null, 4)}
+                    code #{JSON.stringify(session, null, 4)}
 
         include footer
 
