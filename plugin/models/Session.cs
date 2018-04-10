@@ -39,7 +39,7 @@ namespace Pear {
 
             foreach(MetricsManager metricManager in metricsManagers) {
                 if(metricManager.enabled) {
-                    str += metricManager.ToString();
+                    str += metricManager.ToString() + "\n";
                 }
             }
 
