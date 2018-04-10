@@ -36,7 +36,7 @@ body {
 }
 
 .centered {
-    width: 950px;
+    width: 1200px;
     margin: auto;
 }
 
@@ -188,8 +188,8 @@ header a span {
 
 table {
     border-collapse: collapse;
-    display: flex;
-    justify-content: space-around;
+    margin: auto;
+    white-space: nowrap;
 }
 
 th, td {
@@ -200,7 +200,6 @@ th, td {
 th {
     color:var(--light-1);
     background: var(--green-2);
-    border: 1px solid var(--bgLight-1);
 }
 
 tr:hover {
