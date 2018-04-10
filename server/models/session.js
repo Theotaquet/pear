@@ -47,6 +47,10 @@ function applyProcessings() {
             calculateStatistics(metricsManager);
 
             validateStatistics(metricsManager);
+
+            if(!metricsManager.validated) {
+                session.validated = false;
+            }
         }
     }
 }
@@ -72,7 +76,10 @@ function validateStatistics(metricsManager) {
         x => x.name == metricsManager.name).thresholds;
     for(var i = 0 ; i < thresholds.length ; i++) {
         var statistic = metricsManager.statistics.find(x => x.name == thresholds[i].statistic);
-        statistic.threshold = thresholds[i].value;
+        statistic.threshold = {
+            value: thresholds[i].value,
+            maximum: thresholds[i].maximum
+        }
         if(thresholds[i].maximum) {
             statistic.validated = statistic.value < thresholds[i].value;
         }

@@ -45,20 +45,23 @@ html(lang='en')
                             else
                                 #failed.status FAILED
 
-                        -
-                            formatedName = metricsManager.name.replace(/([A-Z])/g, '-$1')
-                                    .toLowerCase().concat('-chart-container');
-                        div(id=formatedName).chart-container
+                        each statistic in metricsManager.statistics
+                            if statistic.threshold
+                                -
+                                    formatedName =
+                                            metricsManager.name.replace(/([A-Z])/g, '-$1').toLowerCase()
+                                            .concat(statistic.name.replace(/([A-Z])/g, '-$1').toLowerCase())
+                                            .concat('-chart-container');
+                                div(id=formatedName).chart-container
 
                         ul
                             each statistic in metricsManager.statistics
                                 -
                                     var statisticDetails =
                                             statistic.name +
-                                            (statistic.threshold == undefined ?
-                                                    '' : ' (' + statistic.threshold + ')') +
-                                            (statistic.value == undefined ?
-                                                    '' : ': ' + statistic.value);
+                                            (statistic.threshold ?
+                                                    '(' + statistic.threshold.value + ')' : '')
+                                            + ': ' + statistic.value;
 
                                 li.v-centered #{statisticDetails}
                                     if statistic.validated != undefined

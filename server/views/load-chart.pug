@@ -1,25 +1,29 @@
 script.
 
     window.onload = function() {
-        var frameRateManager =
-                !{JSON.stringify(session.metricsManagers.find(x => x.name == 'frameRate'))};
-        var garbageCollectionManager =
-                !{JSON.stringify(session.metricsManagers.find(x => x.name == 'garbageCollection'))};
-        createFrameRateAverageChart(frameRateManager);
-        createGarbageCollectionCountChart(garbageCollectionManager);
+        var metricsManagers = !{JSON.stringify(session.metricsManagers)};
+        for(metricsManager of metricsManagers) {
+            for(statistic of metricsManager.statistics) {
+                if(statistic.threshold) {
+                    createChart(metricsManager, statistic);
+                }
+            }
+        }
     }
 
-    function createFrameRateAverageChart(frameRateManager) {
+    function createChart(metricsManager, statistic) {
         var dataPoints = [];
-        var threshold = frameRateManager.statistics.find(x => x.name == 'average').threshold;
-        frameRateManager.metrics.forEach(function(metric) {
+        var threshold = statistic.threshold;
+        var metricName = metricsManager.name.substring(0, 1).toUpperCase() +
+                metricsManager.name.substring(1).replace(/([A-Z])/g, ' $1').toLowerCase();
+        for(metric of metricsManager.metrics) {
             if(metric.value >= threshold) {
-                var lineColor = "#ffdc32";
-                var color = "#ccff00";
+                var lineColor = '#ffdc32';
+                var color = '#ccff00';
             }
             else {
-                var lineColor = "#ffdc32";
-                var color = "#ff3f00";
+                var lineColor = '#ffdc32';
+                var color = '#ff3f00';
             }
             point = {
                 x: metric.recordTime,
@@ -28,81 +32,36 @@ script.
                 color: color
             };
             dataPoints.push(point);
-        });
+        }
         var content = {
-            theme: "dark2",
+            theme: 'dark2',
             title: {
-                text: "Frame rate chart"
+                text: `${metricName} chart`
             },
             data: [
                 {
-                    type: "line",
+                    type: 'line',
                     dataPoints: dataPoints
                 }
             ],
             axisY: {
-                title: "Frame rate",
+                title: metricName,
                 minimum: 0,
                 stripLines: [
                     {
                         value: threshold,
-                        label: "Minimum average"
+                        label: `${threshold.maximum?'Maximum':'Minimum'} ${threshold}`
                     }
                 ],
             },
             axisX: {
-                title: "Seconds"
+                title: '???'
             }
         };
-        var chart = new CanvasJS.Chart('frame-rate-chart-container', content);
-        chart.render();
-    }
 
-    function createGarbageCollectionCountChart(garbageCollectionManager) {
-        var dataPoints = [];
-        var threshold = garbageCollectionManager.statistics.find(x => x.name == 'average').threshold;
-        garbageCollectionManager.metrics.forEach(function(metric) {
-            if(metric.value <= threshold) {
-                var lineColor = "#ffdc32";
-                var color = "#ccff00";
-            }
-            else {
-                var lineColor = "#ffdc32";
-                var color = "#ff3f00";
-            }
-            point = {
-                x: metric.recordTime,
-                y: metric.value,
-                lineColor: lineColor,
-                color: color
-            };
-            dataPoints.push(point);
-        });
-        var content = {
-            theme: "dark2",
-            title: {
-                text: "Garbage collection chart"
-            },
-            data: [
-                {
-                    type: "line",
-                    dataPoints: dataPoints
-                }
-            ],
-            axisY: {
-                title: "Garbage collection count",
-                minimum: 0,
-                stripLines: [
-                    {
-                        value: threshold,
-                        label: "Maximum average"
-                    }
-                ],
-            },
-            axisX: {
-                title: "Seconds"
-            }
-        };
-        var chart = new CanvasJS.Chart('garbage-collection-chart-container', content);
+        var formatedName = metricsManager.name.replace(/([A-Z])/g, '-$1').toLowerCase()
+                .concat(statistic.name.replace(/([A-Z])/g, '-$1').toLowerCase())
+                .concat('-chart-container');
+        var chart = new CanvasJS.Chart(formatedName, content);
         chart.render();
     }
