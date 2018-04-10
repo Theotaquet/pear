@@ -9,8 +9,7 @@
             "thresholds": [
                 {
                     "statistic": "average",
-                    "value": 60,
-                    "maximum": false
+                    "minimum": 60
                 }
             ]
         },
@@ -19,8 +18,8 @@
             "thresholds": [
                 {
                     "statistic": "average",
-                    "value": 50,
-                    "maximum": true
+                    "minimum": 20,
+                    "maximum": 50
                 }
             ]
         }

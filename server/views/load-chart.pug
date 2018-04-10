@@ -14,8 +14,14 @@ script.
     function createChart(metricsManager, statistic) {
         var dataPoints = [];
         var threshold = statistic.threshold;
-        var metricName = metricsManager.name.substring(0, 1).toUpperCase() +
-                metricsManager.name.substring(1).replace(/([A-Z])/g, ' $1').toLowerCase();
+        var metricType =
+                metricsManager.name
+                        .substring(0, 1)
+                        .toUpperCase() +
+                metricsManager.name
+                        .substring(1)
+                        .replace(/([A-Z])/g, ' $1')
+                        .toLowerCase();
         for(metric of metricsManager.metrics) {
             if(metric.value >= threshold) {
                 var lineColor = '#ffdc32';
@@ -36,7 +42,7 @@ script.
         var content = {
             theme: 'dark2',
             title: {
-                text: `${metricName} chart`
+                text: `${metricType} chart`
             },
             data: [
                 {
@@ -45,12 +51,12 @@ script.
                 }
             ],
             axisY: {
-                title: metricName,
+                title: metricType,
                 minimum: 0,
                 stripLines: [
                     {
                         value: threshold,
-                        label: `${threshold.maximum?'Maximum':'Minimum'} ${threshold}`
+                        label: `${threshold.maximum ? 'Maximum' : 'Minimum'} ${threshold}`
                     }
                 ],
             },
@@ -59,9 +65,14 @@ script.
             }
         };
 
-        var formatedName = metricsManager.name.replace(/([A-Z])/g, '-$1').toLowerCase()
-                .concat(statistic.name.replace(/([A-Z])/g, '-$1').toLowerCase())
-                .concat('-chart-container');
+        var formatedName =
+                metricsManager.name
+                        .replace(/([A-Z])/g, '-$1')
+                        .toLowerCase() +
+                '-' + statistic.name
+                        .replace(/([A-Z])/g, '-$1')
+                        .toLowerCase() +
+                '-chart-container';
         var chart = new CanvasJS.Chart(formatedName, content);
         chart.render();
     }

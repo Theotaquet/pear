@@ -48,20 +48,35 @@ html(lang='en')
                         each statistic in metricsManager.statistics
                             if statistic.threshold
                                 -
-                                    formatedName =
-                                            metricsManager.name.replace(/([A-Z])/g, '-$1').toLowerCase()
-                                            .concat(statistic.name.replace(/([A-Z])/g, '-$1').toLowerCase())
-                                            .concat('-chart-container');
+                                    var formatedName =
+                                            metricsManager.name
+                                                    .replace(/([A-Z])/g, '-$1')
+                                                    .toLowerCase() +
+                                            '-' +  statistic.name
+                                                    .replace(/([A-Z])/g, '-$1')
+                                                    .toLowerCase() +
+                                            '-chart-container';
                                 div(id=formatedName).chart-container
 
                         ul
                             each statistic in metricsManager.statistics
                                 -
+                                    var thresholds = '';
+                                    if(statistic.threshold) {
+                                        thresholds += '(';
+                                        if(statistic.threshold.minimum) {
+                                            thresholds += `min: ${statistic.threshold.minimum}`;
+                                            if(statistic.threshold.maximum) {
+                                                thresholds += ', ';
+                                            }
+                                        }
+                                        if(statistic.threshold.maximum) {
+                                            thresholds += `max: ${statistic.threshold.maximum}`;
+                                        }
+                                        thresholds += ')';
+                                    }
                                     var statisticDetails =
-                                            statistic.name +
-                                            (statistic.threshold ?
-                                                    '(' + statistic.threshold.value + ')' : '')
-                                            + ': ' + statistic.value;
+                                            `${statistic.name}${thresholds}: ${statistic.value}`;
 
                                 li.v-centered #{statisticDetails}
                                     if statistic.validated != undefined

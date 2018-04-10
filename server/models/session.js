@@ -74,21 +74,19 @@ function calculateStatistics(metricsManager) {
 function validateStatistics(metricsManager) {
     var thresholds = configFile.metricsManagersConfiguration.find(
         x => x.name == metricsManager.name).thresholds;
-    for(var i = 0 ; i < thresholds.length ; i++) {
-        var statistic = metricsManager.statistics.find(x => x.name == thresholds[i].statistic);
+    for(threshold of thresholds) {
+        var statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
         statistic.threshold = {
-            value: thresholds[i].value,
-            maximum: thresholds[i].maximum
-        }
-        if(thresholds[i].maximum) {
-            statistic.validated = statistic.value < thresholds[i].value;
-        }
-        else {
-            statistic.validated = statistic.value > thresholds[i].value;
+            minimum: threshold.minimum,
+            maximum: threshold.maximum
         }
 
-        if(!statistic.validated) {
-            metricsManager.validated = false;
+        if((threshold.maximum && statistic.value > threshold.maximum)
+                || (threshold.minimum && statistic.value < threshold.minimum)) {
+            statistic.validated = false;
+        }
+        else {
+            statistic.validated = true;
         }
     }
 }
