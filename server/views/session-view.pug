@@ -44,27 +44,28 @@ html(lang='en')
                                 #validated.status VALIDATED
                             else
                                 #failed.status FAILED
+
                         -
                             formatedName = metricsManager.name.replace(/([A-Z])/g, '-$1')
                                     .toLowerCase().concat('-chart-container');
                         div(id=formatedName).chart-container
-                        .processings
-                            ul
-                                each processing in metricsManager.processings
-                                    -
-                                        var processingDetails =
-                                                processing.name +
-                                                (processing.threshold == undefined ?
-                                                        '' : ' (' + processing.threshold + ')') +
-                                                (processing.value == undefined ?
-                                                        '' : ': ' + processing.value);
 
-                                    li.v-centered #{processingDetails}
-                                        if processing.validated != undefined
-                                            if processing.validated
-                                                #validated.status VALIDATED
-                                            else
-                                                #failed.status FAILED
+                        ul
+                            each statistic in metricsManager.statistics
+                                -
+                                    var statisticDetails =
+                                            statistic.name +
+                                            (statistic.threshold == undefined ?
+                                                    '' : ' (' + statistic.threshold + ')') +
+                                            (statistic.value == undefined ?
+                                                    '' : ': ' + statistic.value);
+
+                                li.v-centered #{statisticDetails}
+                                    if statistic.validated != undefined
+                                        if statistic.validated
+                                            #validated.status VALIDATED
+                                        else
+                                            #failed.status FAILED
 
             section#json
                 h2 JSON result

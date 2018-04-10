@@ -11,8 +11,9 @@ script.
 
     function createFrameRateAverageChart(frameRateManager) {
         var dataPoints = [];
+        var threshold = frameRateManager.statistics.find(x => x.name == 'average').threshold;
         frameRateManager.metrics.forEach(function(metric) {
-            if(metric.value >= frameRateManager.processings.average.threshold) {
+            if(metric.value >= threshold) {
                 var lineColor = "#ffdc32";
                 var color = "#ccff00";
             }
@@ -44,7 +45,7 @@ script.
                 minimum: 0,
                 stripLines: [
                     {
-                        value: frameRateManager.processings.average.threshold,
+                        value: threshold,
                         label: "Minimum average"
                     }
                 ],
@@ -59,8 +60,9 @@ script.
 
     function createGarbageCollectionCountChart(garbageCollectionManager) {
         var dataPoints = [];
+        var threshold = garbageCollectionManager.statistics.find(x => x.name == 'average').threshold;
         garbageCollectionManager.metrics.forEach(function(metric) {
-            if(metric.value <= garbageCollectionManager.processings.count.threshold) {
+            if(metric.value <= threshold) {
                 var lineColor = "#ffdc32";
                 var color = "#ccff00";
             }
@@ -88,12 +90,12 @@ script.
                 }
             ],
             axisY: {
-                title: "GC count",
+                title: "Garbage collection count",
                 minimum: 0,
                 stripLines: [
                     {
-                        value: garbageCollectionManager.processings.count.threshold,
-                        label: "Maximum count"
+                        value: threshold,
+                        label: "Maximum average"
                     }
                 ],
             },

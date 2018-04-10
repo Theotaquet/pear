@@ -32,8 +32,8 @@ const sessionSchema = mongoose.Schema({
 
 sessionSchema.method({
     applyProcessings: applyProcessings,
-    validateFrameRateAverage: validateFrameRateAverage,
-    validateGarbageCollectionCount: validateGarbageCollectionCount
+    calculateStatistics: calculateStatistics,
+    validateStatistics: validateStatistics
 });
 
 function applyProcessings() {
@@ -43,65 +43,46 @@ function applyProcessings() {
         var metricsManager = session.metricsManagers[i]._doc;
         if(metricsManager.enabled) {
             metricsManager.validated = true;
-            metricsManager.processings = {};
-            var config = configFile.metricsManagersConfiguration.find(
-                    x => x.name == metricsManager.name);
 
-            switch(metricsManager.name) {
-                case 'frameRate':
-                    this.validateFrameRateAverage(metricsManager, config.thresholds.average);
-                    break;
-                case 'garbageCollection':
-                    this.validateGarbageCollectionCount(metricsManager, config.thresholds.count);
-                    break;
-            }
+            calculateStatistics(metricsManager);
 
-            if(!metricsManager.validated) {
-                session.validated = false;
-            }
+            validateStatistics(metricsManager);
         }
     }
 }
 
-function validateFrameRateAverage(metricsManager, averageThreshold) {
+function calculateStatistics(metricsManager) {
     var average = 0.;
     var firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
     for(var i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
         average += metricsManager.metrics[i].value;
     }
     average /= metricsManager.metrics.length - firstRelevantMetric;
-    var validated = average >= averageThreshold;
 
-    metricsManager.processings.average = {
-        name: 'Frame rate average',
-        validated: validated,
-        value: average,
-        threshold: averageThreshold
-    };
-
-    if(!validated) {
-        metricsManager.validated = false;
-    }
+    metricsManager.statistics = [
+        {
+            name: 'average',
+            value: average
+        }
+    ]
 }
 
-function validateGarbageCollectionCount(metricsManager, countThreshold) {
-    var validated = true;
-    var firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
-    for(var i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
-        if(metricsManager.metrics[i].value > countThreshold) {
-            validated = false;
-            i = metricsManager.metrics.length;
+function validateStatistics(metricsManager) {
+    var thresholds = configFile.metricsManagersConfiguration.find(
+        x => x.name == metricsManager.name).thresholds;
+    for(var i = 0 ; i < thresholds.length ; i++) {
+        var statistic = metricsManager.statistics.find(x => x.name == thresholds[i].statistic);
+        statistic.threshold = thresholds[i].value;
+        if(thresholds[i].maximum) {
+            statistic.validated = statistic.value < thresholds[i].value;
         }
-    }
+        else {
+            statistic.validated = statistic.value > thresholds[i].value;
+        }
 
-    metricsManager.processings.count = {
-        name: 'Garbage collection count',
-        validated: validated,
-        threshold: countThreshold
-    }
-
-    if(!validated) {
-        metricsManager.validated = false;
+        if(!statistic.validated) {
+            metricsManager.validated = false;
+        }
     }
 }
 

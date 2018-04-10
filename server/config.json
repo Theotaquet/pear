@@ -6,15 +6,23 @@
     "metricsManagersConfiguration": [
         {
             "name": "frameRate",
-            "thresholds": {
-                "average": 60
-            }
+            "thresholds": [
+                {
+                    "statistic": "average",
+                    "value": 60,
+                    "maximum": false
+                }
+            ]
         },
         {
             "name": "garbageCollection",
-            "thresholds": {
-                "count": 20
-            }
+            "thresholds": [
+                {
+                    "statistic": "average",
+                    "value": 50,
+                    "maximum": true
+                }
+            ]
         }
     ]
 }
