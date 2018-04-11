@@ -46,7 +46,7 @@ html(lang='en')
                                 #failed.status FAILED
 
                         each statistic in metricsManager.statistics
-                            if statistic.threshold
+                            if statistic.thresholds
                                 -
                                     var formatedName =
                                             metricsManager.name
@@ -62,16 +62,16 @@ html(lang='en')
                             each statistic in metricsManager.statistics
                                 -
                                     var thresholds = '';
-                                    if(statistic.threshold) {
+                                    if(statistic.thresholds) {
                                         thresholds += '(';
-                                        if(statistic.threshold.minimum) {
-                                            thresholds += `min: ${statistic.threshold.minimum}`;
-                                            if(statistic.threshold.maximum) {
+                                        if(statistic.thresholds.minimum) {
+                                            thresholds += `min: ${statistic.thresholds.minimum}`;
+                                            if(statistic.thresholds.maximum) {
                                                 thresholds += ', ';
                                             }
                                         }
-                                        if(statistic.threshold.maximum) {
-                                            thresholds += `max: ${statistic.threshold.maximum}`;
+                                        if(statistic.thresholds.maximum) {
+                                            thresholds += `max: ${statistic.thresholds.maximum}`;
                                         }
                                         thresholds += ')';
                                     }

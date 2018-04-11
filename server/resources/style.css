@@ -49,6 +49,10 @@ header .v-centered {
     justify-content: space-between;
 }
 
+.align-right {
+    text-align: right;
+}
+
 .status {
     color: var(--light-1);
     font-weight: normal;

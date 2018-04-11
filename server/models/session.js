@@ -76,7 +76,7 @@ function validateStatistics(metricsManager) {
         x => x.name == metricsManager.name).thresholds;
     for(threshold of thresholds) {
         var statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
-        statistic.threshold = {
+        statistic.thresholds = {
             minimum: threshold.minimum,
             maximum: threshold.maximum
         }
@@ -87,6 +87,10 @@ function validateStatistics(metricsManager) {
         }
         else {
             statistic.validated = true;
+        }
+
+        if(!statistic.validated) {
+            metricsManager.validated = false;
         }
     }
 }
