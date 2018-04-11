@@ -37,8 +37,14 @@ namespace Pear {
             SetDuration(ConfigurationManager.session.duration);
             this.metricsManagers = new List<MetricsManager>();
 
-            foreach(MetricsManagerConfiguration metricsManager in ConfigurationManager.metricsManagers) {
-                CreateMetricsManager(new MetricsManager(metricsManager));
+            foreach(MetricsManagerConfiguration metricsManagerConfig in ConfigurationManager.metricsManagers) {
+                string metricsManagerName =
+                        metricsManagerConfig.name.Substring(0, 1).ToUpper() +
+                        metricsManagerConfig.name.Substring(1);
+                Type metricsManagerType = Type.GetType(metricsManagerName);
+                MetricsManager metricsManager =
+                        (MetricsManager) Activator.CreateInstance(metricsManagerType, metricsManagerConfig);
+                CreateMetricsManager(metricsManager);
             }
         }
 

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace Pear {
 
     [Serializable]
-    public class MetricsManager: ICollector {
+    public abstract class MetricsManager : ICollector {
 
         public string name;
         public bool enabled;
@@ -35,9 +35,7 @@ namespace Pear {
             return str;
         }
 
-        public void CollectMetrics() {
-
-        }
+        public abstract void CollectMetrics();
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {
