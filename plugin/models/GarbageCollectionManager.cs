@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,16 @@ namespace Pear {
 		public GarbageCollectionManager(MetricsManagerConfiguration metricsManager) :
 				base(metricsManager) {
 		}
-        public override void CollectMetrics() {
+        public override void CollectMetrics(float lastFrameTime) {
+			base.CollectMetrics(lastFrameTime);
+			int GCCount;
+
+            while(timer > updateFrequency) {
+                GCCount = GC.CollectionCount(0);
+                CreateMetric(new Metric(GCCount, lastFrameTime));
+
+                timer -= updateFrequency;
+            }
         }
     }
 }

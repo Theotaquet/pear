@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public interface ICollector {
+namespace Pear {
 
-    void CollectMetrics();
+    public interface ICollector {
+
+        void CollectMetrics(float lastFrameTime);
+    }
 }

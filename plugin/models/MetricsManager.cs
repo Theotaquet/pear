@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace Pear {
 
@@ -12,11 +13,15 @@ namespace Pear {
         public float updateFrequency;
         public List<Metric> metrics;
 
+        protected float timer;
+
         public MetricsManager(string name, bool enabled, float updateFrequency) {
             this.name = name;
             this.enabled = enabled;
             SetUpdateFrequency(updateFrequency);
             this.metrics = new List<Metric>();
+
+            timer = 0.0f;
         }
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
@@ -24,6 +29,8 @@ namespace Pear {
             this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
             SetUpdateFrequency(float.Parse(metricsManagerConfig.updateFrequency));
             this.metrics = new List<Metric>();
+
+            timer = 0.0f;
         }
 
         public override string ToString() {
@@ -35,7 +42,9 @@ namespace Pear {
             return str;
         }
 
-        public abstract void CollectMetrics();
+        public virtual void CollectMetrics(float lastFrameTime) {
+            timer += Time.time - lastFrameTime;
+        }
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {

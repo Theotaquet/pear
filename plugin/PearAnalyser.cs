@@ -23,13 +23,6 @@ namespace Pear {
         private Session session;
         private float lastFrameTime;
 
-        private MetricsManager frameRatesManager;
-        private int framesCounter;
-        private float frameRateTimer;
-
-        private MetricsManager garbageCollectionManager;
-        private float GCTimer;
-
         void Start() {
             session = new Session(
                     Application.productName,
@@ -44,21 +37,14 @@ namespace Pear {
                     SystemInfo.graphicsMemorySize
             );
             lastFrameTime = 0.0f;
-
-            frameRatesManager = session.ReadMetricsManager("frameRate");
-            framesCounter = 0;
-            frameRateTimer = 0.0f;
-
-            garbageCollectionManager = session.ReadMetricsManager("garbageCollection");
-            GCTimer = 0.0f;
         }
 
         void Update() {
-            if(frameRatesManager.enabled)
-                CollectFrameRate();
-
-            if(garbageCollectionManager.enabled)
-                CollectGarbageCollection();
+            foreach(MetricsManager metricsManager in session.metricsManagers) {
+                if(metricsManager.enabled) {
+                    metricsManager.CollectMetrics(lastFrameTime);
+                }
+            }
 
             lastFrameTime = Time.time;
 
@@ -74,37 +60,6 @@ namespace Pear {
             PostMetrics(sessionJSONString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
-        }
-
-        private void CollectFrameRate() {
-            int frameRate;
-            framesCounter++;
-            frameRateTimer += Time.time - lastFrameTime;
-
-            //test if the limit of updates per second is respected
-            while(frameRateTimer > frameRatesManager.updateFrequency) {
-                frameRate = (int) (framesCounter / frameRateTimer);
-
-                framesCounter = 0;
-                //the overflow is kept in memory
-                //if frameRateTimer has exceeded updateFrequency
-                frameRateTimer -= frameRatesManager.updateFrequency;
-
-                frameRatesManager.CreateMetric(new Metric(frameRate, lastFrameTime));
-            }
-        }
-
-        private void CollectGarbageCollection() {
-            int count;
-            GCTimer += Time.time - lastFrameTime;
-
-            while(GCTimer > garbageCollectionManager.updateFrequency) {
-                count = GC.CollectionCount(0);
-
-                GCTimer -= garbageCollectionManager.updateFrequency;
-
-                garbageCollectionManager.CreateMetric(new Metric(count, lastFrameTime));
-            }
         }
 
         private void PostMetrics(string JSONString) {
