@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Pear {
 
     [Serializable]
-    public class MetricsManager {
+    public class MetricsManager: ICollector {
 
         public string name;
         public bool enabled;
@@ -18,19 +19,24 @@ namespace Pear {
             this.metrics = new List<Metric>();
         }
 
-        public MetricsManager(MetricsManagerConfiguration metricsManager) {
-            this.name = metricsManager.name;
-            this.enabled = Boolean.Parse(metricsManager.enabled);
-            SetUpdateFrequency(float.Parse(metricsManager.updateFrequency));
+        public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
+            this.name = metricsManagerConfig.name;
+            this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
+            SetUpdateFrequency(float.Parse(metricsManagerConfig.updateFrequency));
             this.metrics = new List<Metric>();
         }
 
         public override string ToString() {
-            string str = name + " - update frequency: " + updateFrequency + " ms\n";
+            string formatedName = new Regex(@"([A-Z]+)").Replace(name, "-$1").ToLower();
+            string str = formatedName + " - update frequency: " + updateFrequency + " s\n";
 			foreach(Metric metric in metrics) {
                 str += metric.ToString() + "\n";
             }
             return str;
+        }
+
+        public void CollectMetrics() {
+
         }
 
         public bool CreateMetric(Metric metric) {
