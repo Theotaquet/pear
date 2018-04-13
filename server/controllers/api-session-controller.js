@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const http = require('http');
 const apiSessionDAO = require('../dao/api-session-dao');
 const Session = require('../models/session');
+const reporter = require('../reporter');
 
 function get(req, res, next) {
     if(!req.params.sessionID) {
@@ -55,7 +57,28 @@ function post(req, res, next)  {
         if(err)
             return next(err);
         res.status(201).json(session);
+
+        const fullUrl = `${req.protocol}://${req.get('host')}/api/sessions/${session._id}`;
+
+        http.get(fullUrl, function(res) {
+            var rawData = '';
+            res.on('data', function(data) {
+                rawData += data;
+            });
+            res.on('end', function() {
+                var parsedData = JSON.parse(rawData);
+                if(!parsedData) {
+                    console.log('**WEB-APP log**');
+                    return next(new NotFound());
+                }
+                if(res.statusCode != 200) {
+                    return next(parsedData)
+                }
+                reporter.report(parsedData);
+            });
+        });
     });
+
 }
 
 module.exports.get = get;
