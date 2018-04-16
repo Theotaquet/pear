@@ -1,3 +1,4 @@
 **/node_modules
+**/.vscode
+pear.code-workspace
 plugin/sessionLogs.txt
-.meta
