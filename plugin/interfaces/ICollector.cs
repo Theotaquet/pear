@@ -4,6 +4,7 @@ namespace Pear {
 
     public interface ICollector {
 
-        void CollectMetrics(float lastFrameTime);
+        void CollectMetrics();
+        int CalculateMetric();
     }
 }

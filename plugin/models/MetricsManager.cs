@@ -15,15 +15,6 @@ namespace Pear {
 
         protected float timer;
 
-        public MetricsManager(string name, bool enabled, float updateFrequency) {
-            this.name = name;
-            this.enabled = enabled;
-            SetUpdateFrequency(updateFrequency);
-            this.metrics = new List<Metric>();
-
-            timer = 0.0f;
-        }
-
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             this.name = metricsManagerConfig.name;
             this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
@@ -42,9 +33,22 @@ namespace Pear {
             return str;
         }
 
-        public virtual void CollectMetrics(float lastFrameTime) {
-            timer += Time.time - lastFrameTime;
+        public void CollectMetrics() {
+            timer += Time.deltaTime;
+            int metric;
+
+            //test if the limit of updates per second is respected
+            while(timer > updateFrequency) {
+                metric = CalculateMetric();
+                CreateMetric(new Metric(metric, Time.time));
+
+                //the overflow is kept in memory
+                //if timer has exceeded updateFrequency
+                timer -= updateFrequency;
+            }
         }
+
+        public abstract int CalculateMetric();
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {
