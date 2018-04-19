@@ -40,7 +40,7 @@ namespace Pear {
             Update();
 
             //test if the limit of updates per second is respected
-            while(timer > updateFrequency) {
+            while(timer >= updateFrequency) {
                 metric = CalculateMetric();
                 CreateMetric(new Metric(metric, Time.time));
 
