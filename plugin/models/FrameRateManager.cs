@@ -12,6 +12,10 @@ namespace Pear {
 				base(metricsManager) {
 		}
 
+        public override void Update() {
+            framesCounter++;
+        }
+
         public override int CalculateMetric() {
             int frameRate = (int) (framesCounter / timer);
             framesCounter = 0;

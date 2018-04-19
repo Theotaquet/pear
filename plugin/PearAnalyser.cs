@@ -21,7 +21,6 @@ namespace Pear {
                 "Request failed";
 
         private Session session;
-        private float actualDuration;
 
         void Start() {
             session = new Session(
@@ -36,7 +35,6 @@ namespace Pear {
                     SystemInfo.graphicsDeviceName,
                     SystemInfo.graphicsMemorySize
             );
-            actualDuration = 0.0f;
         }
 
         void Update() {
@@ -46,16 +44,13 @@ namespace Pear {
                 }
             }
 
-            actualDuration = Time.time;
-
-            if(actualDuration >= session.duration) {
-                actualDuration = session.duration;
+            if(Time.time >= session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-            session.duration = (uint) (actualDuration * 1000);
+            session.duration = (uint) Math.Min(session.duration, Time.time) * 1000;
             string sessionJSONString = JsonUtility.ToJson(session);
             PostMetrics(sessionJSONString);
             PearToolbox.AddToLog(session.ToString());

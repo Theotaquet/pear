@@ -37,6 +37,8 @@ namespace Pear {
             timer += Time.deltaTime;
             int metric;
 
+            Update();
+
             //test if the limit of updates per second is respected
             while(timer > updateFrequency) {
                 metric = CalculateMetric();
@@ -46,6 +48,10 @@ namespace Pear {
                 //if timer has exceeded updateFrequency
                 timer -= updateFrequency;
             }
+        }
+
+        public virtual void Update() {
+
         }
 
         public abstract int CalculateMetric();
