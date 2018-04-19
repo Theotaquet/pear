@@ -1,18 +1,46 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { SessionsListComponent } from './sessions-list/sessions-list.component';
+import { SessionComponent } from './session/session.component';
 
+import { SessionService } from './session.service';
+import { FormatMetricsManagerNamePipe } from './format-metrics-manager-name.pipe';
+import { FormatChartNamePipe } from './format-chart-name.pipe';
+import { FormatStatisticNamePipe } from './format-statistic-name.pipe';
+
+const appRoutes: Routes = [
+  { path: '', redirectTo: 'sessions', pathMatch: 'full' },
+  { path: 'sessions', component: SessionsListComponent },
+  { path: 'sessions/:sessionId', component: SessionComponent }
+]
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent,
+    FooterComponent,
+    SessionsListComponent,
+    SessionComponent,
+    FormatMetricsManagerNamePipe,
+    FormatChartNamePipe,
+    FormatStatisticNamePipe
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [
+    SessionService,
+    FormatMetricsManagerNamePipe,
+    FormatChartNamePipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

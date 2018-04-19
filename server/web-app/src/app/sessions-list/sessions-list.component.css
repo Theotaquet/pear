@@ -1,0 +1,48 @@
+/* Sessions list */
+
+.responsive-table {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+    white-space: nowrap;
+}
+
+th, td {
+    padding: 10px 5px 10px 5px;
+    border: 1px solid var(--light-2);
+}
+
+th {
+    color:var(--light-1);
+    text-transform: uppercase;
+    background: var(--green-2);
+}
+
+tr:hover {
+    background: var(--light-3);
+}
+
+td a {
+    color: var(--green-3);
+    text-decoration: none;
+}
+
+td a:visited {
+    color: var(--green-3);
+}
+
+td a:hover {
+    color: var(--green-4);
+}
+
+.status {
+    font-size: 0.6em;
+    margin: auto;
+}
+
+.align-right {
+    text-align: right;
+}
