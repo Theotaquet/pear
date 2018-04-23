@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace Pear {
 
     [Serializable]
-    public class MetricsManager: ICollector {
+    public abstract class MetricsManager : ICollector {
 
         public string name;
         public bool enabled;
         public float updateFrequency;
         public List<Metric> metrics;
 
-        public MetricsManager(string name, bool enabled, float updateFrequency) {
-            this.name = name;
-            this.enabled = enabled;
-            SetUpdateFrequency(updateFrequency);
-            this.metrics = new List<Metric>();
-        }
+        protected float timer;
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             this.name = metricsManagerConfig.name;
             this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
             SetUpdateFrequency(float.Parse(metricsManagerConfig.updateFrequency));
             this.metrics = new List<Metric>();
+
+            timer = 0.0f;
         }
 
         public override string ToString() {
@@ -36,8 +34,27 @@ namespace Pear {
         }
 
         public void CollectMetrics() {
+            timer += Time.deltaTime;
+            int metric;
+
+            Update();
+
+            //test if the limit of updates per second is respected
+            while(timer >= updateFrequency) {
+                metric = CalculateMetric();
+                CreateMetric(new Metric(metric, Time.time));
+
+                //the overflow is kept in memory
+                //if timer has exceeded updateFrequency
+                timer -= updateFrequency;
+            }
+        }
+
+        public virtual void Update() {
 
         }
+
+        public abstract int CalculateMetric();
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {

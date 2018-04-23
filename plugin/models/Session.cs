@@ -37,8 +37,15 @@ namespace Pear {
             SetDuration(ConfigurationManager.session.duration);
             this.metricsManagers = new List<MetricsManager>();
 
-            foreach(MetricsManagerConfiguration metricsManager in ConfigurationManager.metricsManagers) {
-                CreateMetricsManager(new MetricsManager(metricsManager));
+            foreach(MetricsManagerConfiguration metricsManagerConfig in ConfigurationManager.metricsManagers) {
+                string metricsManagerName =
+                        metricsManagerConfig.name.Substring(0, 1).ToUpper() +
+                        metricsManagerConfig.name.Substring(1) +
+                        "Manager";
+                Type metricsManagerType = Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
+                MetricsManager metricsManager =
+                        (MetricsManager) Activator.CreateInstance(metricsManagerType, metricsManagerConfig);
+                AddMetricsManager(metricsManager);
             }
         }
 
@@ -56,30 +63,30 @@ namespace Pear {
                     systemMemory, GPU, GPUMemory, DateTime.Parse(startDate), duration
             );
 
-            foreach(MetricsManager metricManager in metricsManagers) {
-                if(metricManager.enabled) {
-                    str += metricManager.ToString() + "\n";
+            foreach(MetricsManager metricsManager in metricsManagers) {
+                if(metricsManager.enabled) {
+                    str += metricsManager.ToString() + "\n";
                 }
             }
 
             return str.Remove(str.Length - 2, 2);
         }
 
-        public bool CreateMetricsManager(MetricsManager metricManager) {
-            if(!metricsManagers.Contains(metricManager)) {
-                metricsManagers.Add(metricManager);
+        public bool AddMetricsManager(MetricsManager metricsManager) {
+            if(!metricsManagers.Contains(metricsManager)) {
+                metricsManagers.Add(metricsManager);
                 return true;
             }
             return false;
         }
 
-        public MetricsManager ReadMetricsManager(string name) {
+        public MetricsManager FindMetricsManager(string name) {
             return metricsManagers.Find(x => x.name == name);
         }
 
-        public bool DeleteMetricManager(MetricsManager metricManager) {
-            if(metricsManagers.Contains(metricManager))
-                return metricsManagers.Remove(metricManager);
+        public bool RemoveMetricsManager(MetricsManager metricsManager) {
+            if(metricsManagers.Contains(metricsManager))
+                return metricsManagers.Remove(metricsManager);
             return false;
         }
 
