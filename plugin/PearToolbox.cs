@@ -7,12 +7,12 @@ namespace Pear {
     public static class PearToolbox {
 
         private static readonly string StartMessage =
-                DateTime.Now + " - PeAR activated in " +
+                DateTime.Now + " - Pe.A.R. activated in " +
                 (Application.isEditor ? "editor" : "build") + " mode.\n" +
                 "You can find the full console output " +
                 "in the default Unity log files folder.";
         private static readonly string StopMessage =
-                "PeAR hasn't been initialised.";
+                "Pe.A.R. hasn't been initialised.";
         private static bool LoggedSession = false;
         private static string Log = "";
 

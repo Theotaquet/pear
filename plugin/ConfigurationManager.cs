@@ -76,7 +76,7 @@ namespace Pear {
     [Serializable]
     public class SessionConfiguration {
 
-        public string APIServerURL;
+        public string apiServerUrl;
         public int duration;
     }
 

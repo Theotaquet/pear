@@ -23,8 +23,8 @@ const sessionSchema = mongoose.Schema({
     device: String,
     processorType: String,
     systemMemory: Number,
-    GPU: String,
-    GPUMemory: Number,
+    gpu: String,
+    gpuMemory: Number,
     startDate: Date,
     duration: Number,
     metricsManagers: [metricsManagerSchema]

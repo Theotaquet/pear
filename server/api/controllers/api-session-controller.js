@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const apiSessionDAO = require('../dao/api-session-dao');
+const apiSessionDao = require('../dao/api-session-dao');
 const Session = require('../models/session');
 
 function get(req, res, next) {
     if(!req.params.sessionID) {
-        apiSessionDAO.getAllSessions(req, function (err, sessions) {
+        apiSessionDao.getAllSessions(req, function (err, sessions) {
             if(err) {
                 return next(err);
             }
@@ -17,7 +17,7 @@ function get(req, res, next) {
         });
     }
     else {
-        apiSessionDAO.getSession(req, function(err, session) {
+        apiSessionDao.getSession(req, function(err, session) {
             if(err) {
                 return next(err);
             }
@@ -44,14 +44,14 @@ function post(req, res, next)  {
         device: req.body.device,
         processorType: req.body.processorType,
         systemMemory: req.body.systemMemory,
-        GPU: req.body.GPU,
-        GPUMemory: req.body.GPUMemory,
+        gpu: req.body.gpu,
+        gpuMemory: req.body.gpuMemory,
         startDate: new Date(req.body.startDate),
         duration: req.body.duration,
         metricsManagers: req.body.metricsManagers
     } );
 
-    apiSessionDAO.createSession(session, function(err, session) {
+    apiSessionDao.createSession(session, function(err, session) {
         if(err)
             return next(err);
         res.status(201).json(session);

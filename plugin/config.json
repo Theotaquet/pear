@@ -1,6 +1,6 @@
 {
     "sessionConfiguration": {
-        "APIServerURL": "localhost:3000/api/sessions",
+        "apiServerUrl": "localhost:3000/api/sessions",
         "duration": 60000
     },
     "metricsManagersConfiguration": [

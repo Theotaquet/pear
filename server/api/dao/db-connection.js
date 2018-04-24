@@ -3,7 +3,7 @@ const configFile = require('../config.json');
 const BadGateway = require('../errors').BadGateway;
 
 function connect(next) {
-    const url = configFile.serverConfiguration.mongoDBServerURL;
+    const url = configFile.serverConfiguration.mongoDbServerUrl;
     const dbName = configFile.serverConfiguration.dbName;
     mongoose.connect(`${url}/${dbName}`);
     console.log('**API log**');

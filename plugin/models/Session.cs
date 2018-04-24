@@ -14,15 +14,15 @@ namespace Pear {
         public string device;
         public string processorType;
         public int systemMemory;
-        public string GPU;
-        public int GPUMemory;
+        public string gpu;
+        public int gpuMemory;
         public string startDate;
         public float duration;
         public List<MetricsManager> metricsManagers;
 
         public Session(string game, string build, string scene, string platform,
                 string unityVersion, string device, string processorType,
-                int systemMemory, string GPU, int GPUMemory) {
+                int systemMemory, string gpu, int gpuMemory) {
             this.game = game;
             this.build = build;
             this.scene = scene;
@@ -31,8 +31,8 @@ namespace Pear {
             this.device = device;
             this.processorType = processorType;
             this.systemMemory = systemMemory;
-            this.GPU = GPU;
-            this.GPUMemory = GPUMemory;
+            this.gpu = gpu;
+            this.gpuMemory = gpuMemory;
             this.startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
             SetDuration(ConfigurationManager.session.duration);
             this.metricsManagers = new List<MetricsManager>();
@@ -60,7 +60,7 @@ namespace Pear {
                     "Metrics\n" +
                     "-------\n\n",
                     game, build, scene, platform, unityVersion, device, processorType,
-                    systemMemory, GPU, GPUMemory, DateTime.Parse(startDate), duration
+                    systemMemory, gpu, gpuMemory, DateTime.Parse(startDate), duration
             );
 
             foreach(MetricsManager metricsManager in metricsManagers) {
