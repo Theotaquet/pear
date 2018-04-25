@@ -25,7 +25,9 @@ namespace Pear {
         }
 
         public override string ToString() {
-            string formatedName = new Regex(@"([A-Z]+)").Replace(name, "-$1").ToLower();
+            string formatedName =
+                    name.Substring(0, 1).ToUpper() +
+                    new Regex(@"([A-Z]+)").Replace(name.Substring(1), " $1");
             string str = formatedName + " - update frequency: " + updateFrequency + " s\n";
 			foreach(Metric metric in metrics) {
                 str += metric.ToString() + "\n";

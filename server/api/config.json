@@ -1,7 +1,7 @@
 {
     "serverConfiguration": {
         "mongoDbServerUrl": "mongodb://localhost:27017",
-        "dbName": "pearDb"
+        "dbName": "pearDB"
     },
     "metricsManagersConfiguration": [
         {
