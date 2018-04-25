@@ -57,7 +57,8 @@ namespace Pear {
         }
 
         private void PostMetrics(string jsonString) {
-            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.session.apiServerUrl, "POST");
+            UnityWebRequest request =
+                    new UnityWebRequest(ConfigurationManager.session.apiServerUrl, "POST");
             byte[] bodyRaw = new UTF8Encoding().GetBytes(jsonString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");

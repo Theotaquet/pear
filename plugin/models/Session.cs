@@ -37,14 +37,17 @@ namespace Pear {
             SetDuration(ConfigurationManager.session.duration);
             this.metricsManagers = new List<MetricsManager>();
 
-            foreach(MetricsManagerConfiguration metricsManagerConfig in ConfigurationManager.metricsManagers) {
+            foreach(MetricsManagerConfiguration metricsManagerConfig
+                    in ConfigurationManager.metricsManagers) {
                 string metricsManagerName =
                         metricsManagerConfig.name.Substring(0, 1).ToUpper() +
                         metricsManagerConfig.name.Substring(1) +
                         "Manager";
-                Type metricsManagerType = Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
+                Type metricsManagerType =
+                        Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
                 MetricsManager metricsManager =
-                        (MetricsManager) Activator.CreateInstance(metricsManagerType, metricsManagerConfig);
+                        (MetricsManager) Activator
+                        .CreateInstance(metricsManagerType, metricsManagerConfig);
                 AddMetricsManager(metricsManager);
             }
         }
