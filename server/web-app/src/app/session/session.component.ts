@@ -25,7 +25,7 @@ export class SessionComponent implements OnInit {
   ngOnInit() {
     this.sessionService.getSession(this.route.snapshot.params['sessionId'])
         .subscribe(session => {
-          this.session = session;
+            this.session = session;
         }
     );
   }

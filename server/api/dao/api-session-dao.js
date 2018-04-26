@@ -31,7 +31,7 @@ function getSession(req, next) {
             return next(err);
         }
         else {
-            var id = req.params.sessionID;
+            const id = req.params.sessionID;
             if(id == 'last')
                 Session.findOne(req.query).sort('-startDate').exec(processResult);
             else

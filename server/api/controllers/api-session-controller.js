@@ -8,7 +8,7 @@ function get(req, res, next) {
             if(err) {
                 return next(err);
             }
-            var processedSessions = [];
+            const processedSessions = [];
             sessions.forEach(function(session) {
                 session.applyProcessings();
                 processedSessions.push(session._doc);
