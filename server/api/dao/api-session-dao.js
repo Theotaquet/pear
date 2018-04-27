@@ -32,10 +32,12 @@ function getSession(req, next) {
         }
         else {
             const id = req.params.sessionID;
-            if(id == 'last')
+            if(id == 'last') {
                 Session.findOne(req.query).sort('-startDate').exec(processResult);
-            else
+            }
+            else {
                 Session.findById(id, processResult);
+            }
 
             function processResult(err, session) {
                 db.close();

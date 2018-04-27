@@ -69,8 +69,9 @@ namespace Pear {
             while(!requestDone) {
                 if(async.isDone) {
                     string response;
-                    if(request.isNetworkError)
+                    if(request.isNetworkError) {
                         response = request.error + "";
+                    }
 
                     var responses = new Dictionary<long, string> ();
                     responses.Add(0, noCode);
@@ -78,10 +79,12 @@ namespace Pear {
                     responses.Add(401, code401);
 
                     string value;
-                    if(responses.TryGetValue(request.responseCode, out value))
+                    if(responses.TryGetValue(request.responseCode, out value)) {
                         response = value;
-                    else
+                    }
+                    else {
                         response = otherCode + " (status:" + request.responseCode + ").";
+                    }
 
                     PearToolbox.AddToLog(response);
                     requestDone = true;

@@ -26,8 +26,9 @@ namespace Pear {
             try {
                 try {
                     if(HasArg("-pear")) {
-                        if(HasArg("-log"))
+                        if(HasArg("-log")) {
                             LoggedSession = true;
+                        }
                         AddToLog(StartMessage);
                         ConfigurationManager.ReadConfigFile();
                         GameObject sceneLoader = new GameObject("SceneLoader");
@@ -55,8 +56,9 @@ namespace Pear {
         public static string GetArg(string name) {
             string[] args = Environment.GetCommandLineArgs();
             int index = Array.IndexOf(args, name);
-            if(index > -1 && args.Length > index + 1)
+            if(index > -1 && args.Length > index + 1) {
                 return args[index + 1];
+            }
             return null;
         }
 

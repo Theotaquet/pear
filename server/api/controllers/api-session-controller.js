@@ -52,8 +52,9 @@ function post(req, res, next)  {
     } );
 
     apiSessionDao.createSession(session, (err, session) => {
-        if(err)
+        if(err) {
             return next(err);
+        }
         res.status(201).json(session);
     });
 }

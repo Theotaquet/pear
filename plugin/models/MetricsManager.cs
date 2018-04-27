@@ -67,16 +67,19 @@ namespace Pear {
         }
 
         public bool DeleteMetric(Metric metric) {
-            if(metrics.Contains(metric))
+            if(metrics.Contains(metric)) {
                 return metrics.Remove(metric);
+            }
             return false;
         }
 
         public void SetUpdateFrequency(float updateFrequency) {
-            if(updateFrequency > 0)
-                    this.updateFrequency = updateFrequency / 1000;
-            else
+            if(updateFrequency > 0) {
+                this.updateFrequency = updateFrequency / 1000;
+            }
+            else {
                 throw new NegativeNullUpdateFrequencyException();
+            }
         }
     }
 }

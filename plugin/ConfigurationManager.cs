@@ -64,7 +64,7 @@ namespace Pear {
             foreach(FieldInfo field in obj.GetType().GetFields()) {
                 if(field.GetValue(obj) == null) {
                     emptyParameters.Add(
-                        field.Name.Substring(0, 1).ToLower() + field.Name.Substring(1));
+                            field.Name.Substring(0, 1).ToLower() + field.Name.Substring(1));
                     return true;
                 }
             }

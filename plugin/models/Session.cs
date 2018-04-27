@@ -88,16 +88,19 @@ namespace Pear {
         }
 
         public bool RemoveMetricsManager(MetricsManager metricsManager) {
-            if(metricsManagers.Contains(metricsManager))
+            if(metricsManagers.Contains(metricsManager)) {
                 return metricsManagers.Remove(metricsManager);
+            }
             return false;
         }
 
         public void SetDuration(float duration) {
-            if(duration > 0)
-                    this.duration = duration / 1000;
-            else
+            if(duration > 0) {
+                this.duration = duration / 1000;
+            }
+            else {
                 throw new NegativeNullDurationException();
+            }
         }
     }
 }
