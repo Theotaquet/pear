@@ -4,12 +4,12 @@ const Session = require('../models/session');
 
 function get(req, res, next) {
     if(!req.params.sessionID) {
-        apiSessionDao.getAllSessions(req, function (err, sessions) {
+        apiSessionDao.getAllSessions(req, (err, sessions) => {
             if(err) {
                 return next(err);
             }
             const processedSessions = [];
-            sessions.forEach(function(session) {
+            sessions.forEach(session => {
                 session.applyProcessings();
                 processedSessions.push(session._doc);
             });
@@ -17,7 +17,7 @@ function get(req, res, next) {
         });
     }
     else {
-        apiSessionDao.getSession(req, function(err, session) {
+        apiSessionDao.getSession(req, (err, session) => {
             if(err) {
                 return next(err);
             }
@@ -51,7 +51,7 @@ function post(req, res, next)  {
         metricsManagers: req.body.metricsManagers
     } );
 
-    apiSessionDao.createSession(session, function(err, session) {
+    apiSessionDao.createSession(session, (err, session) => {
         if(err)
             return next(err);
         res.status(201).json(session);

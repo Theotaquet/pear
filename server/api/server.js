@@ -10,23 +10,23 @@ app
 
 .use(bodyParser.json())
 
-.get('/favicon.ico', function(req, res, next) {
+.get('/favicon.ico', (req, res, next) => {
     res.set('Content-Type', 'image/x-icon');
     res.end();
 })
 
 .use('/api/sessions', apiSessionRouter)
 
-.use(function(req, res, next) {
+.use((req, res, next) => {
     next(new NotFound());
 })
 
-.use(function(err, req, res, next) {
+.use((err, req, res, next) => {
     console.error(err);
     console.error(err.stack);
     res.status(err.status || 500).json(err);
 })
 
-.listen(port, function() {
+.listen(port, () => {
     console.log(`\nPe.A.R. RESTful API and web application server started on: ${port}\n`);
 });
