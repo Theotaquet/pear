@@ -7,8 +7,6 @@ function getAllSessions(req, next) {
             return next(err);
         }
         else {
-            Session.find(req.query).sort('-startDate').exec(processResult);
-
             var processResult = function(err, sessions) {
                 db.close();
                 if(sessions.length == 0) {
@@ -21,6 +19,8 @@ function getAllSessions(req, next) {
                 }
                 return next(err, sessions);
             };
+
+            Session.find(req.query).sort('-startDate').exec(processResult);
         }
     });
 }
@@ -32,13 +32,6 @@ function getSession(req, next) {
         }
         else {
             const id = req.params.sessionID;
-            if(id == 'last') {
-                Session.findOne(req.query).sort('-startDate').exec(processResult);
-            }
-            else {
-                Session.findById(id, processResult);
-            }
-
             var processResult = function (err, session) {
                 db.close();
                 if(!session) {
@@ -51,6 +44,13 @@ function getSession(req, next) {
                 }
                 return next(err, session);
             };
+
+            if(id == 'last') {
+                Session.findOne(req.query).sort('-startDate').exec(processResult);
+            }
+            else {
+                Session.findById(id, processResult);
+            }
         }
     });
 }

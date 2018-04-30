@@ -34,10 +34,10 @@ app
 
     .use((req, res) => {
         if(allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-            res.sendFile(`${req.url}`, {root: '../web-app/dist/'});
+            res.sendFile(`${req.url}`, {root: 'web-app/dist/'});
         }
         else {
-            res.sendFile('index.html', {root: '../web-app/dist/'});
+            res.sendFile('index.html', {root: 'web-app/dist/'});
         }
     })
 
