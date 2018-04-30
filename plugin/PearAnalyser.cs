@@ -1,10 +1,9 @@
-﻿using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 namespace Pear {
 
@@ -51,15 +50,16 @@ namespace Pear {
 
         void OnDisable() {
             session.duration = (uint) Math.Min(session.duration, Time.time) * 1000;
-            string sessionJSONString = JsonUtility.ToJson(session);
-            PostMetrics(sessionJSONString);
+            string sessionJsonString = JsonUtility.ToJson(session);
+            PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
         }
 
-        private void PostMetrics(string JSONString) {
-            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.session.APIServerURL, "POST");
-            byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
+        private void PostMetrics(string jsonString) {
+            UnityWebRequest request =
+                    new UnityWebRequest(ConfigurationManager.session.apiServerUrl, "POST");
+            byte[] bodyRaw = new UTF8Encoding().GetBytes(jsonString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");
 
@@ -69,8 +69,9 @@ namespace Pear {
             while(!requestDone) {
                 if(async.isDone) {
                     string response;
-                    if(request.isNetworkError)
+                    if(request.isNetworkError) {
                         response = request.error + "";
+                    }
 
                     var responses = new Dictionary<long, string> ();
                     responses.Add(0, noCode);
@@ -78,10 +79,12 @@ namespace Pear {
                     responses.Add(401, code401);
 
                     string value;
-                    if(responses.TryGetValue(request.responseCode, out value))
+                    if(responses.TryGetValue(request.responseCode, out value)) {
                         response = value;
-                    else
+                    }
+                    else {
                         response = otherCode + " (status:" + request.responseCode + ").";
+                    }
 
                     PearToolbox.AddToLog(response);
                     requestDone = true;

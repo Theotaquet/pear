@@ -7,12 +7,12 @@ namespace Pear {
     public static class PearToolbox {
 
         private static readonly string StartMessage =
-                DateTime.Now + " - PeAR activated in " +
+                DateTime.Now + " - Pe.A.R. activated in " +
                 (Application.isEditor ? "editor" : "build") + " mode.\n" +
                 "You can find the full console output " +
                 "in the default Unity log files folder.";
         private static readonly string StopMessage =
-                "PeAR hasn't been initialised.";
+                "Pe.A.R. hasn't been initialised.";
         private static bool LoggedSession = false;
         private static string Log = "";
 
@@ -26,8 +26,9 @@ namespace Pear {
             try {
                 try {
                     if(HasArg("-pear")) {
-                        if(HasArg("-log"))
+                        if(HasArg("-log")) {
                             LoggedSession = true;
+                        }
                         AddToLog(StartMessage);
                         ConfigurationManager.ReadConfigFile();
                         GameObject sceneLoader = new GameObject("SceneLoader");
@@ -55,8 +56,9 @@ namespace Pear {
         public static string GetArg(string name) {
             string[] args = Environment.GetCommandLineArgs();
             int index = Array.IndexOf(args, name);
-            if(index > -1 && args.Length > index + 1)
+            if(index > -1 && args.Length > index + 1) {
                 return args[index + 1];
+            }
             return null;
         }
 

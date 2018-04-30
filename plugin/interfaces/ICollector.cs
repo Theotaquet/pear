@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Pear {
+﻿namespace Pear {
 
     public interface ICollector {
 

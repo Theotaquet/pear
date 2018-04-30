@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatStatisticNamePipe implements PipeTransform {
 
   transform(statistic: any): string {
-    var thresholds = '';
+    let thresholds = '';
     if(statistic.thresholds) {
       thresholds += '(';
       if(statistic.thresholds.minimum) {
