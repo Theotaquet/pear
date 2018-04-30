@@ -9,7 +9,7 @@ function connect(next) {
     console.log('**API log**');
 
     const db = mongoose.connection;
-    db.on('error', err => {
+    db.on('error', () => {
         return next(new BadGateway('The connection to MongoDB server has failed'));
     });
     db.once('open', () => {

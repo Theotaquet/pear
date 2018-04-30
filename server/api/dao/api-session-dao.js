@@ -9,18 +9,18 @@ function getAllSessions(req, next) {
         else {
             Session.find(req.query).sort('-startDate').exec(processResult);
 
-            function processResult(err, sessions) {
+            var processResult = function(err, sessions) {
                 db.close();
                 if(sessions.length == 0) {
                     console.log('No document returned from the database.');
                 }
                 else if(!err) {
                     console.log(`${sessions.length} document(s) returned` +
-                            ` from ${Session.collection.name} in ${Session.db.name}:`);
+                        ` from ${Session.collection.name} in ${Session.db.name}:`);
                     console.log(`${sessions}\n`);
                 }
                 return next(err, sessions);
-            }
+            };
         }
     });
 }
@@ -39,7 +39,7 @@ function getSession(req, next) {
                 Session.findById(id, processResult);
             }
 
-            function processResult(err, session) {
+            var processResult = function (err, session) {
                 db.close();
                 if(!session) {
                     console.log('No document returned from the database.');
@@ -50,9 +50,9 @@ function getSession(req, next) {
                     console.log(`${session}\n`);
                 }
                 return next(err, session);
-            }
+            };
         }
-    })
+    });
 }
 
 function createSession(session, next) {

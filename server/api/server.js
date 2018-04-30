@@ -8,25 +8,25 @@ const port = process.env.PORT || 3000;
 
 app
 
-.use(bodyParser.json())
+    .use(bodyParser.json())
 
-.get('/favicon.ico', (req, res, next) => {
-    res.set('Content-Type', 'image/x-icon');
-    res.end();
-})
+    .get('/favicon.ico', (req, res) => {
+        res.set('Content-Type', 'image/x-icon');
+        res.end();
+    })
 
-.use('/api/sessions', apiSessionRouter)
+    .use('/api/sessions', apiSessionRouter)
 
-.use((req, res, next) => {
-    next(new NotFound());
-})
+    .use((req, res, next) => {
+        next(new NotFound());
+    })
 
-.use((err, req, res, next) => {
-    console.error(err);
-    console.error(err.stack);
-    res.status(err.status || 500).json(err);
-})
+    .use((err, req, res) => {
+        console.error(err);
+        console.error(err.stack);
+        res.status(err.status || 500).json(err);
+    })
 
-.listen(port, () => {
-    console.log(`\nPe.A.R. RESTful API and web application server started on: ${port}\n`);
-});
+    .listen(port, () => {
+        console.log(`\nPe.A.R. RESTful API and web application server started on: ${port}\n`);
+    });

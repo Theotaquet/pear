@@ -11,7 +11,7 @@ const metricsManagerSchema = mongoose.Schema({
     enabled: Boolean,
     updateFrequency: Number,
     metrics: [metricSchema]
-})
+});
 
 const sessionSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -68,18 +68,18 @@ function calculateStatistics(metricsManager) {
             name: 'average',
             value: average
         }
-    ]
+    ];
 }
 
 function validateStatistics(metricsManager) {
     const thresholds = configFile.metricsManagersConfiguration
-            .find(x => x.name == metricsManager.name).thresholds;
+        .find(x => x.name == metricsManager.name).thresholds;
     for(let threshold of thresholds) {
         const statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
         statistic.thresholds = {
             minimum: threshold.minimum,
             maximum: threshold.maximum
-        }
+        };
 
         if((threshold.maximum && statistic.value > threshold.maximum)
                 || (threshold.minimum && statistic.value < threshold.minimum)) {
