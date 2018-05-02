@@ -1,98 +1,94 @@
-const mongoose = require('mongoose');
 const configFile = require('../config.json');
 
-const metricSchema = mongoose.Schema({
-    value: Number,
-    recordTime: Number
-});
+class Session {
+    constructor(
+        id = undefined,
+        game,
+        build,
+        scene,
+        platform,
+        unityVersion,
+        device,
+        processorType,
+        systemMemory,
+        gpu,
+        gpuMemory,
+        startDate,
+        duration,
+        metricsManagers
+    ) {
+        this._id = id;
+        this.game = game;
+        this.build = build;
+        this.scene = scene;
+        this.platform = platform;
+        this.unityVersion = unityVersion;
+        this.device = device;
+        this.processorType = processorType;
+        this.systemMemory = systemMemory;
+        this.gpu = gpu;
+        this.gpuMemory = gpuMemory;
+        this.startDate = startDate;
+        this.duration = duration;
+        this.metricsManagers = metricsManagers;
+    }
 
-const metricsManagerSchema = mongoose.Schema({
-    name: String,
-    enabled: Boolean,
-    updateFrequency: Number,
-    metrics: [metricSchema]
-});
+    applyProcessings() {
+        this.validated = true;
+        for(const metricsManager of this.metricsManagers) {
+            if(metricsManager.enabled) {
+                metricsManager.validated = true;
 
-const sessionSchema = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    game: String,
-    build: String,
-    scene: String,
-    platform: String,
-    unityVersion: String,
-    device: String,
-    processorType: String,
-    systemMemory: Number,
-    gpu: String,
-    gpuMemory: Number,
-    startDate: Date,
-    duration: Number,
-    metricsManagers: [metricsManagerSchema]
-});
+                this.calculateStatistics(metricsManager);
 
-sessionSchema.method({
-    applyProcessings: applyProcessings,
-    calculateStatistics: calculateStatistics,
-    validateStatistics: validateStatistics
-});
+                this.validateStatistics(metricsManager);
 
-function applyProcessings() {
-    const session = this._doc;
-    session.validated = true;
-    for(let i = 0 ; i < session.metricsManagers.length ; i++) {
-        const metricsManager = session.metricsManagers[i]._doc;
-        if(metricsManager.enabled) {
-            metricsManager.validated = true;
+                if(!metricsManager.validated) {
+                    this.validated = false;
+                }
+            }
+        }
+    }
 
-            calculateStatistics(metricsManager);
+    calculateStatistics(metricsManager) {
+        let average = 0.;
+        const firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
+        for(let i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
+            average += metricsManager.metrics[i].value;
+        }
+        average /= metricsManager.metrics.length - firstRelevantMetric;
 
-            validateStatistics(metricsManager);
+        metricsManager.statistics = [
+            {
+                name: 'average',
+                value: average
+            }
+        ];
+    }
 
-            if(!metricsManager.validated) {
-                session.validated = false;
+    validateStatistics(metricsManager) {
+        const thresholds = configFile.metricsManagersConfiguration
+            .find(x => x.name == metricsManager.name).thresholds;
+        for(let threshold of thresholds) {
+            const statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
+            statistic.thresholds = {
+                minimum: threshold.minimum,
+                maximum: threshold.maximum
+            };
+
+            if((threshold.maximum && statistic.value > threshold.maximum)
+                    || (threshold.minimum && statistic.value < threshold.minimum)) {
+                statistic.validated = false;
+            }
+            else {
+                statistic.validated = true;
+            }
+
+            if(!statistic.validated) {
+                metricsManager.validated = false;
             }
         }
     }
 }
 
-function calculateStatistics(metricsManager) {
-    let average = 0.;
-    const firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
-    for(let i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
-        average += metricsManager.metrics[i].value;
-    }
-    average /= metricsManager.metrics.length - firstRelevantMetric;
-
-    metricsManager.statistics = [
-        {
-            name: 'average',
-            value: average
-        }
-    ];
-}
-
-function validateStatistics(metricsManager) {
-    const thresholds = configFile.metricsManagersConfiguration
-        .find(x => x.name == metricsManager.name).thresholds;
-    for(let threshold of thresholds) {
-        const statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
-        statistic.thresholds = {
-            minimum: threshold.minimum,
-            maximum: threshold.maximum
-        };
-
-        if((threshold.maximum && statistic.value > threshold.maximum)
-                || (threshold.minimum && statistic.value < threshold.minimum)) {
-            statistic.validated = false;
-        }
-        else {
-            statistic.validated = true;
-        }
-
-        if(!statistic.validated) {
-            metricsManager.validated = false;
-        }
-    }
-}
-
-module.exports = mongoose.model('Session', sessionSchema);
+module.exports = Session;

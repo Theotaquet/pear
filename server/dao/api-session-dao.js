@@ -7,20 +7,40 @@ function getAllSessions(req, next) {
             return next(err);
         }
         else {
-            var processResult = function(err, sessions) {
-                db.close();
-                if(sessions.length == 0) {
+            const collection = db.collection('sessions');
+            var processResult = function(err, docs) {
+                if(docs.length == 0) {
                     console.log('No document returned from the database.');
                 }
                 else if(!err) {
-                    console.log(`${sessions.length} document(s) returned` +
-                        ` from ${Session.collection.name} in ${Session.db.name}:`);
-                    console.log(`${sessions}\n`);
+                    console.log(`${docs.length} document(s) returned` +
+                        ` from ${collection.collectionName} in ${db.databaseName}:`);
+                    console.log(`${docs}\n`);
                 }
+                const sessions = [];
+                for(const doc of docs) {
+                    sessions.push(new Session(
+                        doc._id,
+                        doc.game,
+                        doc.build,
+                        doc.scene,
+                        doc.platform,
+                        doc.unityVersion,
+                        doc.device,
+                        doc.processorType,
+                        doc.systemMemory,
+                        doc.gpu,
+                        doc.gpuMemory,
+                        doc.startDate,
+                        doc.duration,
+                        doc.metricsManagers
+                    ));
+                }
+                console.log(`${sessions}\n`);
                 return next(err, sessions);
             };
 
-            Session.find(req.query).sort('-startDate').exec(processResult);
+            collection.find(req.query).sort([['startDate', -1]]).toArray(processResult);
         }
     });
 }
@@ -31,25 +51,42 @@ function getSession(req, next) {
             return next(err);
         }
         else {
-            const id = req.params.sessionID;
-            var processResult = function (err, session) {
-                db.close();
-                if(!session) {
+            const id = req.params.sessionId;
+            const collection = db.collection('sessions');
+            var processResult = function(err, doc) {
+                if(!doc) {
                     console.log('No document returned from the database.');
                 }
                 else if(!err) {
-                    console.log(`1 document returned from ${session.collection.name}` +
-                            ` in ${session.db.name}:`);
-                    console.log(`${session}\n`);
+                    console.log(`1 document returned from ${collection.collectionName}` +
+                            ` in ${db.databaseName}:`);
+                    console.log(`${doc}\n`);
                 }
+                const session = new Session(
+                    doc._id,
+                    doc.game,
+                    doc.build,
+                    doc.scene,
+                    doc.platform,
+                    doc.unityVersion,
+                    doc.device,
+                    doc.processorType,
+                    doc.systemMemory,
+                    doc.gpu,
+                    doc.gpuMemory,
+                    doc.startDate,
+                    doc.duration,
+                    doc.metricsManagers
+                );
+                console.log(`${session}\n`);
                 return next(err, session);
             };
 
             if(id == 'last') {
-                Session.findOne(req.query).sort('-startDate').exec(processResult);
+                collection.findOne(req.query, {sort: [['startDate', -1]]}, processResult);
             }
             else {
-                Session.findById(id, processResult);
+                collection.findOne(req.query, processResult);
             }
         }
     });
@@ -61,15 +98,17 @@ function createSession(session, next) {
             return next(err);
         }
         else {
-            session.save((err, session) => {
-                db.close();
+            const collection = db.collection('sessions');
+            var processResult = function(err, doc) {
                 if(!err) {
-                    console.log(`1 document inserted into ${session.collection.name}` +
-                            ` in ${session.db.name}:`);
-                    console.log(`${session}\n`);
+                    console.log(`1 document inserted into ${collection.collectionName}` +
+                            ` in ${db.databaseName}:`);
+                    console.log(`${doc}\n`);
                 }
-                return next(err, session);
-            });
+                return next(err, doc);
+            };
+
+            collection.insert(session, processResult);
         }
     });
 }
