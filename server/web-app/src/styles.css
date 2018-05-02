@@ -73,3 +73,15 @@ i {
     font-style: normal;
     font-weight: normal;
 }
+
+a {
+    color: var(--green-3);
+}
+
+a:visited {
+    color: var(--green-3);
+}
+
+a:hover {
+    color: var(--green-4);
+}
