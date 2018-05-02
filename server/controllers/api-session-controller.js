@@ -31,22 +31,8 @@ function get(req, res, next) {
 }
 
 function post(req, res, next)  {
-    const session = new Session(
-        undefined,
-        req.body.game,
-        req.body.build,
-        req.body.scene,
-        req.body.platform,
-        req.body.unityVersion,
-        req.body.device,
-        req.body.processorType,
-        req.body.systemMemory,
-        req.body.gpu,
-        req.body.gpuMemory,
-        new Date(req.body.startDate),
-        req.body.duration,
-        req.body.metricsManagers
-    );
+    req.body.startDate = new Date(req.body.startDate);
+    const session = new Session(req.body);
 
     apiSessionDao.createSession(session, (err, session) => {
         if(err) {

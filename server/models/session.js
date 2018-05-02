@@ -1,36 +1,10 @@
 const configFile = require('../config.json');
 
 class Session {
-    constructor(
-        id = undefined,
-        game,
-        build,
-        scene,
-        platform,
-        unityVersion,
-        device,
-        processorType,
-        systemMemory,
-        gpu,
-        gpuMemory,
-        startDate,
-        duration,
-        metricsManagers
-    ) {
-        this._id = id;
-        this.game = game;
-        this.build = build;
-        this.scene = scene;
-        this.platform = platform;
-        this.unityVersion = unityVersion;
-        this.device = device;
-        this.processorType = processorType;
-        this.systemMemory = systemMemory;
-        this.gpu = gpu;
-        this.gpuMemory = gpuMemory;
-        this.startDate = startDate;
-        this.duration = duration;
-        this.metricsManagers = metricsManagers;
+    constructor(session) {
+        for(const prop in session) {
+            this[prop] = session[prop];
+        }
     }
 
     applyProcessings() {

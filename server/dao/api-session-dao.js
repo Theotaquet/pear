@@ -1,5 +1,6 @@
 const dbConnection = require('./db-connection');
 const Session = require('../models/session');
+const ObjectId = require('mongodb').ObjectId;
 
 function getAllSessions(req, next) {
     dbConnection.connect((err, db) => {
@@ -19,22 +20,7 @@ function getAllSessions(req, next) {
                 }
                 const sessions = [];
                 for(const doc of docs) {
-                    sessions.push(new Session(
-                        doc._id,
-                        doc.game,
-                        doc.build,
-                        doc.scene,
-                        doc.platform,
-                        doc.unityVersion,
-                        doc.device,
-                        doc.processorType,
-                        doc.systemMemory,
-                        doc.gpu,
-                        doc.gpuMemory,
-                        doc.startDate,
-                        doc.duration,
-                        doc.metricsManagers
-                    ));
+                    sessions.push(new Session(doc));
                 }
                 console.log(`${sessions}\n`);
                 return next(err, sessions);
@@ -62,31 +48,16 @@ function getSession(req, next) {
                             ` in ${db.databaseName}:`);
                     console.log(`${doc}\n`);
                 }
-                const session = new Session(
-                    doc._id,
-                    doc.game,
-                    doc.build,
-                    doc.scene,
-                    doc.platform,
-                    doc.unityVersion,
-                    doc.device,
-                    doc.processorType,
-                    doc.systemMemory,
-                    doc.gpu,
-                    doc.gpuMemory,
-                    doc.startDate,
-                    doc.duration,
-                    doc.metricsManagers
-                );
+                const session = new Session(doc);
                 console.log(`${session}\n`);
                 return next(err, session);
             };
 
             if(id == 'last') {
-                collection.findOne(req.query, {sort: [['startDate', -1]]}, processResult);
+                collection.findOne(req.query, { sort: [['startDate', -1]] }, processResult);
             }
             else {
-                collection.findOne(req.query, processResult);
+                collection.findOne( { '_id': ObjectId(id) }, processResult);
             }
         }
     });
