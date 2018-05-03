@@ -29,7 +29,7 @@ namespace Pear {
                     name.Substring(0, 1).ToUpper() +
                     new Regex(@"([A-Z]+)").Replace(name.Substring(1), " $1");
             string str = formatedName + " - update frequency: " + updateFrequency + " s\n";
-			foreach(Metric metric in metrics) {
+            foreach(Metric metric in metrics) {
                 str += metric.ToString() + "\n";
             }
             return str;

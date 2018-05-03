@@ -8,7 +8,7 @@
             "name": "frameRate",
             "thresholds": [
                 {
-                    "statistic": "average",
+                    "statistic": "count",
                     "minimum": 60
                 }
             ]

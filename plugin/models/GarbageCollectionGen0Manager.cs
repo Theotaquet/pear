@@ -2,9 +2,9 @@
 
 namespace Pear {
 
-    public class GarbageCollectionManager : MetricsManager {
+    public class GarbageCollectionGen1Manager : MetricsManager {
 
-		public GarbageCollectionManager(MetricsManagerConfiguration metricsManager) :
+		public GarbageCollectionGen1Manager(MetricsManagerConfiguration metricsManager) :
 				base(metricsManager) {
 		}
 

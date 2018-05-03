@@ -10,7 +10,17 @@
             "updateFrequency": 250
         },
         {
-            "name": "garbageCollection",
+            "name": "garbageCollectionGen0",
+            "enabled": true,
+            "updateFrequency": 1000
+        },
+        {
+            "name": "garbageCollectionGen1",
+            "enabled": true,
+            "updateFrequency": 1000
+        },
+        {
+            "name": "garbageCollectionGen2",
             "enabled": true,
             "updateFrequency": 1000
         }
