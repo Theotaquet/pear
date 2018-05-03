@@ -61,9 +61,9 @@ namespace Pear {
             this.systemMemory = systemMemory;
             this.gpu = gpu;
             this.gpuMemory = gpuMemory;
-            this.startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            this.duration = ConfigurationManager.session.duration;
-            this.metricsManagers = new List<MetricsManager>();
+            startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            duration = ConfigurationManager.session.duration;
+            metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManagerConfig
                     in ConfigurationManager.metricsManagers) {
@@ -90,11 +90,11 @@ namespace Pear {
                     "{10} - {11} ms\n\n" +
                     "Metrics\n" +
                     "-------\n\n",
-                    this.game, this.build, this.scene, this.platform, this.unityVersion, this.device, this.processorType,
-                    this.systemMemory, this.gpu, this.gpuMemory, DateTime.Parse(this.startDate), this.duration
+                    game, build, scene, platform, unityVersion, device, processorType,
+                    systemMemory, gpu, gpuMemory, DateTime.Parse(startDate), duration
             );
 
-            foreach(MetricsManager metricsManager in this.metricsManagers) {
+            foreach(MetricsManager metricsManager in metricsManagers) {
                 if(metricsManager.enabled) {
                     str += metricsManager.ToString() + "\n";
                 }
@@ -104,20 +104,20 @@ namespace Pear {
         }
 
         public bool AddMetricsManager(MetricsManager metricsManager) {
-            if(!this.metricsManagers.Contains(metricsManager)) {
-                this.metricsManagers.Add(metricsManager);
+            if(!metricsManagers.Contains(metricsManager)) {
+                metricsManagers.Add(metricsManager);
                 return true;
             }
             return false;
         }
 
         public MetricsManager FindMetricsManager(string name) {
-            return this.metricsManagers.Find(x => x.name == name);
+            return metricsManagers.Find(x => x.name == name);
         }
 
         public bool RemoveMetricsManager(MetricsManager metricsManager) {
-            if(this.metricsManagers.Contains(metricsManager)) {
-                return this.metricsManagers.Remove(metricsManager);
+            if(metricsManagers.Contains(metricsManager)) {
+                return metricsManagers.Remove(metricsManager);
             }
             return false;
         }

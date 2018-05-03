@@ -7,19 +7,19 @@ namespace Pear {
 
         public int framesCounter { get; set; } = 0;
 
-		public FrameRateManager(MetricsManagerConfiguration metricsManager) :
-				base(metricsManager) {
-		}
+        public FrameRateManager(MetricsManagerConfiguration metricsManager) :
+                base(metricsManager) {
+        }
 
         public override void Update() {
-            this.framesCounter++;
+            framesCounter++;
         }
 
         public override int CalculateMetric() {
-            int frameRate = (int) (this.framesCounter / this.timer);
+            int frameRate = (int) (framesCounter / timer);
 
-            if(this.timer - this.updateFrequency < this.updateFrequency) {
-                this.framesCounter = 0;
+            if(timer - updateFrequency < updateFrequency) {
+                framesCounter = 0;
             }
             return frameRate;
         }

@@ -6,15 +6,15 @@ namespace Pear {
 
     public static class PearToolbox {
 
-		private static string StartMessage { get; } =
+        private static string StartMessage { get; } =
                 DateTime.Now + " - Pe.A.R. activated in " +
                 (Application.isEditor ? "editor" : "build") + " mode.\n" +
                 "You can find the full console output " +
                 "in the default Unity log files folder.";
-		private static string StopMessage { get; } =
+        private static string StopMessage { get; } =
                 "Pe.A.R. hasn't been initialised.";
-		private static bool loggedSession { get; set; } = false;
-		private static string log { get; set; } = "";
+        private static bool loggedSession { get; set; } = false;
+        private static string log { get; set; } = "";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {

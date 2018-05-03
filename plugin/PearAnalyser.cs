@@ -26,7 +26,7 @@ namespace Pear {
 		private float duration { get; set; }
 
         void Start() {
-            this.session = new Session(
+            session = new Session(
                     Application.productName,
                     Application.version,
                     SceneManager.GetActiveScene().name,
@@ -41,29 +41,29 @@ namespace Pear {
         }
 
         void Update() {
-            foreach(MetricsManager metricsManager in this.session.metricsManagers) {
+            foreach(MetricsManager metricsManager in session.metricsManagers) {
                 if(metricsManager.enabled) {
                     metricsManager.CollectMetrics();
                 }
             }
 
-			this.duration = Time.time;
-			if(this.duration >= this.session.duration) {
+			duration = Time.time;
+			if(duration >= session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-			this.session.duration = (uint) Math.Min(session.duration, this.duration) * 1000;
+			session.duration = (uint) Math.Min(session.duration, duration) * 1000;
 
             MemoryStream stream = new MemoryStream();
             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Session));
-            ser.WriteObject(stream, this.session);
+            ser.WriteObject(stream, session);
             stream.Position = 0;
             string sessionJsonString = new StreamReader(stream).ReadToEnd();
 
             PostMetrics(sessionJsonString);
-            PearToolbox.AddToLog(this.session.ToString());
+            PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
         }
 

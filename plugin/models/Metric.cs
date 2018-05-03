@@ -17,7 +17,7 @@ namespace Pear {
         }
 
         public override string ToString() {
-            return String.Format("{0, 8:F2}s: {1, 3}", this.recordTime, this.value);
+            return String.Format("{0, 8:F2}s: {1, 3}", recordTime, value);
         }
     }
 }
