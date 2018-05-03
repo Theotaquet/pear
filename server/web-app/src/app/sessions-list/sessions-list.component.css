@@ -25,19 +25,6 @@ tr:hover {
     background: var(--light-3);
 }
 
-td a {
-    color: var(--green-3);
-    text-decoration: none;
-}
-
-td a:visited {
-    color: var(--green-3);
-}
-
-td a:hover {
-    color: var(--green-4);
-}
-
 .status {
     font-size: 0.6em;
     margin: auto;

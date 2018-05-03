@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Pear {
 
     public class GarbageCollectionManager : MetricsManager {
