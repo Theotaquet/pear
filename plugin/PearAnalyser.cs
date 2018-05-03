@@ -1,25 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace Pear {
 
     public class PearAnalyser : MonoBehaviour {
 
-        private static readonly string noCode =
-                "Unable to connect to the server. " +
-                "Check the URL or the server status.";
-        private static readonly string code201 =
-                "Code 201: Post request complete!";
-        private static readonly string code401 =
-                "Error 401: Unauthorized. Resubmitted request!";
-        private static readonly string otherCode =
-                "Request failed";
 
-        private Session session;
+        public Session session { get; set; }
+
+		private static string NoCode { get; } =
+			"Unable to connect to the server. " +
+			"Check the URL or the server status.";
+		private static string Code201 { get; } =
+			"Code 201: Post request complete!";
+		private static string Code401 { get; } =
+			"Error 401: Unauthorized. Resubmitted request!";
+		private static string OtherCode { get; } =
+			"Request failed";
+		private float duration { get; set; }
 
         void Start() {
             session = new Session(
@@ -43,14 +47,21 @@ namespace Pear {
                 }
             }
 
-            if(Time.time >= session.duration) {
+			duration = Time.time;
+			if(duration >= session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-            session.duration = (uint) Math.Min(session.duration, Time.time) * 1000;
-            string sessionJsonString = JsonUtility.ToJson(session);
+			session.duration = (uint) Math.Min(session.duration, duration) * 1000;
+
+            MemoryStream stream = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Session));
+            ser.WriteObject(stream, session);
+            stream.Position = 0;
+            string sessionJsonString = new StreamReader(stream).ReadToEnd();
+
             PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
@@ -74,16 +85,16 @@ namespace Pear {
                     }
 
                     var responses = new Dictionary<long, string> ();
-                    responses.Add(0, noCode);
-                    responses.Add(201, code201);
-                    responses.Add(401, code401);
+                    responses.Add(0, NoCode);
+                    responses.Add(201, Code201);
+                    responses.Add(401, Code401);
 
                     string value;
                     if(responses.TryGetValue(request.responseCode, out value)) {
                         response = value;
                     }
                     else {
-                        response = otherCode + " (status:" + request.responseCode + ").";
+                        response = OtherCode + " (status:" + request.responseCode + ").";
                     }
 
                     PearToolbox.AddToLog(response);

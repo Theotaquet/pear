@@ -1,13 +1,15 @@
-﻿
+﻿using System.Runtime.Serialization;
+
 namespace Pear {
 
+    [DataContract(Name = "FrameRateManager")]
     public class FrameRateManager : MetricsManager {
 
-		private int framesCounter = 0;
+        public int framesCounter { get; set; } = 0;
 
-		public FrameRateManager(MetricsManagerConfiguration metricsManager) :
-				base(metricsManager) {
-		}
+        public FrameRateManager(MetricsManagerConfiguration metricsManager) :
+                base(metricsManager) {
+        }
 
         public override void Update() {
             framesCounter++;

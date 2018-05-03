@@ -1,24 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [Serializable]
+    [DataContract]
     public class Session {
 
-        public string game;
-        public string build;
-        public string scene;
-        public string platform;
-        public string unityVersion;
-        public string device;
-        public string processorType;
-        public int systemMemory;
-        public string gpu;
-        public int gpuMemory;
-        public string startDate;
-        public float duration;
-        public List<MetricsManager> metricsManagers;
+        [DataMember]
+        public string game { get; set; }
+        [DataMember]
+        public string build { get; set; }
+        [DataMember]
+        public string scene { get; set; }
+        [DataMember]
+        public string platform { get; set; }
+        [DataMember]
+        public string unityVersion { get; set; }
+        [DataMember]
+        public string device { get; set; }
+        [DataMember]
+        public string processorType { get; set; }
+        [DataMember]
+        public int systemMemory { get; set; }
+        [DataMember]
+        public string gpu { get; set; }
+        [DataMember]
+        public int gpuMemory { get; set; }
+        [DataMember]
+        public string startDate { get; set; }
+        [DataMember]
+        public float duration {
+            get {
+                return _duration;
+            }
+            set {
+                if(value > 0) {
+                    _duration = value / 1000;
+                }
+                else {
+                    throw new NegativeNullDurationException();
+                }
+            }
+        }
+        [DataMember]
+        public List<MetricsManager> metricsManagers { get; set; }
+
+		private float _duration;
 
         public Session(string game, string build, string scene, string platform,
                 string unityVersion, string device, string processorType,
@@ -33,9 +61,9 @@ namespace Pear {
             this.systemMemory = systemMemory;
             this.gpu = gpu;
             this.gpuMemory = gpuMemory;
-            this.startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            SetDuration(ConfigurationManager.session.duration);
-            this.metricsManagers = new List<MetricsManager>();
+            startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            duration = ConfigurationManager.session.duration;
+            metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManagerConfig
                     in ConfigurationManager.metricsManagers) {
@@ -92,15 +120,6 @@ namespace Pear {
                 return metricsManagers.Remove(metricsManager);
             }
             return false;
-        }
-
-        public void SetDuration(float duration) {
-            if(duration > 0) {
-                this.duration = duration / 1000;
-            }
-            else {
-                throw new NegativeNullDurationException();
-            }
         }
     }
 }

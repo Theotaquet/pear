@@ -2,21 +2,23 @@
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using UnityEngine;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace Pear {
 
     public static class ConfigurationManager {
 
-        private static readonly string ConfigFilePath = "Assets/pear/config.json";
-        public static readonly string SessionLogsPath = "sessionLogs.txt";
+        public static string SessionLogsPath { get; } = "sessionLogs.txt";
+        public static SessionConfiguration session { get; set; }
+        public static MetricsManagerConfiguration[] metricsManagers { get; set; }
 
-        public static SessionConfiguration session;
-        public static MetricsManagerConfiguration[] metricsManagers;
+        private static string ConfigFilePath { get; } = "Assets/pear/config.json";
 
         public static void ReadConfigFile() {
-            string rawConfig = File.ReadAllText(ConfigFilePath);
-            Configuration config = JsonUtility.FromJson<Configuration>(rawConfig);
+            FileStream stream = File.OpenRead(ConfigFilePath);
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Configuration));
+            Configuration config = (Configuration) ser.ReadObject(stream);
 
             config.CheckEmptyParameters();
 
@@ -29,11 +31,13 @@ namespace Pear {
 
 
 
-    [Serializable]
+    [DataContract]
     public class Configuration {
 
-        public SessionConfiguration sessionConfiguration;
-        public MetricsManagerConfiguration[] metricsManagersConfiguration;
+        [DataMember]
+        public SessionConfiguration sessionConfiguration { get; set; }
+        [DataMember]
+        public MetricsManagerConfiguration[] metricsManagersConfiguration { get; set; }
 
         public void CheckEmptyParameters() {
             bool noParamValue = false;
@@ -72,18 +76,23 @@ namespace Pear {
         }
     }
 
-    [Serializable]
+    [DataContract]
     public class SessionConfiguration {
 
-        public string apiServerUrl;
-        public int duration;
+        [DataMember]
+        public string apiServerUrl { get; set; }
+        [DataMember]
+        public int duration { get; set; }
     }
 
-    [Serializable]
+    [DataContract]
     public class MetricsManagerConfiguration {
 
-        public string name;
-        public string enabled;
-        public string updateFrequency;
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string enabled { get; set; }
+        [DataMember]
+        public string updateFrequency { get; set; }
     }
 }
