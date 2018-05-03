@@ -2,15 +2,15 @@
 
 namespace Pear {
 
-	public class GarbageCollectionGen1Manager : MetricsManager {
+    public class GarbageCollectionGen1Manager : MetricsManager {
 
-		public GarbageCollectionGen1Manager(MetricsManagerConfiguration metricsManager) :
-		base(metricsManager) {
-		}
+        public GarbageCollectionGen1Manager(MetricsManagerConfiguration metricsManager) :
+                base(metricsManager) {
+        }
 
-		public override int CalculateMetric() {
-			int GCCount = GC.CollectionCount(1);
-			return GCCount;
-		}
-	}
+        public override int CalculateMetric() {
+            int GCCount = GC.CollectionCount(1);
+            return GCCount;
+        }
+    }
 }
