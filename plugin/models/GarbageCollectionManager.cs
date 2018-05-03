@@ -1,6 +1,9 @@
-﻿
+﻿using System;
+using System.Runtime.Serialization;
+
 namespace Pear {
 
+    [DataContract(Name = "GarbageCollectionManager")]
     public class GarbageCollectionManager : MetricsManager {
 
 		public GarbageCollectionManager(MetricsManagerConfiguration metricsManager) :

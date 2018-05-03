@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [Serializable]
+    [DataContract]
     public class Metric {
 
-        public int value;
-        public float recordTime;
+        [DataMember]
+        public int value { get; set; }
+        [DataMember]
+        public float recordTime { get; set; }
 
         public Metric(int value, float recordTime) {
             this.value = value;
@@ -14,7 +17,7 @@ namespace Pear {
         }
 
         public override string ToString() {
-            return String.Format("{0, 8:F2}s: {1, 3}", recordTime, value);
+            return String.Format("{0, 8:F2}s: {1, 3}", this.recordTime, this.value);
         }
     }
 }

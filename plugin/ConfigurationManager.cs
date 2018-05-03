@@ -8,11 +8,11 @@ namespace Pear {
 
     public static class ConfigurationManager {
 
-        private static readonly string ConfigFilePath = "Assets/pear/config.json";
-        public static readonly string SessionLogsPath = "sessionLogs.txt";
+        public static string SessionLogsPath { get; } = "sessionLogs.txt";
+        public static SessionConfiguration session { get; set; }
+        public static MetricsManagerConfiguration[] metricsManagers { get; set; }
 
-        public static SessionConfiguration session;
-        public static MetricsManagerConfiguration[] metricsManagers;
+        private static string ConfigFilePath { get; } = "Assets/pear/config.json";
 
         public static void ReadConfigFile() {
             string rawConfig = File.ReadAllText(ConfigFilePath);
