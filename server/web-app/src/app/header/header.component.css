@@ -13,11 +13,11 @@ header {
 }
 
 #logo {
+    color: var(--dark-1);
     height: 80px;
+    text-decoration: none;
     display: flex;
     align-items: flex-end;
-    text-decoration: none;
-    color: var(--dark-1);
 }
 
 h1 {
