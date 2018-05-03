@@ -1,7 +1,7 @@
 <div class="main centered">
   <section id="session-infos">
     <h2 class="v-centered">
-      Session Report
+      Session Report -&#160;<a routerLink="/sessions/{{session._id}}">{{session._id}}</a>
       <div *ngIf="session.validated" id="validated" class="status">VALIDATED</div>
       <div *ngIf="!session.validated" id="failed" class="status">FAILED</div>
     </h2>

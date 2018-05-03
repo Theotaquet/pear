@@ -5,6 +5,17 @@ const apiSessionRouter = require('./routers/api-session-router');
 const NotFound = require('./errors').NotFound;
 
 const port = process.env.PORT || 3000;
+const allowedExt = [
+    '.js',
+    '.ico',
+    '.css',
+    '.png',
+    '.jpg',
+    '.woff2',
+    '.woff',
+    '.ttf',
+    '.svg'
+];
 
 app
 
@@ -17,8 +28,17 @@ app
 
     .use('/api/sessions', apiSessionRouter)
 
-    .use((req, res, next) => {
+    .use('/api/*', (req, res, next) => {
         next(new NotFound());
+    })
+
+    .use((req, res) => {
+        if(allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
+            res.sendFile(`${req.url}`, {root: 'web-app/dist/'});
+        }
+        else {
+            res.sendFile('index.html', {root: 'web-app/dist/'});
+        }
     })
 
     .use((err, req, res) => {
