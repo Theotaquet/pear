@@ -37,7 +37,7 @@ namespace Pear {
 
         public void CollectMetrics() {
             timer += Time.deltaTime;
-            int metric;
+            float metric;
 
             Update();
 
@@ -56,7 +56,7 @@ namespace Pear {
 
         }
 
-        public abstract int CalculateMetric();
+        public abstract float CalculateMetric();
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {

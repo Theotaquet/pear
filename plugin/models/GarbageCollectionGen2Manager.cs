@@ -10,7 +10,7 @@ namespace Pear {
                 base(metricsManager) {
         }
 
-        public override int CalculateMetric() {
+        public override float CalculateMetric() {
             int totalGcCount = GC.CollectionCount(2);
             int GcCount = totalGcCount - lastTotalGcCount;
             lastTotalGcCount = totalGcCount;
