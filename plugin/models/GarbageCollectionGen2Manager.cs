@@ -4,13 +4,17 @@ namespace Pear {
 
     public class GarbageCollectionGen2Manager : MetricsManager {
 
+        private int lastTotalGcCount { get; set; } = 0;
+
         public GarbageCollectionGen2Manager(MetricsManagerConfiguration metricsManager) :
                 base(metricsManager) {
         }
 
         public override int CalculateMetric() {
-            int GCCount = GC.CollectionCount(2);
-            return GCCount;
+            int totalGcCount = GC.CollectionCount(2);
+            int GcCount = totalGcCount - lastTotalGcCount;
+            lastTotalGcCount = totalGcCount;
+            return GcCount;
         }
     }
 }
