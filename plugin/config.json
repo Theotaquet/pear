@@ -7,7 +7,7 @@
         {
             "name": "frameRate",
             "enabled": true,
-            "updateFrequency": 250
+            "updateFrequency": 0
         },
         {
             "name": "garbageCollectionGen0",

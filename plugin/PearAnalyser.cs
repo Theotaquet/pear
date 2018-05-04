@@ -23,18 +23,28 @@ namespace Pear {
         private Session session;
 
         void Start() {
-            session = new Session(
-                    Application.productName,
-                    Application.version,
-                    SceneManager.GetActiveScene().name,
-                    Application.platform.ToString(),
-                    Application.unityVersion,
-                    SystemInfo.deviceName,
-                    SystemInfo.processorType,
-                    SystemInfo.systemMemorySize,
-                    SystemInfo.graphicsDeviceName,
-                    SystemInfo.graphicsMemorySize
-            );
+            try {
+                session = new Session(
+                        Application.productName,
+                        Application.version,
+                        SceneManager.GetActiveScene().name,
+                        Application.platform.ToString(),
+                        Application.unityVersion,
+                        SystemInfo.deviceName,
+                        SystemInfo.processorType,
+                        SystemInfo.systemMemorySize,
+                        SystemInfo.graphicsDeviceName,
+                        SystemInfo.graphicsMemorySize
+                );
+            }
+            catch(NegativeNullDurationException e) {
+                PearToolbox.criticalError(e);
+                Destroy(gameObject);
+            }
+            catch(NegativeNullUpdateFrequencyException e) {
+                PearToolbox.criticalError(e);
+                Destroy(gameObject);
+            }
         }
 
         void Update() {

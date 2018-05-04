@@ -16,13 +16,14 @@ namespace Pear {
         private static bool LoggedSession = false;
         private static string Log = "";
 
+        public static Action<Exception> criticalError { get; set; } = (e) => {
+            Debug.LogException(e);
+            AddToLog(e.Message + "\n\n" + StopMessage);
+            WriteLogInFile();
+        };
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {
-            Action<Exception> criticalError = (e) => {
-                Debug.LogException(e);
-                AddToLog(e.Message + "\n\n" + StopMessage);
-                PearToolbox.WriteLogInFile();
-            };
             try {
                 try {
                     if(HasArg("-pear")) {
@@ -36,9 +37,6 @@ namespace Pear {
                     }
                 }
                 catch(NoConfigParamValueException e) {
-                    criticalError(e);
-                }
-                catch(NegativeNullUpdateFrequencyException e) {
                     criticalError(e);
                 }
                 catch(ArgumentException e) {
