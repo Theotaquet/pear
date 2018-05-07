@@ -45,10 +45,15 @@ namespace Pear {
                         "Manager";
                 Type metricsManagerType =
                         Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
-                MetricsManager metricsManager =
-                        (MetricsManager) Activator
-                        .CreateInstance(metricsManagerType, metricsManagerConfig);
-                AddMetricsManager(metricsManager);
+                try {
+                    MetricsManager metricsManager =
+                            (MetricsManager) Activator
+                            .CreateInstance(metricsManagerType, metricsManagerConfig);
+                    AddMetricsManager(metricsManager);
+                }
+                catch(NegativeNullUpdateFrequencyException) {
+                    throw;
+                }
             }
         }
 
