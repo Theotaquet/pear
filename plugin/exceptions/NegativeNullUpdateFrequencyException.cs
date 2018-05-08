@@ -4,11 +4,11 @@ namespace Pear {
 
     public class NegativeNullUpdateFrequencyException : Exception {
 
-        private static readonly string message =
+        private static string ExceptionMessage { get; } =
                 "The update frequency can't be negative or equal to zero. " +
                 "Please repair your config.json.";
 
-        public NegativeNullUpdateFrequencyException() : base(message) {
+        public NegativeNullUpdateFrequencyException() : base(ExceptionMessage) {
         }
     }
 }

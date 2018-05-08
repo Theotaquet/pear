@@ -1,25 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace Pear {
 
-    [Serializable]
+    [DataContract]
+    [KnownType(typeof(FrameRateManager))]
+    [KnownType(typeof(GarbageCollectionManager))]
     public abstract class MetricsManager : ICollector {
 
-        public string name;
-        public bool enabled;
-        public float updateFrequency;
-        public List<Metric> metrics;
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public bool enabled { get; set; }
+        [DataMember]
+        public float updateFrequency {
+            get {
+                return _updateFrequency;
+            }
+            set {
+                if(value > 0) {
+                    _updateFrequency = value / 1000;
+                }
+                else {
+                    throw new NegativeNullUpdateFrequencyException();
+                }
+            }
+        }
+        [DataMember]
+        public List<Metric> metrics { get; set; }
 
-        protected float timer;
+        protected float timer { get; set; }
+
+        private float _updateFrequency;
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
-            this.name = metricsManagerConfig.name;
-            this.enabled = Boolean.Parse(metricsManagerConfig.enabled);
-            SetUpdateFrequency(float.Parse(metricsManagerConfig.updateFrequency));
-            this.metrics = new List<Metric>();
+            name = metricsManagerConfig.name;
+            enabled = Boolean.Parse(metricsManagerConfig.enabled);
+            updateFrequency = float.Parse(metricsManagerConfig.updateFrequency);
+            metrics = new List<Metric>();
 
             timer = 0.0f;
         }
@@ -71,15 +92,6 @@ namespace Pear {
                 return metrics.Remove(metric);
             }
             return false;
-        }
-
-        public void SetUpdateFrequency(float updateFrequency) {
-            if(updateFrequency > 0) {
-                this.updateFrequency = updateFrequency / 1000;
-            }
-            else {
-                throw new NegativeNullUpdateFrequencyException();
-            }
         }
     }
 }

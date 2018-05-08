@@ -1,8 +1,11 @@
-﻿namespace Pear {
+﻿using System.Runtime.Serialization;
 
+namespace Pear {
+
+    [DataContract(Name = "FrameRateManager")]
     public class FrameRateManager : MetricsManager {
 
-        private int framesCounter = 0;
+        public int framesCounter { get; set; } = 0;
 
         public FrameRateManager(MetricsManagerConfiguration metricsManager) :
                 base(metricsManager) {
@@ -13,7 +16,7 @@
         }
 
         public override float CalculateMetric() {
-            float frameRate = (framesCounter / timer);
+            float frameRate = framesCounter / timer;
 
             if(timer - updateFrequency < updateFrequency) {
                 framesCounter = 0;

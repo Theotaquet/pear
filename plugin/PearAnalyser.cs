@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace Pear {
 
     public class PearAnalyser : MonoBehaviour {
 
-        private static readonly string noCode =
+        public Session session { get; set; }
+
+        private static string NoCode { get; } =
                 "Unable to connect to the server. " +
                 "Check the URL or the server status.";
-        private static readonly string code201 =
+        private static string Code201 { get; } =
                 "Code 201: Post request complete!";
-        private static string code502 { get; set; } =
+        private static string Code502 { get; } =
                 "Error 502: Bad Gateway. The server failed to connect to the database server. " +
                 "Please check the database server status.";
-        private static readonly string otherCode =
+        private static string OtherCode { get; } =
                 "Request failed";
-
-        private Session session;
+        private float duration { get; set; }
 
         void Start() {
             try {
@@ -38,11 +41,11 @@ namespace Pear {
                 );
             }
             catch(NegativeNullDurationException e) {
-                PearToolbox.criticalError(e);
+                PearToolbox.CriticalError(e);
                 Destroy(gameObject);
             }
             catch(NegativeNullUpdateFrequencyException e) {
-                PearToolbox.criticalError(e);
+                PearToolbox.CriticalError(e);
                 Destroy(gameObject);
             }
         }
@@ -54,14 +57,21 @@ namespace Pear {
                 }
             }
 
-            if(Time.time >= session.duration) {
+            duration = Time.time;
+            if(duration >= session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-            session.duration = (uint) Math.Min(session.duration, Time.time) * 1000;
-            string sessionJsonString = JsonUtility.ToJson(session);
+            session.duration = (uint) Math.Min(session.duration, duration) * 1000;
+
+            MemoryStream stream = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Session));
+            ser.WriteObject(stream, session);
+            stream.Position = 0;
+            string sessionJsonString = new StreamReader(stream).ReadToEnd();
+
             PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
@@ -69,7 +79,7 @@ namespace Pear {
 
         private void PostMetrics(string jsonString) {
             UnityWebRequest request =
-                    new UnityWebRequest(ConfigurationManager.session.apiServerUrl, "POST");
+                    new UnityWebRequest(ConfigurationManager.Session.apiServerUrl, "POST");
             byte[] bodyRaw = new UTF8Encoding().GetBytes(jsonString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");
@@ -85,16 +95,17 @@ namespace Pear {
                     }
 
                     var responses = new Dictionary<long, string> ();
-                    responses.Add(0, noCode);
-                    responses.Add(201, code201);
-                    responses.Add(502, code502);
+
+                    responses.Add(0, NoCode);
+                    responses.Add(201, Code201);
+                    responses.Add(502, Code502);
 
                     string value;
                     if(responses.TryGetValue(request.responseCode, out value)) {
                         response = value;
                     }
                     else {
-                        response = otherCode + " (status:" + request.responseCode + ").";
+                        response = OtherCode + " (status:" + request.responseCode + ").";
                     }
 
                     PearToolbox.AddToLog(response);

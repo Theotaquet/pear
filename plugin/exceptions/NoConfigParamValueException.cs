@@ -4,11 +4,11 @@ namespace Pear {
 
     public class NoConfigParamValueException : Exception {
 
-        private static readonly string message =
+        private static string ExceptionMessage { get; } =
                 "No value was specified for one of the configuration parameters. " +
                 "Please repair your config.json: ";
 
-        public NoConfigParamValueException(string configParams) : base(message + configParams) {
+        public NoConfigParamValueException(string configParams) : base(ExceptionMessage + configParams) {
         }
     }
 }

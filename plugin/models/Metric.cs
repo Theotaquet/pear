@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [Serializable]
+    [DataContract]
     public class Metric {
 
-        public float value;
-        public float recordTime;
+        [DataMember]
+        public float value { get; set; }
+        [DataMember]
+        public float recordTime { get; set; }
 
         public Metric(float value, float recordTime) {
             this.value = value;

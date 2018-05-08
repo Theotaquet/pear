@@ -6,21 +6,21 @@ namespace Pear {
 
     public static class PearToolbox {
 
-        private static readonly string StartMessage =
-                DateTime.Now + " - Pe.A.R. activated in " +
-                (Application.isEditor ? "editor" : "build") + " mode.\n" +
-                "You can find the full console output " +
-                "in the default Unity log files folder.";
-        private static readonly string StopMessage =
-                "Pe.A.R. hasn't been initialised.";
-        private static bool LoggedSession = false;
-        private static string Log = "";
-
-        public static Action<Exception> criticalError { get; set; } = (e) => {
+        public static Action<Exception> CriticalError { get; set; } = (e) => {
             Debug.LogException(e);
             AddToLog(e.Message + "\n\n" + StopMessage);
             WriteLogInFile();
         };
+
+        private static string StartMessage { get; } =
+                DateTime.Now + " - Pe.A.R. activated in " +
+                (Application.isEditor ? "editor" : "build") + " mode.\n" +
+                "You can find the full console output " +
+                "in the default Unity log files folder.";
+        private static string StopMessage { get; } =
+                "Pe.A.R. hasn't been initialised.";
+        private static bool LoggedSession { get; set; } = false;
+        private static string Log { get; set; } = "";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {
@@ -37,7 +37,7 @@ namespace Pear {
                     }
                 }
                 catch(NoConfigParamValueException e) {
-                    criticalError(e);
+                    CriticalError(e);
                 }
                 catch(ArgumentException e) {
                     throw new WrongConfigStructureException(e);
@@ -47,7 +47,7 @@ namespace Pear {
                 }
             }
             catch(WrongConfigStructureException e) {
-                criticalError(e);
+                CriticalError(e);
             }
         }
 
