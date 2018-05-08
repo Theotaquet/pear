@@ -12,7 +12,7 @@ export class FormatMetricsManagerNamePipe implements PipeTransform {
             .toUpperCase() +
         metricsManagerName
             .substring(1)
-            .replace(/([A-Z])/g, ' $1')
+            .replace(/([A-Z0-9])/g, ' $1')
             .toLowerCase();
     return formatedName;
   }

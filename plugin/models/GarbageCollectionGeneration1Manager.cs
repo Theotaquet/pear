@@ -2,11 +2,11 @@
 
 namespace Pear {
 
-    public class GarbageCollectionGen1Manager : MetricsManager {
+    public class GarbageCollectionGeneration1Manager : MetricsManager {
 
         private int lastTotalGcCount { get; set; } = 0;
 
-        public GarbageCollectionGen1Manager(MetricsManagerConfiguration metricsManager) :
+        public GarbageCollectionGeneration1Manager(MetricsManagerConfiguration metricsManager) :
                 base(metricsManager) {
         }
 

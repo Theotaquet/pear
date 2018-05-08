@@ -2,16 +2,16 @@
 
 namespace Pear {
 
-    public class GarbageCollectionGen2Manager : MetricsManager {
+    public class GarbageCollectionGeneration0Manager : MetricsManager {
 
         private int lastTotalGcCount { get; set; } = 0;
 
-        public GarbageCollectionGen2Manager(MetricsManagerConfiguration metricsManager) :
+        public GarbageCollectionGeneration0Manager(MetricsManagerConfiguration metricsManager) :
                 base(metricsManager) {
         }
 
         public override float CalculateMetric() {
-            int totalGcCount = GC.CollectionCount(2);
+            int totalGcCount = GC.CollectionCount(0);
             int GcCount = totalGcCount - lastTotalGcCount;
             lastTotalGcCount = totalGcCount;
             return GcCount;
