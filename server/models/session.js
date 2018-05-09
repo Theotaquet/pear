@@ -26,9 +26,19 @@ class Session {
 
     calculateStatistics(metricsManager) {
         let average = 0.;
+        let max = 0;
+        let min = Number.MAX_VALUE;
+
         const firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
         for(let i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
-            average += metricsManager.metrics[i].value;
+            const metricValue = metricsManager.metrics[i].value;
+            average += metricValue;
+            if(metricValue > max) {
+                max = metricValue;
+            }
+            if(metricValue < min) {
+                min = metricValue;
+            }
         }
         average /= metricsManager.metrics.length - firstRelevantMetric;
 
@@ -36,6 +46,14 @@ class Session {
             {
                 name: 'average',
                 value: average
+            },
+            {
+                name: 'maximum',
+                value: max
+            },
+            {
+                name: 'minimum',
+                value: min
             }
         ];
     }

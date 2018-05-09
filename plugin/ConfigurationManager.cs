@@ -10,8 +10,8 @@ namespace Pear {
     public static class ConfigurationManager {
 
         public static string SessionLogsPath { get; } = "sessionLogs.txt";
-        public static SessionConfiguration session { get; set; }
-        public static MetricsManagerConfiguration[] metricsManagers { get; set; }
+        public static SessionConfiguration Session { get; set; }
+        public static MetricsManagerConfiguration[] MetricsManagers { get; set; }
 
         private static string ConfigFilePath { get; } = "Assets/pear/config.json";
 
@@ -22,8 +22,8 @@ namespace Pear {
 
             config.CheckEmptyParameters();
 
-            session = config.sessionConfiguration;
-            metricsManagers = config.metricsManagersConfiguration;
+            Session = config.sessionConfiguration;
+            MetricsManagers = config.metricsManagersConfiguration;
         }
     }
 

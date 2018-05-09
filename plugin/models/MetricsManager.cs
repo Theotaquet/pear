@@ -48,9 +48,9 @@ namespace Pear {
         public override string ToString() {
             string formatedName =
                     name.Substring(0, 1).ToUpper() +
-                    new Regex(@"([A-Z]+)").Replace(name.Substring(1), " $1");
+                    new Regex(@"([A-Z0-9]+)").Replace(name.Substring(1), " $1").ToLower();
             string str = formatedName + " - update frequency: " + updateFrequency + " s\n";
-			foreach(Metric metric in metrics) {
+            foreach(Metric metric in metrics) {
                 str += metric.ToString() + "\n";
             }
             return str;
@@ -58,7 +58,7 @@ namespace Pear {
 
         public void CollectMetrics() {
             timer += Time.deltaTime;
-            int metric;
+            float metric;
 
             Update();
 
@@ -77,7 +77,7 @@ namespace Pear {
 
         }
 
-        public abstract int CalculateMetric();
+        public abstract float CalculateMetric();
 
         public bool CreateMetric(Metric metric) {
             if(!metrics.Contains(metric)) {

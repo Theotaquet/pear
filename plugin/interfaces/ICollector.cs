@@ -4,6 +4,6 @@
 
         void CollectMetrics();
         void Update();
-        int CalculateMetric();
+        float CalculateMetric();
     }
 }

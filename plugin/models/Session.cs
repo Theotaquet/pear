@@ -46,7 +46,7 @@ namespace Pear {
         [DataMember]
         public List<MetricsManager> metricsManagers { get; set; }
 
-		private float _duration;
+        private float _duration;
 
         public Session(string game, string build, string scene, string platform,
                 string unityVersion, string device, string processorType,
@@ -62,21 +62,26 @@ namespace Pear {
             this.gpu = gpu;
             this.gpuMemory = gpuMemory;
             startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            duration = ConfigurationManager.session.duration;
+            duration = ConfigurationManager.Session.duration;
             metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManagerConfig
-                    in ConfigurationManager.metricsManagers) {
+                    in ConfigurationManager.MetricsManagers) {
                 string metricsManagerName =
                         metricsManagerConfig.name.Substring(0, 1).ToUpper() +
                         metricsManagerConfig.name.Substring(1) +
                         "Manager";
                 Type metricsManagerType =
                         Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
-                MetricsManager metricsManager =
-                        (MetricsManager) Activator
-                        .CreateInstance(metricsManagerType, metricsManagerConfig);
-                AddMetricsManager(metricsManager);
+                try {
+                    MetricsManager metricsManager =
+                            (MetricsManager) Activator
+                            .CreateInstance(metricsManagerType, metricsManagerConfig);
+                    AddMetricsManager(metricsManager);
+                }
+                catch(NegativeNullUpdateFrequencyException) {
+                    throw;
+                }
             }
         }
 

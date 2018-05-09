@@ -8,8 +8,8 @@
             "name": "frameRate",
             "thresholds": [
                 {
-                    "statistic": "average",
-                    "minimum": 60
+                    "statistic": "maximum",
+                    "maximum": 60
                 }
             ]
         },

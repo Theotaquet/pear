@@ -6,6 +6,12 @@ namespace Pear {
 
     public static class PearToolbox {
 
+        public static Action<Exception> CriticalError { get; set; } = (e) => {
+            Debug.LogException(e);
+            AddToLog(e.Message + "\n\n" + StopMessage);
+            WriteLogInFile();
+        };
+
         private static string StartMessage { get; } =
                 DateTime.Now + " - Pe.A.R. activated in " +
                 (Application.isEditor ? "editor" : "build") + " mode.\n" +
@@ -13,21 +19,16 @@ namespace Pear {
                 "in the default Unity log files folder.";
         private static string StopMessage { get; } =
                 "Pe.A.R. hasn't been initialised.";
-        private static bool loggedSession { get; set; } = false;
-        private static string log { get; set; } = "";
+        private static bool LoggedSession { get; set; } = false;
+        private static string Log { get; set; } = "";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void ActivatePear() {
-            Action<Exception> criticalError = (e) => {
-                Debug.LogException(e);
-                AddToLog(e.Message + "\n\n" + StopMessage);
-                PearToolbox.WriteLogInFile();
-            };
             try {
                 try {
                     if(HasArg("-pear")) {
                         if(HasArg("-log")) {
-                            loggedSession = true;
+                            LoggedSession = true;
                         }
                         AddToLog(StartMessage);
                         ConfigurationManager.ReadConfigFile();
@@ -36,13 +37,7 @@ namespace Pear {
                     }
                 }
                 catch(NoConfigParamValueException e) {
-                    criticalError(e);
-                }
-                catch(NegativeNullUpdateFrequencyException e) {
-                    criticalError(e);
-                }
-                catch(NegativeNullDurationException e) {
-                    criticalError(e);
+                    CriticalError(e);
                 }
                 catch(ArgumentException e) {
                     throw new WrongConfigStructureException(e);
@@ -52,7 +47,7 @@ namespace Pear {
                 }
             }
             catch(WrongConfigStructureException e) {
-                criticalError(e);
+                CriticalError(e);
             }
         }
 
@@ -73,13 +68,13 @@ namespace Pear {
         }
 
         public static void AddToLog(string info) {
-            log += info + "\n\n";
+            Log += info + "\n\n";
         }
 
         public static void WriteLogInFile() {
-            if(loggedSession) {
+            if(LoggedSession) {
                 StreamWriter writer = new StreamWriter(ConfigurationManager.SessionLogsPath, true);
-                writer.WriteLine(log + "--------------------\n");
+                writer.WriteLine(Log + "--------------------\n");
                 writer.Close();
             }
         }
