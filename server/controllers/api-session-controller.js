@@ -54,31 +54,14 @@ function post(req, res, next)  {
     } );
 
     apiSessionDAO.createSession(session, function(err, session) {
-        if(err)
+        if(err) {
             return next(err);
+        }
         res.status(201).json(session);
 
-        const fullUrl = `${req.protocol}://${req.get('host')}/api/sessions/${session._id}`;
-
-        http.get(fullUrl, function(res) {
-            var rawData = '';
-            res.on('data', function(data) {
-                rawData += data;
-            });
-            res.on('end', function() {
-                var parsedData = JSON.parse(rawData);
-                if(!parsedData) {
-                    console.log('**WEB-APP log**');
-                    return next(new NotFound());
-                }
-                if(res.statusCode != 200) {
-                    return next(parsedData)
-                }
-                reporter.report(parsedData);
-            });
-        });
+        session.applyProcessings();
+        reporter.report(session);
     });
-
 }
 
 module.exports.get = get;
