@@ -1,5 +1,8 @@
+const mongoose = require('mongoose');
+const http = require('http');
 const apiSessionDao = require('../dao/api-session-dao');
 const Session = require('../models/session');
+const reporter = require('../reporter');
 
 function get(req, res, next) {
     if(!req.params.sessionId) {
@@ -39,6 +42,9 @@ function post(req, res, next)  {
             return next(err);
         }
         res.status(201).json(session);
+
+        session.applyProcessings();
+        reporter.report(session);
     });
 }
 
