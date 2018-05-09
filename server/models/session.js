@@ -36,7 +36,7 @@ class Session {
             if(metricValue > max) {
                 max = metricValue;
             }
-            else if(metricValue < min) {
+            if(metricValue < min) {
                 min = metricValue;
             }
         }
