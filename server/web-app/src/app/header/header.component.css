@@ -31,6 +31,7 @@ h1 {
     color: var(--green-4);
     font-weight: bold;
     font-size: 0.8em;
+    text-decoration: none;
     padding: 10px 10px 10px 10px;
     background: var(--green-2);
     border: 2px solid var(--green-3);
@@ -38,7 +39,6 @@ h1 {
     box-shadow: 3px 3px 15px var(--shadow-1);
     margin-top: 10px;
     transition-duration: 0.4s;
-    text-decoration: none;
 }
 
 #sessions-button:hover {

@@ -13,7 +13,7 @@
 }
 
 body {
-    --dark-1: rgb(60, 60, 60);
+    --dark-1: #4b4a4a;
     --light-1: white;
     --light-2: lightgrey;
     --light-3: rgb(230, 230, 230);
@@ -25,7 +25,7 @@ body {
     --shadow-1: rgba(0, 0, 0, 0.5);
     --bgDark-1: url('assets/images/wild-oliva.png') fixed, var(--dark-1);
     --bgLight-1: url('assets/images/dust-scratches.png') rgb(240, 240, 240);
-    --bgLight-2: url('assets/images/mooning.png') rgb(180, 180, 180);
+    --bgLight-2: url('assets/images/mooning.png') rgb(145, 145, 145);
 
     color: var(--dark-1);
     font-family: 'robotoregular', 'Trebuchet MS', Arial, sans-serif;
