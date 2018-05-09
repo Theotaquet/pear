@@ -4,9 +4,9 @@ const apiSessionController = require('../controllers/api-session-controller');
 
 router
 
-.get('/:sessionID?', setHeader, apiSessionController.get)
+    .get('/:sessionId?', setHeader, apiSessionController.get)
 
-.post('/', setHeader, apiSessionController.post);
+    .post('/', setHeader, apiSessionController.post);
 
 function setHeader(req, res, next) {
     res.set('Content-Type', 'application/json');

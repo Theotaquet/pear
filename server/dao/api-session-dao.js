@@ -1,73 +1,85 @@
 const dbConnection = require('./db-connection');
 const Session = require('../models/session');
+const ObjectId = require('mongodb').ObjectId;
 
 function getAllSessions(req, next) {
-    dbConnection.connect(function(err, db) {
+    dbConnection.connect((err, db) => {
         if(err) {
             return next(err);
         }
         else {
-            Session.find(req.query).sort('-startDate').exec(processResult);
-
-            function processResult(err, sessions) {
-                db.close();
-                if(sessions.length == 0) {
+            const collection = db.collection('sessions');
+            var processResult = function(err, docs) {
+                if(docs.length == 0) {
                     console.log('No document returned from the database.');
                 }
                 else if(!err) {
-                    console.log(`${sessions.length} document(s) returned` +
-                            ` from ${Session.collection.name} in ${Session.db.name}:`);
-                    console.log(`${sessions}\n`);
+                    console.log(`${docs.length} document(s) returned` +
+                        ` from ${collection.collectionName} in ${db.databaseName}:`);
+                    console.log(`${docs}\n`);
                 }
+                const sessions = [];
+                for(const doc of docs) {
+                    sessions.push(new Session(doc));
+                }
+                console.log(`${sessions}\n`);
                 return next(err, sessions);
-            }
+            };
+
+            collection.find(req.query).sort([['startDate', -1]]).toArray(processResult);
         }
     });
 }
 
 function getSession(req, next) {
-    dbConnection.connect(function(err, db) {
+    dbConnection.connect((err, db) => {
         if(err) {
             return next(err);
         }
         else {
-            var id = req.params.sessionID;
-            if(id == 'last')
-                Session.findOne(req.query).sort('-startDate').exec(processResult);
-            else
-                Session.findById(id, processResult);
-
-            function processResult(err, session) {
-                db.close();
-                if(!session) {
+            const id = req.params.sessionId;
+            const collection = db.collection('sessions');
+            var processResult = function(err, doc) {
+                if(!doc) {
                     console.log('No document returned from the database.');
                 }
                 else if(!err) {
-                    console.log(`1 document returned from ${session.collection.name}` +
-                            ` in ${session.db.name}:`);
-                    console.log(`${session}\n`);
+                    console.log(`1 document returned from ${collection.collectionName}` +
+                            ` in ${db.databaseName}:`);
+                    console.log(`${doc}\n`);
                 }
+                const session = new Session(doc);
+                console.log(`${session}\n`);
                 return next(err, session);
+            };
+
+            if(id == 'last') {
+                collection.findOne(req.query, { sort: [['startDate', -1]] }, processResult);
+            }
+            else {
+                collection.findOne( { '_id': ObjectId(id) }, processResult);
             }
         }
-    })
+    });
 }
 
 function createSession(session, next) {
-    dbConnection.connect(function(err, db) {
+    dbConnection.connect((err, db) => {
         if(err) {
             return next(err);
         }
         else {
-            session.save(function(err, session) {
-                db.close();
+            const collection = db.collection('sessions');
+            var processResult = function(err, doc) {
                 if(!err) {
-                    console.log(`1 document inserted into ${session.collection.name}` +
-                            ` in ${session.db.name}:`);
-                    console.log(`${session}\n`);
+                    console.log(`1 document inserted into ${collection.collectionName}` +
+                            ` in ${db.databaseName}:`);
+                    console.log(`${doc}\n`);
                 }
-                return next(err, session);
-            });
+                return next(err, doc);
+            };
+
+            collection.insert(session, processResult);
         }
     });
 }

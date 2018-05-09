@@ -1,0 +1,58 @@
+<div class="main centered">
+  <section id="session-infos">
+    <h2 class="v-centered">
+      Session Report -&#160;<a routerLink="/sessions/{{session._id}}">{{session._id}}</a>
+      <div *ngIf="session.validated" id="validated" class="status">VALIDATED</div>
+      <div *ngIf="!session.validated" id="failed" class="status">FAILED</div>
+    </h2>
+    <ul>
+      <li>game: <i>{{session.game}}</i></li>
+      <li>build: <i>{{session.build}}</i></li>
+      <li>scene: <i>{{session.scene}}</i></li>
+      <li>platform: <i>{{session.platform}}</i></li>
+      <li>Unity version: <i>{{session.unityVersion}}</i></li>
+      <li>device: <i>{{session.device}}</i>
+        <ul>
+          <li>processor: <i>{{session.processorType}}</i></li>
+          <li>system memory size: <i>{{session.systemMemory}} MB</i></li>
+          <li>GPU: <i>{{session.gpu}}</i></li>
+          <li>GPU memory size: <i>{{session.gpuMemory}} MB</i></li>
+        </ul>
+      </li>
+      <li>start date: <i>{{session.startDate | date:'short':'':'fr'}}</i></li>
+      <li>duration: <i>{{session.duration}} ms</i></li>
+    </ul>
+  </section>
+
+  <section id="metrics">
+    <h2>Metrics</h2>
+    <div *ngFor="let metricsManager of session.metricsManagers" class="metric-manager">
+      <h3 class="v-centered">
+        {{metricsManager.name | formatMetricsManagerName}}
+        <div *ngIf="metricsManager.validated" id="validated" class="status">VALIDATED</div>
+        <div *ngIf="!metricsManager.validated" id="failed" class="status">FAILED</div>
+      </h3>
+      <div *ngFor="let statistic of metricsManager.statistics">
+        <div *ngIf="statistic.thresholds" [id]="metricsManager.name | formatChartName:statistic.name"
+            class="chart-container"></div>
+      </div>
+      <ul>
+        <li *ngFor="let statistic of metricsManager.statistics"
+            class="v-centered">
+          {{statistic | formatStatisticName}} {{statistic.value | number}}
+          <div *ngIf="statistic.validated != undefined">
+            <div *ngIf="statistic.validated" id="validated" class="status">VALIDATED</div>
+            <div *ngIf="!statistic.validated" id="failed" class="status">FAILED</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="json">
+    <h2>JSON result</h2>
+    <pre>
+      <code>{{session | json}}</code>
+    </pre>
+  </section>
+</div>

@@ -2,43 +2,51 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const apiSessionRouter = require('./routers/api-session-router');
-const sessionRouter = require('./routers/session-router');
 const NotFound = require('./errors').NotFound;
-const pug = require('pug');
 
 const port = process.env.PORT || 3000;
+const allowedExt = [
+    '.js',
+    '.ico',
+    '.css',
+    '.png',
+    '.jpg',
+    '.woff2',
+    '.woff',
+    '.ttf',
+    '.svg'
+];
 
 app
 
-.use(bodyParser.json())
+    .use(bodyParser.json())
 
-.use(express.static('resources'))
+    .get('/favicon.ico', (req, res) => {
+        res.set('Content-Type', 'image/x-icon');
+        res.end();
+    })
 
-.set('view engine', 'pug')
+    .use('/api/sessions', apiSessionRouter)
 
-.get('/favicon.ico', function(req, res, next) {
-    res.set('Content-Type', 'image/x-icon');
-    res.end();
-})
+    .use('/api/*', (req, res, next) => {
+        next(new NotFound());
+    })
 
-.get('/', function(req, res, next) {
-    res.redirect('/sessions');
-})
+    .use((req, res) => {
+        if(allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
+            res.sendFile(`${req.url}`, {root: 'web-app/dist/'});
+        }
+        else {
+            res.sendFile('index.html', {root: 'web-app/dist/'});
+        }
+    })
 
-.use('/sessions', sessionRouter)
+    .use((err, req, res) => {
+        console.error(err);
+        console.error(err.stack);
+        res.status(err.status || 500).json(err);
+    })
 
-.use('/api/sessions', apiSessionRouter)
-
-.use(function(req, res, next) {
-    next(new NotFound());
-})
-
-.use(function(err, req, res, next) {
-    console.error(err);
-    console.error(err.stack);
-    res.status(err.status || 500).json(err);
-})
-
-.listen(port, function() {
-    console.log(`\nPe.A.R. RESTful API and web application server started on: ${port}\n`);
-});
+    .listen(port, () => {
+        console.log(`\nPe.A.R. RESTful API and web application server started on: ${port}\n`);
+    });

@@ -23,7 +23,8 @@ namespace Pear {
                 }
             }
             else {
-                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                AsyncOperation asyncLoad =
+                        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
                 yield return asyncLoad;
 
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));

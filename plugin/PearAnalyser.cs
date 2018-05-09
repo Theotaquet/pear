@@ -1,34 +1,29 @@
-﻿using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-using System.Collections;
-using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Pear {
 
     public class PearAnalyser : MonoBehaviour {
 
-        private static readonly string noCode =
-                "Unable to connect to the server. " +
-                "Check the URL or the server status.";
-        private static readonly string code201 =
-                "Code 201: Post request complete!";
-        private static readonly string code401 =
-                "Error 401: Unauthorized. Resubmitted request!";
-        private static readonly string otherCode =
-                "Request failed";
 
-        private Session session;
-        private float lastFrameTime;
+        public Session session { get; set; }
 
-        private MetricsManager frameRatesManager;
-        private int framesCounter;
-        private float frameRateTimer;
-
-        private MetricsManager garbageCollectionManager;
-        private float GCTimer;
+		private static string NoCode { get; } =
+			"Unable to connect to the server. " +
+			"Check the URL or the server status.";
+		private static string Code201 { get; } =
+			"Code 201: Post request complete!";
+		private static string Code401 { get; } =
+			"Error 401: Unauthorized. Resubmitted request!";
+		private static string OtherCode { get; } =
+			"Request failed";
+		private float duration { get; set; }
 
         void Start() {
             session = new Session(
@@ -43,73 +38,39 @@ namespace Pear {
                     SystemInfo.graphicsDeviceName,
                     SystemInfo.graphicsMemorySize
             );
-            lastFrameTime = 0.0f;
-
-            frameRatesManager = session.ReadMetricsManager("frameRate");
-            framesCounter = 0;
-            frameRateTimer = 0.0f;
-
-            garbageCollectionManager = session.ReadMetricsManager("garbageCollection");
-            GCTimer = 0.0f;
         }
 
         void Update() {
-            if(frameRatesManager.enabled)
-                CollectFrameRate();
+            foreach(MetricsManager metricsManager in session.metricsManagers) {
+                if(metricsManager.enabled) {
+                    metricsManager.CollectMetrics();
+                }
+            }
 
-            if(garbageCollectionManager.enabled)
-                CollectGarbageCollection();
-
-            lastFrameTime = Time.time;
-
-            if(lastFrameTime >= session.duration) {
-                lastFrameTime = session.duration;
+			duration = Time.time;
+			if(duration >= session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-            session.duration = (uint) (lastFrameTime * 1000);
-            string sessionJSONString = JsonUtility.ToJson(session);
-            PostMetrics(sessionJSONString);
+			session.duration = (uint) Math.Min(session.duration, duration) * 1000;
+
+            MemoryStream stream = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Session));
+            ser.WriteObject(stream, session);
+            stream.Position = 0;
+            string sessionJsonString = new StreamReader(stream).ReadToEnd();
+
+            PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();
         }
 
-        private void CollectFrameRate() {
-            int frameRate;
-            framesCounter++;
-            frameRateTimer += Time.time - lastFrameTime;
-
-            //test if the limit of updates per second is respected
-            while(frameRateTimer > frameRatesManager.updateFrequency) {
-                frameRate = (int) (framesCounter / frameRateTimer);
-
-                framesCounter = 0;
-                //the overflow is kept in memory
-                //if frameRateTimer has exceeded updateFrequency
-                frameRateTimer -= frameRatesManager.updateFrequency;
-
-                frameRatesManager.CreateMetric(new Metric(frameRate, lastFrameTime));
-            }
-        }
-
-        private void CollectGarbageCollection() {
-            int count;
-            GCTimer += Time.time - lastFrameTime;
-
-            while(GCTimer > garbageCollectionManager.updateFrequency) {
-                count = GC.CollectionCount(0);
-
-                GCTimer -= garbageCollectionManager.updateFrequency;
-
-                garbageCollectionManager.CreateMetric(new Metric(count, lastFrameTime));
-            }
-        }
-
-        private void PostMetrics(string JSONString) {
-            UnityWebRequest request = new UnityWebRequest(ConfigurationManager.session.APIServerURL, "POST");
-            byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(JSONString);
+        private void PostMetrics(string jsonString) {
+            UnityWebRequest request =
+                    new UnityWebRequest(ConfigurationManager.session.apiServerUrl, "POST");
+            byte[] bodyRaw = new UTF8Encoding().GetBytes(jsonString);
             request.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
             request.SetRequestHeader("Content-Type", "application/json");
 
@@ -119,19 +80,22 @@ namespace Pear {
             while(!requestDone) {
                 if(async.isDone) {
                     string response;
-                    if(request.isNetworkError)
+                    if(request.isNetworkError) {
                         response = request.error + "";
+                    }
 
                     var responses = new Dictionary<long, string> ();
-                    responses.Add(0, noCode);
-                    responses.Add(201, code201);
-                    responses.Add(401, code401);
+                    responses.Add(0, NoCode);
+                    responses.Add(201, Code201);
+                    responses.Add(401, Code401);
 
                     string value;
-                    if(responses.TryGetValue(request.responseCode, out value))
+                    if(responses.TryGetValue(request.responseCode, out value)) {
                         response = value;
-                    else
-                        response = otherCode + " (status:" + request.responseCode + ").";
+                    }
+                    else {
+                        response = OtherCode + " (status:" + request.responseCode + ").";
+                    }
 
                     PearToolbox.AddToLog(response);
                     requestDone = true;

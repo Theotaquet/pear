@@ -1,0 +1,37 @@
+/* Report */
+
+section {
+    padding: 10px 20px 10px 20px;
+    background: var(--bgLight-2);
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+    margin: 20px 0 20px 0;
+}
+
+ul {
+    list-style-type: square;
+}
+
+ul ul {
+    list-style-type: circle;
+}
+
+/* Session infos */
+
+#session-infos {
+    color: var(--light-2);
+    width: 60%;
+    background: var(--bgDark-1);
+}
+
+/* Metrics */
+
+.metric-manager {
+    padding-bottom: 30px;
+}
+
+.chart-container {
+    height: 300px;
+    width: 100%;
+    box-shadow: 3px 3px 15px var(--shadow-1);
+}

@@ -1,28 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [Serializable]
+    [DataContract]
     public class Session {
 
-        public string game;
-        public string build;
-        public string scene;
-        public string platform;
-        public string unityVersion;
-        public string device;
-        public string processorType;
-        public int systemMemory;
-        public string GPU;
-        public int GPUMemory;
-        public string startDate;
-        public float duration;
-        public List<MetricsManager> metricsManagers;
+        [DataMember]
+        public string game { get; set; }
+        [DataMember]
+        public string build { get; set; }
+        [DataMember]
+        public string scene { get; set; }
+        [DataMember]
+        public string platform { get; set; }
+        [DataMember]
+        public string unityVersion { get; set; }
+        [DataMember]
+        public string device { get; set; }
+        [DataMember]
+        public string processorType { get; set; }
+        [DataMember]
+        public int systemMemory { get; set; }
+        [DataMember]
+        public string gpu { get; set; }
+        [DataMember]
+        public int gpuMemory { get; set; }
+        [DataMember]
+        public string startDate { get; set; }
+        [DataMember]
+        public float duration {
+            get {
+                return _duration;
+            }
+            set {
+                if(value > 0) {
+                    _duration = value / 1000;
+                }
+                else {
+                    throw new NegativeNullDurationException();
+                }
+            }
+        }
+        [DataMember]
+        public List<MetricsManager> metricsManagers { get; set; }
+
+		private float _duration;
 
         public Session(string game, string build, string scene, string platform,
                 string unityVersion, string device, string processorType,
-                int systemMemory, string GPU, int GPUMemory) {
+                int systemMemory, string gpu, int gpuMemory) {
             this.game = game;
             this.build = build;
             this.scene = scene;
@@ -31,14 +59,24 @@ namespace Pear {
             this.device = device;
             this.processorType = processorType;
             this.systemMemory = systemMemory;
-            this.GPU = GPU;
-            this.GPUMemory = GPUMemory;
-            this.startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            SetDuration(ConfigurationManager.session.duration);
-            this.metricsManagers = new List<MetricsManager>();
+            this.gpu = gpu;
+            this.gpuMemory = gpuMemory;
+            startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            duration = ConfigurationManager.session.duration;
+            metricsManagers = new List<MetricsManager>();
 
-            foreach(MetricsManagerConfiguration metricsManager in ConfigurationManager.metricsManagers) {
-                CreateMetricsManager(new MetricsManager(metricsManager));
+            foreach(MetricsManagerConfiguration metricsManagerConfig
+                    in ConfigurationManager.metricsManagers) {
+                string metricsManagerName =
+                        metricsManagerConfig.name.Substring(0, 1).ToUpper() +
+                        metricsManagerConfig.name.Substring(1) +
+                        "Manager";
+                Type metricsManagerType =
+                        Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
+                MetricsManager metricsManager =
+                        (MetricsManager) Activator
+                        .CreateInstance(metricsManagerType, metricsManagerConfig);
+                AddMetricsManager(metricsManager);
             }
         }
 
@@ -53,41 +91,35 @@ namespace Pear {
                     "Metrics\n" +
                     "-------\n\n",
                     game, build, scene, platform, unityVersion, device, processorType,
-                    systemMemory, GPU, GPUMemory, DateTime.Parse(startDate), duration
+                    systemMemory, gpu, gpuMemory, DateTime.Parse(startDate), duration
             );
 
-            foreach(MetricsManager metricManager in metricsManagers) {
-                if(metricManager.enabled) {
-                    str += metricManager.ToString() + "\n";
+            foreach(MetricsManager metricsManager in metricsManagers) {
+                if(metricsManager.enabled) {
+                    str += metricsManager.ToString() + "\n";
                 }
             }
 
             return str.Remove(str.Length - 2, 2);
         }
 
-        public bool CreateMetricsManager(MetricsManager metricManager) {
-            if(!metricsManagers.Contains(metricManager)) {
-                metricsManagers.Add(metricManager);
+        public bool AddMetricsManager(MetricsManager metricsManager) {
+            if(!metricsManagers.Contains(metricsManager)) {
+                metricsManagers.Add(metricsManager);
                 return true;
             }
             return false;
         }
 
-        public MetricsManager ReadMetricsManager(string name) {
+        public MetricsManager FindMetricsManager(string name) {
             return metricsManagers.Find(x => x.name == name);
         }
 
-        public bool DeleteMetricManager(MetricsManager metricManager) {
-            if(metricsManagers.Contains(metricManager))
-                return metricsManagers.Remove(metricManager);
+        public bool RemoveMetricsManager(MetricsManager metricsManager) {
+            if(metricsManagers.Contains(metricsManager)) {
+                return metricsManagers.Remove(metricsManager);
+            }
             return false;
-        }
-
-        public void SetDuration(float duration) {
-            if(duration > 0)
-                    this.duration = duration / 1000;
-            else
-                throw new NegativeNullDurationException();
         }
     }
 }
