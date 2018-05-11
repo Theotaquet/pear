@@ -2,7 +2,6 @@
 
 namespace Pear {
 
-    [DataContract(Name = "FrameRateManager")]
     public class FrameRateManager : MetricsManager {
 
         public int framesCounter { get; set; } = 0;

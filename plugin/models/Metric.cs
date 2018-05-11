@@ -3,12 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [DataContract]
     public class Metric {
 
-        [DataMember]
         public float value { get; set; }
-        [DataMember]
         public float recordTime { get; set; }
 
         public Metric(float value, float recordTime) {

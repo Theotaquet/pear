@@ -66,12 +66,6 @@ namespace Pear {
         void OnDisable() {
             session.duration = (uint) Math.Min(session.duration, duration) * 1000;
 
-            MemoryStream stream = new MemoryStream();
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Session));
-            ser.WriteObject(stream, session);
-            stream.Position = 0;
-            string sessionJsonString = new StreamReader(stream).ReadToEnd();
-
             PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();

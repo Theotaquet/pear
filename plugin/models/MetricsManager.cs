@@ -6,16 +6,10 @@ using UnityEngine;
 
 namespace Pear {
 
-    [DataContract]
-    [KnownType(typeof(FrameRateManager))]
-    [KnownType(typeof(GarbageCollectionManager))]
     public abstract class MetricsManager : ICollector {
 
-        [DataMember]
         public string name { get; set; }
-        [DataMember]
         public bool enabled { get; set; }
-        [DataMember]
         public float updateFrequency {
             get {
                 return _updateFrequency;
@@ -29,7 +23,6 @@ namespace Pear {
                 }
             }
         }
-        [DataMember]
         public List<Metric> metrics { get; set; }
 
         protected float timer { get; set; }

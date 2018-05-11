@@ -4,32 +4,19 @@ using System.Runtime.Serialization;
 
 namespace Pear {
 
-    [DataContract]
     public class Session {
 
-        [DataMember]
         public string game { get; set; }
-        [DataMember]
         public string build { get; set; }
-        [DataMember]
         public string scene { get; set; }
-        [DataMember]
         public string platform { get; set; }
-        [DataMember]
         public string unityVersion { get; set; }
-        [DataMember]
         public string device { get; set; }
-        [DataMember]
         public string processorType { get; set; }
-        [DataMember]
         public int systemMemory { get; set; }
-        [DataMember]
         public string gpu { get; set; }
-        [DataMember]
         public int gpuMemory { get; set; }
-        [DataMember]
         public string startDate { get; set; }
-        [DataMember]
         public float duration {
             get {
                 return _duration;
@@ -43,7 +30,6 @@ namespace Pear {
                 }
             }
         }
-        [DataMember]
         public List<MetricsManager> metricsManagers { get; set; }
 
         private float _duration;

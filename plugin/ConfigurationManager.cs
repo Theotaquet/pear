@@ -16,9 +16,6 @@ namespace Pear {
         private static string ConfigFilePath { get; } = "Assets/pear/config.json";
 
         public static void ReadConfigFile() {
-            FileStream stream = File.OpenRead(ConfigFilePath);
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Configuration));
-            Configuration config = (Configuration) ser.ReadObject(stream);
 
             config.CheckEmptyParameters();
 
@@ -31,12 +28,9 @@ namespace Pear {
 
 
 
-    [DataContract]
     public class Configuration {
 
-        [DataMember]
         public SessionConfiguration sessionConfiguration { get; set; }
-        [DataMember]
         public MetricsManagerConfiguration[] metricsManagersConfiguration { get; set; }
 
         public void CheckEmptyParameters() {
@@ -76,23 +70,16 @@ namespace Pear {
         }
     }
 
-    [DataContract]
     public class SessionConfiguration {
 
-        [DataMember]
         public string apiServerUrl { get; set; }
-        [DataMember]
         public int duration { get; set; }
     }
 
-    [DataContract]
     public class MetricsManagerConfiguration {
 
-        [DataMember]
         public string name { get; set; }
-        [DataMember]
         public string enabled { get; set; }
-        [DataMember]
         public string updateFrequency { get; set; }
     }
 }
