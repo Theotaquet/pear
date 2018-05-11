@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Pear {
+﻿namespace Pear {
 
     public class FrameRateManager : MetricsManager {
 

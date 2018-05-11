@@ -2,9 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace Pear {
