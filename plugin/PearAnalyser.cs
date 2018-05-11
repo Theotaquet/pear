@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Pear {
 
@@ -64,6 +65,7 @@ namespace Pear {
         void OnDisable() {
             session.duration = (uint) Math.Min(session.duration, duration) * 1000;
 
+            string sessionJsonString = JsonConvert.SerializeObject(session);
             PostMetrics(sessionJsonString);
             PearToolbox.AddToLog(session.ToString());
             PearToolbox.WriteLogInFile();

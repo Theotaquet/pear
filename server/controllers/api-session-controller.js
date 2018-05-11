@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-const http = require('http');
 const apiSessionDao = require('../dao/api-session-dao');
 const Session = require('../models/session');
 const reporter = require('../reporter');

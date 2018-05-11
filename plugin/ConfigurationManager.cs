@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Pear {
 
@@ -13,7 +15,9 @@ namespace Pear {
         private static string ConfigFilePath { get; } = "Assets/pear/config.json";
 
         public static void ReadConfigFile() {
-
+            JsonSerializer ser = new JsonSerializer();
+            JsonTextReader reader = new JsonTextReader(new StreamReader(File.OpenRead(ConfigFilePath)));
+            Configuration config = ser.Deserialize<Configuration>(reader);
             config.CheckEmptyParameters();
 
             Session = config.sessionConfiguration;
