@@ -44,44 +44,6 @@ export class SessionComponent implements OnInit {
     }
   }
 
-//   createChart(metricsManager, statistic): any {
-//     var thresholds = statistic.thresholds;
-//     var metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
-//     var chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
-
-//     var data = new google.visualization.DataTable();
-//     data.addColumn('number', 'x');
-//     data.addColumn('number', metricName);
-//     data.addColumn( {'type': 'string', 'role': 'style'} );
-//     data.addColumn( {'type': 'string', 'role': 'annotation'} );
-
-//     var minFound = false;
-//     var maxFound = false;
-
-//     for(let metric of metricsManager.metrics) {
-//       if(metric.value >= thresholds.minimum && metric.value <= thresholds.maximum) {
-//         var color = '#ccff00';
-//       }
-//       else {
-//         var color = '#ff3f00';
-//       }
-
-//       var annotation = null;
-//       if(!minFound && metric.value == metricsManager.statistics.find(x => x.name == 'minimum')) {
-//         annotation = 'min';
-//         minFound = true;
-//       }
-//       else if(!maxFound && metric.value == metricsManager.statistics.find(x => x.name = 'maximum')) {
-//         annotation = 'max';
-//         maxFound = true;
-//       }
-//       data.addRow([metric.recordTime, metric.value, `{fill-color: ${color}}`, annotation]);
-//     }
-
-//     var chart = new google.visualization.LineChart(document.getElementById(chartName));
-//     chart.draw(data, null);
-//   }
-
   createChart(metricsManager, statistic): any {
     const thresholds = statistic.thresholds;
     const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
