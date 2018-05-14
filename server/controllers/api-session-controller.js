@@ -42,7 +42,7 @@ function post(req, res, next)  {
         res.status(201).json(session);
 
         session.applyProcessings();
-        reporter.report(session);
+        reporter.report(req, session);
     });
 }
 

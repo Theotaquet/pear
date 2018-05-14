@@ -1,80 +1,88 @@
-var slack = require('slack');
+const slack = require('slack');
 
-function report(session) {
-    var sessionColor;
-    var status;
-    var buttonStyle;
+const token = 'xoxp-3579858503-306200827237-346661601910-7048addf0badba59f2ab1ecf592fc0ab';
+const channel = '@theo.constant';
+
+function report(req, session) {
+    const pearLink = `${req.protocol}://${req.get('host')}`;
+    const sessionLink = `${pearLink}/sessions/${session._id}`;
+    let sessionColor;
+    let status;
+    let statusIcon;
+    let buttonStyle;
 
     if(session.validated) {
-        status = "validated";
-        sessionColor = "good";
-        buttonStyle = "primary";
+        status = 'VALIDATED!';
+        statusIcon = 'https://image.flaticon.com/icons/png/512/169/169780.png';
+        sessionColor = 'good';
+        buttonStyle = 'primary';
     }
     else {
-        status = "failed";
-        sessionColor = "danger";
-        buttonStyle = "danger";
+        status = 'FAILED!';
+        statusIcon = 'https://image.flaticon.com/icons/png/512/169/169779.png';
+        sessionColor = 'danger';
+        buttonStyle = 'danger';
     }
 
-    var gameId = session._id;
-    var gameName = session.game;
-    var gameBuild = session.build;
-    var gameScene = session.scene;
-    var device = session.device;
-    var platform = session.platform;
-    var duration = session.duration;
-    var sessionLink = `http://localhost:3000/sessions/${session._id}`;
-
     slack.chat.postMessage({
-            token: 'xoxp-3579858503-306200827237-346661601910-7048addf0badba59f2ab1ecf592fc0ab',
-            channel: '@theo.constant',
-            text: 'A new *Pe.A.R session* has been recorded!',
-            attachments: [
-                {
-                    fallback: "Session details",
-                    color: sessionColor,
-                    author_name: gameId,
-                    title: gameName + " - " + status,
-                    title_link: sessionLink,
-                    fields: [
-                        {
-                            title: "Build",
-                            value: gameBuild,
-                            short: true
-                        },
-                        {
-                            title: "Scene",
-                            value: gameScene,
-                            short: true
-                        },
-                        {
-                            title: "Device",
-                            value: device,
-                            short: true
-                        },
-                        {
-                            title: "Platform",
-                            value: platform,
-                            short: true
-                        },
-                        {
-                            title: "Duration",
-                            value: duration,
-                            short: true
-                        }
-                    ],
-                    actions: [
-                        {
-                            type: "button",
-                            text: "Go to the report",
-                            url: sessionLink,
-                            style: "primary"
-                        }
-                    ],
-                    footer: "Pe.A.R",
-                    ts: new Date(session.startDate).getTime()
-                }
-            ]
+        token: token,
+        channel: channel,
+        text: 'A new *Pe.A.R session* has been recorded!',
+        attachments: [
+            {
+                fallback: 'Session status',
+                color: sessionColor,
+                title: `${session.game} - ${session._id}`,
+                title_link: sessionLink,
+                text: status,
+                thumb_url: statusIcon
+            },
+            {
+                fallback: 'Session details',
+                color: sessionColor,
+                fields: [
+                    {
+                        title: 'Build',
+                        value: session.build,
+                        short: true
+                    },
+                    {
+                        title: 'Scene',
+                        value: session.scene,
+                        short: true
+                    },
+                    {
+                        title: 'Device',
+                        value: session.device,
+                        short: true
+                    },
+                    {
+                        title: 'Platform',
+                        value: session.platform,
+                        short: true
+                    },
+                    {
+                        title: 'Duration',
+                        value: session.duration,
+                        short: true
+                    }
+                ],
+                footer: 'Pe.A.R',
+                ts: Math.floor(new Date(session.startDate).getTime() / 1000)
+            },
+            {
+                fallback: 'Button to go to the report',
+                color: sessionColor,
+                actions: [
+                    {
+                        type: 'button',
+                        text: 'Go to the report',
+                        url: sessionLink,
+                        style: buttonStyle
+                    }
+                ]
+            }
+        ]
     }, console.log);
 }
 

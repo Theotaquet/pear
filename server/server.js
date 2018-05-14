@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const path = require('path');
+const favicon = require('serve-favicon');
 const apiSessionRouter = require('./routers/api-session-router');
 const NotFound = require('./errors').NotFound;
 
@@ -21,10 +23,7 @@ app
 
     .use(bodyParser.json())
 
-    .get('/favicon.ico', (req, res) => {
-        res.set('Content-Type', 'image/x-icon');
-        res.end();
-    })
+    .use(favicon(path.join(__dirname, 'web-app', 'dist', 'assets', 'images', 'favicon.ico')))
 
     .use('/api/sessions', apiSessionRouter)
 
