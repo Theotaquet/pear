@@ -20,6 +20,7 @@ function get(req, res, next) {
                 return next(err);
             }
             session.applyProcessings();
+            reporter.report(req, session);
             if(session.validated) {
                 console.log('**API log**\nThe session was successful.\n\n');
             }

@@ -3,6 +3,10 @@
         "mongoDbServerUrl": "mongodb://localhost:27017",
         "dbName": "pearDB"
     },
+    "reporterConfiguration": {
+        "slackToken": "xoxp-3579858503-306200827237-346661601910-7048addf0badba59f2ab1ecf592fc0ab",
+        "slackChannel": "@theo.constant"
+    },
     "metricsManagersConfiguration": [
         {
             "name": "frameRate",

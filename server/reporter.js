@@ -1,7 +1,5 @@
 const slack = require('slack');
-
-const token = 'xoxp-3579858503-306200827237-346661601910-7048addf0badba59f2ab1ecf592fc0ab';
-const channel = '@theo.constant';
+const configFile = require('./config.json');
 
 function report(req, session) {
     const pearLink = `${req.protocol}://${req.get('host')}`;
@@ -25,8 +23,8 @@ function report(req, session) {
     }
 
     slack.chat.postMessage({
-        token: token,
-        channel: channel,
+        token: configFile.reporterConfiguration.slackToken,
+        channel: configFile.reporterConfiguration.slackChannel,
         text: 'A new *Pe.A.R session* has been recorded!',
         attachments: [
             {
