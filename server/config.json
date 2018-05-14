@@ -14,7 +14,27 @@
             ]
         },
         {
-            "name": "garbageCollection",
+            "name": "garbageCollectionGeneration1",
+            "thresholds": [
+                {
+                    "statistic": "average",
+                    "minimum": 20,
+                    "maximum": 50
+                }
+            ]
+        },
+        {
+            "name": "garbageCollectionGeneration2",
+            "thresholds": [
+                {
+                    "statistic": "average",
+                    "minimum": 20,
+                    "maximum": 50
+                }
+            ]
+        },
+        {
+            "name": "garbageCollectionGeneration3",
             "thresholds": [
                 {
                     "statistic": "average",
