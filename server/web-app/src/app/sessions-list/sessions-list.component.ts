@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Session } from '../session';
 import { SessionService } from '../session.service';
 
 @Component({
@@ -15,7 +14,21 @@ export class SessionsListComponent implements OnInit {
   constructor(private sessionService: SessionService) { }
 
   ngOnInit() {
-    this.sessionService.getAllSessions()
-        .subscribe(sessions => this.sessions = sessions);
+    if(this.sessionService.sessions == undefined) {
+    //   this.sessionService.refresh(sessions => this.sessions = sessions);
+      this.sessionService.refresh().then(sessions => this.sessions = sessions);
+    }
+    else {
+      this.sessions = this.sessionService.sessions;
+    }
   }
+
+  refresh() {
+    this.sessionService.refresh().then(sessions => this.sessions = sessions);
+  }
+
+//   getAllSessions() {
+//     this.sessionService.getAllSessions()
+//         .subscribe(sessions => this.sessions = sessions);
+//   }
 }

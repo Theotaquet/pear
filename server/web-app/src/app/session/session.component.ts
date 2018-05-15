@@ -5,6 +5,7 @@ import { Session } from '../session';
 import { SessionService } from '../session.service';
 import { FormatMetricsManagerNamePipe } from '../format-metrics-manager-name.pipe';
 import { FormatChartNamePipe } from '../format-chart-name.pipe';
+import { SessionsListComponent } from '../sessions-list/sessions-list.component';
 
 declare var google: any;
 
@@ -25,12 +26,18 @@ export class SessionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sessionService.getSession(this.route.snapshot.params['sessionId'])
-        .subscribe(session => {
-          this.session = session;
-          this.loadCharts();
-        }
-    );
+    this.getSession();
+  }
+
+  getSession() {
+    this.session = this.sessionService.sessions.find(session => session._id == this.route.snapshot.params['sessionId']);
+    this.loadCharts;
+    // this.sessionService.getSession(this.route.snapshot.params['sessionId'])
+    //     .subscribe(session => {
+    //       this.session = session;
+    //       this.loadCharts();
+    //     }
+    // );
   }
 
   loadCharts() {
