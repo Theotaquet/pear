@@ -18,7 +18,7 @@ namespace Pear {
             JsonSerializer ser = new JsonSerializer();
             JsonTextReader reader = new JsonTextReader(new StreamReader(File.OpenRead(ConfigFilePath)));
             Configuration config = ser.Deserialize<Configuration>(reader);
-            config.CheckEmptyParameters();
+            config.CheckParametersValidity();
 
             Session = config.sessionConfiguration;
             MetricsManagers = config.metricsManagersConfiguration;
@@ -34,7 +34,7 @@ namespace Pear {
         public SessionConfiguration sessionConfiguration { get; set; }
         public MetricsManagerConfiguration[] metricsManagersConfiguration { get; set; }
 
-        public void CheckEmptyParameters() {
+        public void CheckParametersValidity() {
             bool noParamValue = false;
             ArrayList emptyParameters = new ArrayList();
 
