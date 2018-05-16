@@ -47,13 +47,13 @@ namespace Pear {
             }
 
             duration = Time.time;
-            if(duration >= session.duration) {
+            if(duration >= ConfigurationManager.Session.duration) {
                 Application.Quit();
             }
         }
 
         void OnDisable() {
-            session.duration = Math.Min(session.duration, duration);
+            session.duration = Math.Min(ConfigurationManager.Session.duration, duration);
 
             string sessionJsonString = JsonConvert.SerializeObject(session);
             PostMetrics(sessionJsonString);

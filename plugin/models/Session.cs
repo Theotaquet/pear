@@ -33,7 +33,6 @@ namespace Pear {
             this.gpu = gpu;
             this.gpuMemory = gpuMemory;
             startDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            duration = ConfigurationManager.Session.duration;
             metricsManagers = new List<MetricsManager>();
 
             foreach(MetricsManagerConfiguration metricsManagerConfig
