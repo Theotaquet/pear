@@ -74,13 +74,13 @@ namespace Pear {
     public class SessionConfiguration {
 
         public string apiServerUrl { get; set; }
-        public int duration { get; set; }
+        public float duration { get; set; }
     }
 
     public class MetricsManagerConfiguration {
 
         public string name { get; set; }
-        public string enabled { get; set; }
-        public string updateFrequency { get; set; }
+        public bool enabled { get; set; }
+        public float updateFrequency { get; set; }
     }
 }

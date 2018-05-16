@@ -1,28 +1,28 @@
 {
     "sessionConfiguration": {
         "apiServerUrl": "localhost:3000/api/sessions",
-        "duration": 60000
+        "duration": 60.00
     },
     "metricsManagersConfiguration": [
         {
             "name": "frameRate",
             "enabled": true,
-            "updateFrequency": 1000
+            "updateFrequency": 1.00
         },
         {
             "name": "garbageCollectionGeneration0",
             "enabled": true,
-            "updateFrequency": 1000
+            "updateFrequency": 1.00
         },
         {
             "name": "garbageCollectionGeneration1",
             "enabled": true,
-            "updateFrequency": 1000
+            "updateFrequency": 1.00
         },
         {
             "name": "garbageCollectionGeneration2",
             "enabled": true,
-            "updateFrequency": 1000
+            "updateFrequency": 1.00
         }
     ]
 }

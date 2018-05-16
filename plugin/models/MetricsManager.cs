@@ -15,7 +15,7 @@ namespace Pear {
             }
             set {
                 if(value > 0) {
-                    _updateFrequency = value / 1000;
+                    _updateFrequency = value;
                 }
                 else {
                     throw new NegativeNullUpdateFrequencyException();
@@ -30,8 +30,8 @@ namespace Pear {
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             name = metricsManagerConfig.name;
-            enabled = Boolean.Parse(metricsManagerConfig.enabled);
-            updateFrequency = float.Parse(metricsManagerConfig.updateFrequency);
+            enabled = metricsManagerConfig.enabled;
+            updateFrequency = metricsManagerConfig.updateFrequency;
             metrics = new List<Metric>();
 
             timer = 0.0f;

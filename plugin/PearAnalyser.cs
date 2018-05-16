@@ -63,7 +63,7 @@ namespace Pear {
         }
 
         void OnDisable() {
-            session.duration = (uint) Math.Min(session.duration, duration) * 1000;
+            session.duration = Math.Min(session.duration, duration);
 
             string sessionJsonString = JsonConvert.SerializeObject(session);
             PostMetrics(sessionJsonString);

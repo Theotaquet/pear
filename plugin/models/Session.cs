@@ -22,7 +22,7 @@ namespace Pear {
             }
             set {
                 if(value > 0) {
-                    _duration = value / 1000;
+                    _duration = value;
                 }
                 else {
                     throw new NegativeNullDurationException();
@@ -77,7 +77,7 @@ namespace Pear {
                     "Running on {3} - with Unity version {4}\n" +
                     "Device: {5} {6} {7} MB\n" +
                     "GPU: {8} {9} MB\n" +
-                    "{10} - {11} ms\n\n" +
+                    "{10} - {11} s\n\n" +
                     "Metrics\n" +
                     "-------\n\n",
                     game, build, scene, platform, unityVersion, device, processorType,
