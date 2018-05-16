@@ -25,28 +25,18 @@ namespace Pear {
         private float duration { get; set; }
 
         void Start() {
-            try {
-                session = new Session(
-                        Application.productName,
-                        Application.version,
-                        SceneManager.GetActiveScene().name,
-                        Application.platform.ToString(),
-                        Application.unityVersion,
-                        SystemInfo.deviceName,
-                        SystemInfo.processorType,
-                        SystemInfo.systemMemorySize,
-                        SystemInfo.graphicsDeviceName,
-                        SystemInfo.graphicsMemorySize
-                );
-            }
-            catch(NegativeNullDurationException e) {
-                PearToolbox.CriticalError(e);
-                Destroy(gameObject);
-            }
-            catch(NegativeNullUpdateFrequencyException e) {
-                PearToolbox.CriticalError(e);
-                Destroy(gameObject);
-            }
+            session = new Session(
+                    Application.productName,
+                    Application.version,
+                    SceneManager.GetActiveScene().name,
+                    Application.platform.ToString(),
+                    Application.unityVersion,
+                    SystemInfo.deviceName,
+                    SystemInfo.processorType,
+                    SystemInfo.systemMemorySize,
+                    SystemInfo.graphicsDeviceName,
+                    SystemInfo.graphicsMemorySize
+            );
         }
 
         void Update() {

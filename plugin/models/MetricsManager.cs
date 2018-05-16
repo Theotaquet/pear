@@ -9,24 +9,10 @@ namespace Pear {
 
         public string name { get; set; }
         public bool enabled { get; set; }
-        public float updateFrequency {
-            get {
-                return _updateFrequency;
-            }
-            set {
-                if(value > 0) {
-                    _updateFrequency = value;
-                }
-                else {
-                    throw new NegativeNullUpdateFrequencyException();
-                }
-            }
-        }
+        public float updateFrequency { get; set; }
         public List<Metric> metrics { get; set; }
 
         protected float timer { get; set; }
-
-        private float _updateFrequency;
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             name = metricsManagerConfig.name;

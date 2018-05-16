@@ -39,6 +39,12 @@ namespace Pear {
                 catch(NoConfigParamValueException e) {
                     CriticalError(e);
                 }
+                catch(NegativeNullDurationException e) {
+                    CriticalError(e);
+                }
+                catch(NegativeNullUpdateFrequencyException e) {
+                    CriticalError(e);
+                }
                 catch(ArgumentException e) {
                     throw new WrongConfigStructureException(e);
                 }

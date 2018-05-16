@@ -38,11 +38,17 @@ namespace Pear {
             bool noParamValue = false;
             ArrayList emptyParameters = new ArrayList();
 
+            if(sessionConfiguration.duration <= 0) {
+                throw new NegativeNullDurationException();
+            }
             if(HasEmptyParameters(sessionConfiguration, emptyParameters)) {
                 noParamValue = true;
             }
 
             foreach(MetricsManagerConfiguration config in metricsManagersConfiguration) {
+                if(config.updateFrequency <= 0) {
+                    throw new NegativeNullUpdateFrequencyException();
+                }
                 if(HasEmptyParameters(config, emptyParameters)) {
                     noParamValue = true;
                 }

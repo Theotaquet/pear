@@ -16,22 +16,8 @@ namespace Pear {
         public string gpu { get; set; }
         public int gpuMemory { get; set; }
         public string startDate { get; set; }
-        public float duration {
-            get {
-                return _duration;
-            }
-            set {
-                if(value > 0) {
-                    _duration = value;
-                }
-                else {
-                    throw new NegativeNullDurationException();
-                }
-            }
-        }
+        public float duration { get; set; }
         public List<MetricsManager> metricsManagers { get; set; }
-
-        private float _duration;
 
         public Session(string game, string build, string scene, string platform,
                 string unityVersion, string device, string processorType,
@@ -58,15 +44,10 @@ namespace Pear {
                         "Manager";
                 Type metricsManagerType =
                         Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
-                try {
-                    MetricsManager metricsManager =
-                            (MetricsManager) Activator
-                            .CreateInstance(metricsManagerType, metricsManagerConfig);
-                    AddMetricsManager(metricsManager);
-                }
-                catch(NegativeNullUpdateFrequencyException) {
-                    throw;
-                }
+                MetricsManager metricsManager =
+                        (MetricsManager) Activator
+                        .CreateInstance(metricsManagerType, metricsManagerConfig);
+                AddMetricsManager(metricsManager);
             }
         }
 
