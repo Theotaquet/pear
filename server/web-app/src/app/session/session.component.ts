@@ -37,8 +37,7 @@ export class SessionComponent implements OnInit {
     for(const metricsManager of this.session.metricsManagers) {
       for(const statistic of metricsManager.statistics) {
         if(statistic.thresholds) {
-          google.charts.load('current', { packages: ['corechart'] });
-          google.charts.setOnLoadCallback(() => this.createChart(metricsManager, statistic));
+          this.createChart(metricsManager, statistic);
         }
       }
     }
@@ -125,3 +124,50 @@ export class SessionComponent implements OnInit {
     chart.draw(googleData, options);
   }
 }
+
+
+createChart(metricsManager, statistic): any {
+    const thresholds = statistic.thresholds;
+    const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
+    const chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
+
+    const data = {
+      theme: 'dark2',
+      title: {
+        text: `${metricName} chart`
+      },
+      data: [
+        {
+          type: 'line',
+          lineColor: '#ffdc32',
+          dataPoints: []
+        }
+      ],
+
+      axisY: {
+        title: metricName,
+        titleFontColor: '#c3dc3c',
+        lineColor: '#c3dc3c',
+        gridColor: '#4b4a4a',
+        labelFontColor: '#919191',
+        includeZero: false,
+      //   minimum: 0,
+        stripLines: [
+          {
+            value: threshold,
+            label: `${threshold.maximum ? 'Maximum' : 'Minimum'} ${threshold}`
+          }
+        ]
+      },
+      axisX: {
+        title: 'Seconds',
+        titleFontColor: '#c3dc3c',
+        lineColor: '#c3dc3c',
+        gridColor: '#919191',
+        labelFontColor: '#919191'
+      }
+    }
+
+    const chart = new CanvasJS.Chart(chartName, data);
+    chart.render();
+  }
