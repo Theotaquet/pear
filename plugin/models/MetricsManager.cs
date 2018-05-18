@@ -14,6 +14,9 @@ namespace Pear {
 
         protected float timer { get; set; }
 
+        private DateTime timeAtStartup { get; set; }
+        private DateTime previousFrameTime {get; set; }
+
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             name = metricsManagerConfig.name;
             enabled = metricsManagerConfig.enabled;
@@ -21,6 +24,8 @@ namespace Pear {
             metrics = new List<Metric>();
 
             timer = 0.0f;
+            timeAtStartup = DateTime.Now;
+            previousFrameTime = timeAtStartup;
         }
 
         public override string ToString() {
@@ -35,20 +40,28 @@ namespace Pear {
         }
 
         public void CollectMetrics() {
-            timer += Time.deltaTime;
+            DateTime currentFrameTime = DateTime.Now;
             float metric;
+
+            timer += (float) (currentFrameTime - previousFrameTime).TotalSeconds;
 
             Update();
 
             //test if the limit of updates per second is respected
             while(timer >= updateFrequency) {
                 metric = CalculateMetric();
-                CreateMetric(new Metric(metric, Time.time));
-
                 //the overflow is kept in memory
                 //if timer has exceeded updateFrequency
                 timer -= updateFrequency;
+                float remainder = 0.0f;
+                if(timer > updateFrequency) {
+                    remainder = timer;
+                }
+
+                CreateMetric(new Metric(metric, (float)((currentFrameTime - timeAtStartup).TotalSeconds - remainder)));
             }
+
+            previousFrameTime = currentFrameTime;
         }
 
         public virtual void Update() {

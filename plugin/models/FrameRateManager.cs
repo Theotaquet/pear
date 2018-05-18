@@ -2,7 +2,7 @@
 
     public class FrameRateManager : MetricsManager {
 
-        public int framesCounter { get; set; } = 0;
+        private int framesCounter { get; set; } = 0;
 
         public FrameRateManager(MetricsManagerConfiguration metricsManager) :
                 base(metricsManager) {

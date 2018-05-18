@@ -7,22 +7,22 @@
         {
             "name": "frameRate",
             "enabled": true,
-            "updateFrequency": 1.00
+            "updateFrequency": 0.25
         },
         {
             "name": "garbageCollectionGeneration0",
             "enabled": true,
-            "updateFrequency": 1.00
+            "updateFrequency": 0.25
         },
         {
             "name": "garbageCollectionGeneration1",
             "enabled": true,
-            "updateFrequency": 1.00
+            "updateFrequency": 0.25
         },
         {
             "name": "garbageCollectionGeneration2",
             "enabled": true,
-            "updateFrequency": 1.00
+            "updateFrequency": 0.25
         }
     ]
 }
