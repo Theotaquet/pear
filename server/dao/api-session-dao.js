@@ -76,7 +76,7 @@ function createSession(session, next) {
                             ` in ${db.databaseName}:`);
                     console.log(`${doc}\n`);
                 }
-                return next(err, doc);
+                return next(err, session);
             };
 
             collection.insert(session, processResult);

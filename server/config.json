@@ -10,7 +10,7 @@
     "metricsManagersConfiguration": [
         {
             "name": "frameRate",
-            "statisticCalculationStartupTime": 3,
+            "statisticsCalculationStartupTime": 3,
             "thresholds": [
                 {
                     "statistic": "maximum",
@@ -20,7 +20,7 @@
         },
         {
             "name": "garbageCollectionGeneration0",
-            "statisticCalculationStartupTime": 3,
+            "statisticsCalculationStartupTime": 3,
             "thresholds": [
                 {
                     "statistic": "average",
@@ -31,7 +31,7 @@
         },
         {
             "name": "garbageCollectionGeneration1",
-            "statisticCalculationStartupTime": 3,
+            "statisticsCalculationStartupTime": 3,
             "thresholds": [
                 {
                     "statistic": "average",
@@ -42,7 +42,7 @@
         },
         {
             "name": "garbageCollectionGeneration2",
-            "statisticCalculationStartupTime": 3,
+            "statisticsCalculationStartupTime": 3,
             "thresholds": [
                 {
                     "statistic": "average",
