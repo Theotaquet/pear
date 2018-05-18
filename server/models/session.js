@@ -12,10 +12,11 @@ class Session {
         for(const metricsManager of this.metricsManagers) {
             if(metricsManager.enabled) {
                 metricsManager.validated = true;
+                const metricsManagerConfig = configFile.metricsManagersConfiguration
+                    .find(x => x.name == metricsManager.name);
 
-                this.calculateStatistics(metricsManager);
-
-                this.validateStatistics(metricsManager);
+                this.calculateStatistics(metricsManager, metricsManagerConfig);
+                this.validateStatistics(metricsManager, metricsManagerConfig);
 
                 if(!metricsManager.validated) {
                     this.validated = false;
@@ -24,12 +25,13 @@ class Session {
         }
     }
 
-    calculateStatistics(metricsManager) {
+    calculateStatistics(metricsManager, metricsManagerConfig) {
         let average = 0.;
         let max = 0;
         let min = Number.MAX_VALUE;
 
-        const firstRelevantMetric = 3 / metricsManager.updateFrequency - 1;
+        const firstRelevantMetric =
+                metricsManagerConfig.statisticsCalculationStartupTime / metricsManager.updateFrequency - 1;
         for(let i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
             const metricValue = metricsManager.metrics[i].value;
             average += metricValue;
@@ -58,10 +60,8 @@ class Session {
         ];
     }
 
-    validateStatistics(metricsManager) {
-        const thresholds = configFile.metricsManagersConfiguration
-            .find(x => x.name == metricsManager.name).thresholds;
-        for(let threshold of thresholds) {
+    validateStatistics(metricsManager, metricsManagerConfig) {
+        for(let threshold of metricsManagerConfig.thresholds) {
             const statistic = metricsManager.statistics.find(x => x.name == threshold.statistic);
             statistic.thresholds = {
                 minimum: threshold.minimum,
