@@ -23,6 +23,7 @@ namespace Pear {
         private static string OtherCode { get; } =
                 "Request failed";
         private float duration { get; set; }
+        private Texture pearTexture;
 
         void Start() {
             session = new Session(
@@ -37,6 +38,17 @@ namespace Pear {
                     SystemInfo.graphicsDeviceName,
                     SystemInfo.graphicsMemorySize
             );
+
+            pearTexture = Resources.Load("pear-logo") as Texture;
+        }
+
+        void OnGUI() {
+            if(!pearTexture) {
+                Debug.LogError("Assign a Texture in the inspector.");
+                return;
+            }
+            GUI.DrawTexture(new Rect(Screen.width - 10 - 48, 10, 48, 74),
+                    pearTexture, ScaleMode.ScaleToFit);
         }
 
         void Update() {
