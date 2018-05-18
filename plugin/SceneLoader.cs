@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,31 +7,36 @@ namespace Pear {
 
     public class SceneLoader : MonoBehaviour {
 
-        void Start() {
+        private static string NoSceneMessage { get; } =
+                "No scene argument was specified or the scene was already the active one. " +
+                "Pe.A.R. has been added to the default scene.";
+        private static string WrongSceneMessage { get; }  =
+                "The specified scene doesn’t exist. Please verify your command line arguments.";
+        IEnumerator Start() {
             string sceneName = PearToolbox.GetArg("-scene");
-            StartCoroutine(LoadScene(sceneName));
+            yield return LoadScene(sceneName);
         }
 
         private IEnumerator LoadScene(string sceneName) {
             if(sceneName == null || sceneName == SceneManager.GetActiveScene().name) {
                 AddPearAnalyser();
-                try {
-                    throw new NoSceneException();
-                }
-                catch(NoSceneException e) {
-                    Debug.LogException(e);
-                    PearToolbox.AddToLog(e.Message);
-                }
+
+                Debug.LogError(NoSceneMessage);
+                PearToolbox.AddToLog(NoSceneMessage);
             }
-            else {
-                AsyncOperation asyncLoad =
-                        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-                yield return asyncLoad;
+            else if(Application.CanStreamedLevelBeLoaded(sceneName)) {
+                yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
                 AddPearAnalyser();
-                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+
+                yield return SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
             }
+            else {
+                Debug.LogError(WrongSceneMessage);
+                PearToolbox.AddToLog(WrongSceneMessage);
+            }
+            yield return null;
         }
 
         private void AddPearAnalyser() {
