@@ -22,6 +22,7 @@ namespace Pear {
             enabled = metricsManagerConfig.enabled;
             updateFrequency = metricsManagerConfig.updateFrequency;
             metrics = new List<Metric>();
+            metrics.Capacity = (int) (ConfigurationManager.Session.duration / updateFrequency) + 10;
 
             timer = 0.0f;
             timeAtStartup = DateTime.Now;
@@ -58,7 +59,10 @@ namespace Pear {
                     remainder = timer;
                 }
 
-                CreateMetric(new Metric(metric, (float)((currentFrameTime - timeAtStartup).TotalSeconds - remainder)));
+                CreateMetric(new Metric(
+                        metric,
+                        (float) ((currentFrameTime - timeAtStartup).TotalSeconds - remainder)
+                ));
             }
 
             previousFrameTime = currentFrameTime;
