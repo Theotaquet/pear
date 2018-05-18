@@ -29,9 +29,11 @@ class Session {
         let average = 0.;
         let max = 0;
         let min = Number.MAX_VALUE;
+        metricsManager.statisticsCalculationStartupTime =
+                metricsManagerConfig.statisticsCalculationStartupTime;
 
         const firstRelevantMetric =
-                metricsManagerConfig.statisticsCalculationStartupTime / metricsManager.updateFrequency - 1;
+                metricsManager.statisticsCalculationStartupTime / metricsManager.updateFrequency - 1;
         for(let i = firstRelevantMetric ; i < metricsManager.metrics.length ; i++) {
             const metricValue = metricsManager.metrics[i].value;
             average += metricValue;
