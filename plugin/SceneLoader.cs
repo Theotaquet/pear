@@ -21,7 +21,7 @@ namespace Pear {
             if(sceneName == null || sceneName == SceneManager.GetActiveScene().name) {
                 AddPearAnalyser();
 
-                Debug.LogError(NoSceneMessage);
+                Debug.LogWarning(NoSceneMessage);
                 PearToolbox.AddToLog(NoSceneMessage);
             }
             else if(Application.CanStreamedLevelBeLoaded(sceneName)) {
@@ -34,7 +34,7 @@ namespace Pear {
             }
             else {
                 Debug.LogError(WrongSceneMessage);
-                PearToolbox.AddToLog(WrongSceneMessage);
+                PearToolbox.EndLogOnError(WrongSceneMessage);
             }
             yield return null;
         }

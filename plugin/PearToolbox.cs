@@ -8,8 +8,7 @@ namespace Pear {
 
         public static Action<Exception> CriticalError { get; set; } = (e) => {
             Debug.LogException(e);
-            AddToLog(e.Message + "\n\n" + StopMessage);
-            WriteLogInFile();
+            EndLogOnError(e.Message);
         };
 
         private static string StartMessage { get; } =
@@ -75,6 +74,11 @@ namespace Pear {
 
         public static void AddToLog(string info) {
             Log += info + "\n\n";
+        }
+
+        public static void EndLogOnError(string message) {
+            Log += message + "\n\n" + StopMessage + "\n\n";
+            WriteLogInFile();
         }
 
         public static void WriteLogInFile() {
