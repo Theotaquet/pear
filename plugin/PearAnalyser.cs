@@ -47,7 +47,7 @@ namespace Pear {
                 Debug.LogError("Assign a Texture in the inspector.");
                 return;
             }
-            GUI.DrawTexture(new Rect(Screen.width - 10 - 48, 10, 48, 74),
+            GUI.DrawTexture(new Rect(Screen.width - 10 - 24, 10, 24, 37),
                     pearTexture, ScaleMode.ScaleToFit);
         }
 
