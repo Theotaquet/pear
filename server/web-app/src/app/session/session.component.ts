@@ -67,7 +67,8 @@ export class SessionComponent implements OnInit {
         lineColor: '#c3dc3c',
         gridColor: '#4b4a4a',
         labelFontColor: '#919191',
-        includeZero: false
+        includeZero: false,
+        stripLines: []
       },
       axisX: {
         title: 'Seconds',
@@ -107,6 +108,14 @@ export class SessionComponent implements OnInit {
         color: color,
       };
       content.data[0].dataPoints.push(point);
+    }
+
+    for(const threshold of thresholds) {
+        const stripLine = {
+            value: threshold,
+            label: `${threshold.maximum ? 'Maximum' : 'Minimum'} ${threshold}`
+        };
+        content.axisY.stripLines.push(stripLine);
     }
 
     const chart = new CanvasJS.Chart(chartName, content);
