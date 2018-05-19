@@ -48,90 +48,7 @@ export class SessionComponent implements OnInit {
     const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
     const chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
 
-    const data = {
-      cols: [
-        { label: 'time', type: 'number' },
-        { label: 'metric', type: 'number' },
-        { label: 'point-color', type: 'string', p: { role: 'style' } },
-        { label: 'min-max', type: 'string', p: { role: 'annotation' } },
-        { label: 'min-max-desc', type: 'string', p: { role: 'annotationText' } }
-      ],
-      rows: []
-    };
-
-    let minFound = false;
-    let maxFound = false;
-    let color;
-    let annotation;
-    let annotationText;
-
-    for(const metric of metricsManager.metrics) {
-      if(metric.value >= thresholds.minimum && metric.value <= thresholds.maximum) {
-        color = '#ccff00';
-      }
-      else {
-        color = '#ff3f00';
-      }
-
-      if(!minFound && metric.value == metricsManager.statistics.find(x => x.name == 'minimum').value) {
-        annotation = 'min';
-        annotationText = 'Minimum value';
-        minFound = true;
-      }
-      else if(!maxFound && metric.value == metricsManager.statistics.find(x => x.name = 'maximum').value) {
-        annotation = 'max';
-        annotationText = 'Maximum value';
-        maxFound = true;
-      }
-
-      const row = {
-        c: [
-          { v: metric.recordTime },
-          { v: metric.value },
-          { v: `{ fill-color: ${color} }`},
-          { v: annotation },
-          { v: annotationText }
-        ]
-      };
-      data.rows.push(row);
-    }
-
-    const googleData = new google.visualization.DataTable(data);
-
-    const options = {
-      vAxis: {
-        title: metricName,
-        titleTextStyle: { color: '#c3dc3c', italic: false },
-        baselineColor: '#c3dc3c',
-        gridlines: { color: '#919191' },
-        textStyle: { color: '#919191' }
-      },
-      hAxis: {
-        title: 'Seconds',
-        titleTextStyle: { color: '#c3dc3c', italic: false },
-        baselineColor: '#c3dc3c',
-        gridlines: { color: '#4b4a4a' },
-        textStyle: { color: '#919191'}
-      },
-      colors: ['#ffdc32'],
-      pointsVisible: 'true',
-      chartArea: { left: '5%', top: '10%', width: '90%', height: '80%' },
-      height: 280,
-      backgroundColor: '#4b4a4a',
-    };
-
-    const chart = new google.visualization.LineChart(document.getElementById(chartName));
-    chart.draw(googleData, options);
-  }
-}
-
-
-createChart(metricsManager, statistic): any {
-    const thresholds = statistic.thresholds;
-    const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
-    const chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
-
-    const data = {
+    const content = {
       theme: 'dark2',
       title: {
         text: `${metricName} chart`
@@ -150,14 +67,7 @@ createChart(metricsManager, statistic): any {
         lineColor: '#c3dc3c',
         gridColor: '#4b4a4a',
         labelFontColor: '#919191',
-        includeZero: false,
-      //   minimum: 0,
-        stripLines: [
-          {
-            value: threshold,
-            label: `${threshold.maximum ? 'Maximum' : 'Minimum'} ${threshold}`
-          }
-        ]
+        includeZero: false
       },
       axisX: {
         title: 'Seconds',
@@ -168,6 +78,38 @@ createChart(metricsManager, statistic): any {
       }
     }
 
-    const chart = new CanvasJS.Chart(chartName, data);
+    let minFound = false;
+    let maxFound = false;
+    let color;
+    let label;
+
+    for(const metric of metricsManager.metrics) {
+      if(metric.value >= thresholds.minimum && metric.value <= thresholds.maximum) {
+        color = '#ccff00';
+      }
+      else {
+        color = '#ff3f00';
+      }
+
+      if(!minFound && metric.value == metricsManager.statistics.find(x => x.name == 'minimum').value) {
+        label = 'min';
+        minFound = true;
+      }
+      else if(!maxFound && metric.value == metricsManager.statistics.find(x => x.name = 'maximum').value) {
+        label = 'max';
+        maxFound = true;
+      }
+
+      const point = {
+        x: metric.recordTime,
+        y: metric.value,
+        indexLabel: label,
+        color: color,
+      };
+      content.data[0].dataPoints.push(point);
+    }
+
+    const chart = new CanvasJS.Chart(chartName, content);
     chart.render();
   }
+}
