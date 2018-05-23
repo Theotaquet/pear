@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Chart } from 'chart.js';
 
 import { Session } from '../session';
 import { SessionService } from '../session.service';
 import { FormatMetricsManagerNamePipe } from '../format-metrics-manager-name.pipe';
 import { FormatChartNamePipe } from '../format-chart-name.pipe';
-
-declare var google: any;
 
 @Component({
   selector: 'app-session',
@@ -37,34 +36,70 @@ export class SessionComponent implements OnInit {
     for(const metricsManager of this.session.metricsManagers) {
       for(const statistic of metricsManager.statistics) {
         if(statistic.thresholds) {
-          google.charts.load('current', { packages: ['corechart'] });
-          google.charts.setOnLoadCallback(() => this.createChart(metricsManager, statistic));
+            this.createChart(metricsManager, statistic);
         }
       }
     }
   }
 
-  createChart(metricsManager, statistic): any {
+  createChart(metricsManager, statistic) {
     const thresholds = statistic.thresholds;
     const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
     const chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
 
-    const data = {
-      cols: [
-        { label: 'time', type: 'number' },
-        { label: 'metric', type: 'number' },
-        { label: 'point-color', type: 'string', p: { role: 'style' } },
-        { label: 'min-max', type: 'string', p: { role: 'annotation' } },
-        { label: 'min-max-desc', type: 'string', p: { role: 'annotationText' } }
-      ],
-      rows: []
+    const content = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                pointBackgroundColor: [],
+                borderColor: '#ffdc32',
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: `${metricName} chart`,
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: metricName,
+                        fontColor: '#c3dc3c'
+                    },
+                    gridLines: {
+                        color: '#4b4a4a'
+                    },
+                    ticks: {
+                        fontColor: '#919191'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Seconds',
+                        fontColor: '#c3dc3c'
+                    },
+                    gridLines: {
+                        color: '#919191'
+                    },
+                    ticks: {
+                        fontColor: '#919191'
+                    }
+                }]
+            },
+            annotation: {
+                annotations: []
+            }
+        }
     };
 
     let minFound = false;
     let maxFound = false;
     let color;
-    let annotation;
-    let annotationText;
+    let label;
 
     for(const metric of metricsManager.metrics) {
       if(metric.value >= thresholds.minimum && metric.value <= thresholds.maximum) {
@@ -75,53 +110,32 @@ export class SessionComponent implements OnInit {
       }
 
       if(!minFound && metric.value == metricsManager.statistics.find(x => x.name == 'minimum').value) {
-        annotation = 'min';
-        annotationText = 'Minimum value';
+        label = 'min';
         minFound = true;
       }
       else if(!maxFound && metric.value == metricsManager.statistics.find(x => x.name = 'maximum').value) {
-        annotation = 'max';
-        annotationText = 'Maximum value';
+        label = 'max';
         maxFound = true;
       }
 
-      const row = {
-        c: [
-          { v: metric.recordTime },
-          { v: metric.value },
-          { v: `{ fill-color: ${color} }`},
-          { v: annotation },
-          { v: annotationText }
-        ]
-      };
-      data.rows.push(row);
+      content.data.labels.push(metric.recordTime);
+      content.data.datasets[0].data.push(metric.value);
+      content.data.datasets[0].pointBackgroundColor.push(color);
     }
 
-    const googleData = new google.visualization.DataTable(data);
+    for(const threshold of thresholds) {
+        const annotation = {
+            type: 'line',
+            mode: 'horizontal',
+            value: threshold,
+            label: {
+                content: `${threshold.maximum ? 'Maximum' : 'Minimum'} ${threshold}`
+            }
+        };
+        content.options.annotation.annotations.push(annotation);
+    }
 
-    const options = {
-      vAxis: {
-        title: metricName,
-        titleTextStyle: { color: '#c3dc3c', italic: false },
-        baselineColor: '#c3dc3c',
-        gridlines: { color: '#919191' },
-        textStyle: { color: '#919191' }
-      },
-      hAxis: {
-        title: 'Seconds',
-        titleTextStyle: { color: '#c3dc3c', italic: false },
-        baselineColor: '#c3dc3c',
-        gridlines: { color: '#4b4a4a' },
-        textStyle: { color: '#919191'}
-      },
-      colors: ['#ffdc32'],
-      pointsVisible: 'true',
-      chartArea: { left: '5%', top: '10%', width: '90%', height: '80%' },
-      height: 280,
-      backgroundColor: '#4b4a4a',
-    };
-
-    const chart = new google.visualization.LineChart(document.getElementById(chartName));
-    chart.draw(googleData, options);
+    // const ctx = document.getElementById(chartName);
+    const chart = new Chart(chartName, content);
   }
 }
