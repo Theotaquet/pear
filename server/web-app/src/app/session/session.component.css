@@ -31,9 +31,9 @@ ul ul {
 }
 
 .chart-container {
-    height: 300px;
     width: 100%;
     background: var(--dark-1);
+    padding: 10px;
     border-radius: 5px;
     box-shadow: 3px 3px 15px var(--shadow-1);
     display: flex;
