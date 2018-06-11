@@ -36,32 +36,21 @@ export class SessionComponent implements OnInit, AfterViewInit {
 
   loadCharts() {
     for(const metricsManager of this.session.metricsManagers) {
-      for(const statistic of metricsManager.statistics) {
-        if(statistic.thresholds) {
-          this.createChart(metricsManager, statistic);
-        }
-      }
+      const chartName = this.formatChartNamePipe.transform(metricsManager.name);
+      const canvas = <HTMLCanvasElement> document.getElementById(chartName);
+      const content = this.generateChart(metricsManager);
+      const chart = new Chart(canvas, content);
     }
   }
 
-  createChart(metricsManager, statistic) {
-    const thresholds = statistic.thresholds;
+  generateChart(metricsManager) {
     const metricName = this.formatMetricsManagerNamePipe.transform(metricsManager.name);
-    const chartName = this.formatChartNamePipe.transform(metricsManager.name, statistic.name);
+    const data = [];
+    const labels = [];
 
-    let data = [];
-    let labels = [];
-    let pointBackgroundColor = [];
     for(const metric of metricsManager.metrics) {
       data.push(metric.value);
       labels.push(metric.recordTime);
-
-      if(metric.value >= thresholds.minimum && metric.value <= thresholds.maximum) {
-        pointBackgroundColor.push('#ccff00');
-      }
-      else {
-        pointBackgroundColor.push('#ff3f00');
-      }
     }
 
     const content = {
@@ -113,7 +102,6 @@ export class SessionComponent implements OnInit, AfterViewInit {
       }
     };
 
-    var canvas = <HTMLCanvasElement> document.getElementById(chartName);
-    const chart = new Chart(canvas, content);
+    return content;
   }
 }

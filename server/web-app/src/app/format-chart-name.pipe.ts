@@ -5,9 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FormatChartNamePipe implements PipeTransform {
 
-  transform(metricsManagerName: string, statistic: string): string {
+  transform(metricsManagerName: string): string {
     let formatedName =
-        (`${metricsManagerName}-${statistic}`)
+        (`${metricsManagerName}`)
             .replace(/([A-Z0-9])/g, '-$1')
             .toLowerCase() +
         '-chart-container';

@@ -37,16 +37,18 @@ namespace Pear {
 
             foreach(MetricsManagerConfiguration metricsManagerConfig
                     in ConfigurationManager.MetricsManagers) {
-                string metricsManagerName =
-                        metricsManagerConfig.name.Substring(0, 1).ToUpper() +
-                        metricsManagerConfig.name.Substring(1) +
-                        "Manager";
-                Type metricsManagerType =
-                        Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
-                MetricsManager metricsManager =
-                        (MetricsManager) Activator
-                        .CreateInstance(metricsManagerType, metricsManagerConfig);
-                AddMetricsManager(metricsManager);
+                if(metricsManagerConfig.enabled) {
+                    string metricsManagerName =
+                            metricsManagerConfig.name.Substring(0, 1).ToUpper() +
+                            metricsManagerConfig.name.Substring(1) +
+                            "Manager";
+                    Type metricsManagerType =
+                            Type.GetType("Pear." + metricsManagerName + ", Assembly-CSharp");
+                    MetricsManager metricsManager =
+                            (MetricsManager) Activator
+                            .CreateInstance(metricsManagerType, metricsManagerConfig);
+                    AddMetricsManager(metricsManager);
+                }
             }
         }
 

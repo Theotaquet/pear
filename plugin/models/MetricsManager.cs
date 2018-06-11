@@ -8,7 +8,6 @@ namespace Pear {
     public abstract class MetricsManager : ICollector {
 
         public string name { get; set; }
-        public bool enabled { get; set; }
         public float updateFrequency { get; set; }
         public List<Metric> metrics { get; set; }
 
@@ -19,7 +18,6 @@ namespace Pear {
 
         public MetricsManager(MetricsManagerConfiguration metricsManagerConfig) {
             name = metricsManagerConfig.name;
-            enabled = metricsManagerConfig.enabled;
             updateFrequency = metricsManagerConfig.updateFrequency;
             metrics = new List<Metric>();
             metrics.Capacity = (int) (ConfigurationManager.Session.duration / updateFrequency) + 10;

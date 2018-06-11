@@ -33,7 +33,7 @@
         <div *ngIf="!metricsManager.validated" id="failed" class="status">FAILED</div>
       </h3>
       <div *ngFor="let statistic of metricsManager.statistics">
-        <canvas *ngIf="statistic.thresholds" [id]="metricsManager.name | formatChartName:statistic.name"
+        <canvas *ngIf="statistic.thresholds" [id]="metricsManager.name | formatChartName"
             class="chart-container"></canvas>
       </div>
       <ul>

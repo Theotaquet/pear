@@ -10,17 +10,15 @@ class Session {
     applyProcessings() {
         this.validated = true;
         for(const metricsManager of this.metricsManagers) {
-            if(metricsManager.enabled) {
-                metricsManager.validated = true;
-                const metricsManagerConfig = configFile.metricsManagersConfiguration
-                    .find(x => x.name == metricsManager.name);
+            metricsManager.validated = true;
+            const metricsManagerConfig = configFile.metricsManagersConfiguration
+                .find(x => x.name == metricsManager.name);
 
-                this.calculateStatistics(metricsManager, metricsManagerConfig);
-                this.validateStatistics(metricsManager, metricsManagerConfig);
+            this.calculateStatistics(metricsManager, metricsManagerConfig);
+            this.validateStatistics(metricsManager, metricsManagerConfig);
 
-                if(!metricsManager.validated) {
-                    this.validated = false;
-                }
+            if(!metricsManager.validated) {
+                this.validated = false;
             }
         }
     }

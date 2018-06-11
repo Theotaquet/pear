@@ -53,9 +53,7 @@ namespace Pear {
 
         void Update() {
             foreach(MetricsManager metricsManager in session.metricsManagers) {
-                if(metricsManager.enabled) {
-                    metricsManager.CollectMetrics();
-                }
+                metricsManager.CollectMetrics();
             }
 
             duration = Time.time;
