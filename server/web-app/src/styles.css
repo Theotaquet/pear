@@ -14,18 +14,18 @@
 
 body {
     --dark-1: #4b4a4a;
-    --light-1: white;
-    --light-2: lightgrey;
-    --light-3: rgb(230, 230, 230);
-    --green-1: rgb(245, 255, 205);
-    --green-2: rgb(195, 220, 60);
-    --green-3: rgb(150, 175, 0);
-    --green-4: rgb(100, 115, 0);
-    --red-1: rgb(215, 0, 0);
-    --shadow-1: rgba(0, 0, 0, 0.5);
+    --light-1: #ffffff;
+    --light-2: #d3d3d3;
+    --light-3: #e6e6e6;
+    --green-1: #f5ffcd;
+    --green-2: #c3dc3c;
+    --green-3: #96af00;
+    --green-4: #647300;
+    --red-1: #d70000;
+    --shadow-1: #00000080;
     --bgDark-1: url('assets/images/wild-oliva.png') fixed, var(--dark-1);
-    --bgLight-1: url('assets/images/dust-scratches.png') rgb(240, 240, 240);
-    --bgLight-2: url('assets/images/mooning.png') rgb(145, 145, 145);
+    --bgLight-1: url('assets/images/dust-scratches.png') #f0f0f0;
+    --bgLight-2: url('assets/images/mooning.png') #919191;
 
     color: var(--dark-1);
     font-family: 'robotoregular', 'Trebuchet MS', Arial, sans-serif;

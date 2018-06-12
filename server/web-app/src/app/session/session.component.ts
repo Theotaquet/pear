@@ -14,6 +14,14 @@ import { FormatChartNamePipe } from '../format-chart-name.pipe';
 export class SessionComponent implements OnInit, AfterViewInit {
 
   session: any;
+  private colors = [
+    '#919191',
+    '#96AF00',
+    '#FFB711',
+    '#B5FFE1',
+    '#71E8E8',
+    '#C64C27'
+  ];
 
   constructor(
       private sessionService: SessionService,
@@ -49,22 +57,25 @@ export class SessionComponent implements OnInit, AfterViewInit {
     const labels = [];
 
     for(const metric of metricsManager.metrics) {
-      data.push(metric.value);
-      labels.push(metric.recordTime);
+      data.push(metric.value.toFixed(2));
+      labels.push(metric.recordTime.toFixed(2));
     }
 
     const content = {
       type: 'line',
       data: {
-        labels: [],
+        labels: labels,
         datasets: [{
-          data: [],
-          pointBackgroundColor: [],
-          pointBorderWidth: 0.5,
+          label: metricName,
+          data: data,
+          pointRadius: 0,
+          pointHitRadius: 7,
+          pointBackgroundColor: '#4b4a4a',
           pointHoverBorderWidth: 1.5,
-          borderColor: '#ffdc32',
+          borderColor: this.getRandomColor(),
+          borderWidth: 2,
           lineTension: 0.15,
-          backgroundColor: 'rgba(0, 0, 0, 0.20)'
+          backgroundColor: '#00000033'
         }]
       },
       options: {
@@ -76,32 +87,42 @@ export class SessionComponent implements OnInit, AfterViewInit {
             scaleLabel: {
               display: true,
               labelString: metricName,
-              fontColor: '#c3dc3c'
+              fontColor: '#c3dc3c',
+              fontSize: 15
             },
             gridLines: {
               color: '#606060',
             },
             ticks: {
-              fontColor: '#919191'
+                fontColor: '#919191',
+                suggestedMax: metricsManager.statistics.find(x => x.name == 'maximum').value + 50
             }
           }],
           xAxes: [{
             scaleLabel: {
               display: true,
               labelString: 'Seconds',
-              fontColor: '#c3dc3c'
+              fontColor: '#c3dc3c',
+              fontSize: 15
             },
             gridLines: {
               display: false,
             },
             ticks: {
-              fontColor: '#919191'
+              fontColor: '#919191',
+              beginAtZero: true
             }
           }]
         }
       }
     };
-
     return content;
+  }
+
+  getRandomColor() {
+    const randomIndex = Math.floor(Math.random() * this.colors.length);
+    const color = this.colors[randomIndex];
+    this.colors.splice(randomIndex, 1);
+    return color;
   }
 }

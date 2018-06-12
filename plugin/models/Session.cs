@@ -67,9 +67,7 @@ namespace Pear {
             );
 
             foreach(MetricsManager metricsManager in metricsManagers) {
-                if(metricsManager.enabled) {
-                    str += metricsManager.ToString() + "\n";
-                }
+                str += metricsManager.ToString() + "\n";
             }
 
             return str.Remove(str.Length - 2, 2);
