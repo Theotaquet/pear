@@ -15,7 +15,9 @@ class Session {
                 .find(x => x.name == metricsManager.name);
 
             this.calculateStatistics(metricsManager, metricsManagerConfig);
-            this.validateStatistics(metricsManager, metricsManagerConfig);
+            if(metricsManagerConfig.thresholds) {
+                this.validateStatistics(metricsManager, metricsManagerConfig);
+            }
 
             if(!metricsManager.validated) {
                 this.validated = false;
