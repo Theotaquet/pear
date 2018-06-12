@@ -28,7 +28,7 @@
             "thresholds": [
                 {
                     "statistic": "average",
-                    "maximum": 10
+                    "maximum": 10
                 }
             ]
         },
