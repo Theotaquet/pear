@@ -4,8 +4,8 @@
         "dbName": "pearDB"
     },
     "reporterConfiguration": {
-        "slackToken": "xoxp-3579858503-306200827237-346661601910-7048addf0badba59f2ab1ecf592fc0ab",
-        "slackChannel": "@theo.constant"
+        "slackToken": "xoxp-378466139729-379012510786-379904300326-e2f50ae9c3f2ed588a8e324167d8baf1",
+        "slackChannel": "#pear-reporting"
     },
     "metricsManagersConfiguration": [
         {
@@ -13,8 +13,12 @@
             "statisticsCalculationStartupTime": 3,
             "thresholds": [
                 {
-                    "statistic": "maximum",
-                    "maximum": 60
+                    "statistic": "minimum",
+                    "minimum": 60
+                },
+                {
+                    "statistic": "average",
+                    "minimum": 65
                 }
             ]
         },
@@ -24,32 +28,17 @@
             "thresholds": [
                 {
                     "statistic": "average",
-                    "minimum": 20,
-                    "maximum": 50
+                    "maximum": 10
                 }
             ]
         },
         {
             "name": "garbageCollectionGeneration1",
-            "statisticsCalculationStartupTime": 3,
-            "thresholds": [
-                {
-                    "statistic": "average",
-                    "minimum": 20,
-                    "maximum": 50
-                }
-            ]
+            "statisticsCalculationStartupTime": 3
         },
         {
             "name": "garbageCollectionGeneration2",
-            "statisticsCalculationStartupTime": 3,
-            "thresholds": [
-                {
-                    "statistic": "average",
-                    "minimum": 20,
-                    "maximum": 50
-                }
-            ]
+            "statisticsCalculationStartupTime": 3
         }
     ]
 }
