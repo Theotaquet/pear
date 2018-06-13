@@ -32,20 +32,20 @@
         <div *ngIf="metricsManager.validated" id="validated" class="status">VALIDATED</div>
         <div *ngIf="!metricsManager.validated" id="failed" class="status">FAILED</div>
       </h3>
-      <div *ngFor="let statistic of metricsManager.statistics">
-        <canvas *ngIf="statistic.thresholds" [id]="metricsManager.name | formatChartName"
-            class="chart-container"></canvas>
-      </div>
-      <ul>
-        <li *ngFor="let statistic of metricsManager.statistics"
-            class="v-centered">
-          {{statistic | formatStatisticName}} {{statistic.value | number}}
-          <div *ngIf="statistic.validated != undefined">
-            <div *ngIf="statistic.validated" id="validated" class="status">VALIDATED</div>
-            <div *ngIf="!statistic.validated" id="failed" class="status">FAILED</div>
-          </div>
-        </li>
-      </ul>
+      <canvas [id]="metricsManager.name | formatChartName"
+          class="chart-container"></canvas>
+      <table>
+        <tr *ngFor="let statistic of metricsManager.statistics">
+          <td><strong>{{statistic | formatStatisticName}}</strong></td>
+          <td class=statistic-value>{{statistic.value | number}}</td>
+          <td>
+            <div *ngIf="statistic.validated != undefined">
+              <div *ngIf="statistic.validated" id="validated" class="status">VALIDATED</div>
+              <div *ngIf="!statistic.validated" id="failed" class="status">FAILED</div>
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
   </section>
 

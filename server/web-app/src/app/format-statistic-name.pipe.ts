@@ -20,6 +20,6 @@ export class FormatStatisticNamePipe implements PipeTransform {
       }
       thresholds += ')';
     }
-    return `${statistic.name}${thresholds}:`;
+    return `${statistic.name}${thresholds}`;
   }
 }

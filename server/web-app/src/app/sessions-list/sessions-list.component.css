@@ -16,7 +16,7 @@ th, td {
 }
 
 th {
-    color:var(--light-1);
+    color: var(--light-1);
     text-transform: uppercase;
     background: var(--green-2);
 }
